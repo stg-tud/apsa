@@ -1,0 +1,12 @@
+digraph G {
+	dir=forward;
+	ranksep=1.0;
+	0["style"="filled","label"="[0,2]","fillcolor"="green","labelloc"="l","shape"="box"];
+	0 -> 7 [dir=forward];
+	0 -> 5 [dir=forward];
+	7["shape"="box","labelloc"="l","label"="[7,8]"];
+	7 -> -9223372036854775808 [dir=forward];
+	5["shape"="box","labelloc"="l","label"="[5,6]"];
+	5 -> -9223372036854775808 [dir=forward];
+	-9223372036854775808["labelloc"="l","fillcolor"="green","style"="filled","label"="Normal Return"];
+}
