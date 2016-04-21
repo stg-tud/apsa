@@ -1,0 +1,14 @@
+digraph G {
+	dir=forward;
+	ranksep=0.3;
+	1689009450["shape"="box","labelloc"="l","label"="0: ICONST_1\l\l1: ISTORE_1\l\l2: GOTO 12↓\l"];
+	1689009450 -> 1683107788 [dir=forward];
+	1683107788["shape"="box","labelloc"="l","label"="12: ILOAD_0\l\l13: IFGT(true=5↑, false=↓)\l"];
+	1683107788 -> 1478070904 [dir=forward];
+	1683107788 -> -1328534707 [dir=forward];
+	1478070904["style"="filled","label"="16: ILOAD_1\l\l17: IRETURN\l","fillcolor"="green","labelloc"="l","shape"="box"];
+	1478070904 -> 473519988 [dir=forward];
+	-1328534707["shape"="box","labelloc"="l","label"="5: ILOAD_1\l\l6: ILOAD_0\l\l7: IMUL\l\l8: ISTORE_1\l\l9: IINC(lvIndex=0, -1)\l"];
+	-1328534707 -> 1683107788 [dir=forward];
+	473519988["label"="Exit","color"="white","fillcolor"="black","labelloc"="l","shape"="doubleoctagon"];
+}

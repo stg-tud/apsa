@@ -1,0 +1,33 @@
+digraph G {
+	dir=forward;
+	ranksep=1.0;
+	1569["shape"="box","label"="12"];
+	1569 -> 50 [dir=forward];
+	
+	56["shape"="box","label"="8"];
+	56 -> 55 [dir=forward];
+
+	57["shape"="box","label"="9"];
+	57 -> 56 [dir=forward];
+	1570["shape"="box","label"="13"];
+	1570 -> 1569 [dir=forward];
+	1573["shape"="box","label"="16"];
+	1573 -> 1570 [dir=forward];
+	53["shape"="box","label"="5"];
+	53 -> 1570 [dir=forward];
+
+	54["shape"="box","label"="6"];
+	54 -> 53 [dir=forward];
+	49["shape"="box","label"="1"];
+	49 -> 48 [dir=forward];
+	1574["shape"="box","label"="17"];
+	1574 -> 1573 [dir=forward];
+
+	48["shape"="box","label"="0"];
+	48 -> 48 [dir=forward];
+	50["shape"="box","label"="2"];
+	50 -> 49 [dir=forward];
+	55["shape"="box","label"="7"];
+	55 -> 54 [dir=forward];
+
+}

@@ -1,0 +1,15 @@
+digraph G {
+	dir=forward;
+	ranksep=0.3;
+	1376201759["shape"="box","labelloc"="l","label"="0: ILOAD_1\l\l1: IFGE(true=21↓, false=↓)\l"];
+	1376201759 -> 945652658 [dir=forward];
+	1376201759 -> -1926979347 [dir=forward];
+	945652658["style"="filled","label"="21: ICONST_1\l\l22[ln=179]: IRETURN\l","fillcolor"="green","labelloc"="l","shape"="box"];
+	945652658 -> 473519988 [dir=forward];
+	-1926979347["shape"="box","labelloc"="l","label"="4: ILOAD_0\l\l5: BIPUSH(100)\l\l7: IF_ICMPGE(true=21↓, false=↓)\l"];
+	-1926979347 -> 945652658 [dir=forward];
+	-1926979347 -> 263277481 [dir=forward];
+	473519988["label"="Exit","color"="white","fillcolor"="black","labelloc"="l","shape"="doubleoctagon"];
+	263277481["style"="filled","label"="10: ILOAD_1\l\l11: SIPUSH(1000)\l\l14: IF_ICMPLE(true=19↓, false=↓)\l\l19: ICONST_0\l\l20: IRETURN\l","fillcolor"="green","labelloc"="l","shape"="box"];
+	263277481 -> 473519988 [dir=forward];
+}

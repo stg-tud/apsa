@@ -1,0 +1,21 @@
+digraph G {
+	dir=forward;
+	ranksep=1.0;
+	0["shape"="box","style"="filled","fillcolor"="white","label"="0: ICONST_1"];
+	-1["shape"="box","style"="filled","fillcolor"="green","label"="<parameter:0>"];
+	9["shape"="box","style"="filled","fillcolor"="white","label"="9: IINC(lvIndex=0, -1)"];
+	9 -> 9 [dir=forward];
+	9 -> -1 [dir=forward];
+	13["shape"="box","label"="13: IFGT(true=5↑, false=↓)"];
+	13 -> 9 [dir=forward];
+	13 -> -1 [dir=forward];
+	17["shape"="box","label"="17: IRETURN"];
+	17 -> 7 [dir=forward];
+	17 -> 0 [dir=forward];
+	7["shape"="box","style"="filled","fillcolor"="white","label"="7: IMUL"];
+	7 -> 9 [dir=forward];
+	7 -> -1 [dir=forward];
+	7 -> 7 [dir=forward];
+	7 -> 0 [dir=forward];
+	-2147483648["shape"="box","style"="filled","fillcolor"="orange","label"="<NONE>"];
+}
