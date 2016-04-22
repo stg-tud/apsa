@@ -16,7 +16,9 @@ RUN apt-get -y --no-install-recommends install \
         git \
         wget \
         unzip \
-        binutils 
+        binutils \
+        vim \
+        joe
 
 RUN useradd -m llvm && \
     echo llvm:llvm | chpasswd && \
@@ -27,3 +29,9 @@ WORKDIR /home/llvm
 
 RUN sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${LLVM_VERSION} 360
 RUN sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_VERSION} 360
+
+ADD examples examples
+ADD exercises exercises
+
+RUN sudo chown llvm examples
+RUN sudo chown llvm exercises
