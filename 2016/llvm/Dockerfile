@@ -29,9 +29,10 @@ WORKDIR /home/llvm
 
 RUN sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${LLVM_VERSION} 360
 RUN sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_VERSION} 360
+RUN sudo update-alternatives --install /usr/bin/opt opt /usr/bin/opt-${LLVM_VERSION} 360
 
 ADD examples examples
 ADD exercises exercises
 
-RUN sudo chown llvm examples
-RUN sudo chown llvm exercises
+RUN sudo chown -R llvm examples
+RUN sudo chown -R llvm exercises
