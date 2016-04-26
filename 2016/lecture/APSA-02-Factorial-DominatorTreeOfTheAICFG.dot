@@ -1,11 +1,13 @@
 digraph G {
-	dir=forward;
-	ranksep=1.0;
+	dir=none;
+	ranksep=0.3;
+	rankdir=BT;
+	node [fontname="Helvetica"];
 	1569["shape"="box","label"="12"];
-	1569 -> 50 [dir=forward];
-	
+	1569 -> 50;
+
 	56["shape"="box","label"="8"];
-	56 -> 55 [dir=forward];
+	56 -> 55;
 
 	57["shape"="box","label"="9"];
 	57 -> 56 [dir=forward];

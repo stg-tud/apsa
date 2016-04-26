@@ -1,6 +1,7 @@
 digraph G {
 	dir=forward;
-	ranksep=1.0;
+	ranksep=0.3;
+	node [fontname="Helvetica"];
 	0["style"="filled","label"="[0,3]","fillcolor"="green","labelloc"="l","shape"="box"];
 	0 -> 14 [dir=forward];
 	0 -> 4 [dir=forward];

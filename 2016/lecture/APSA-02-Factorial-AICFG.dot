@@ -1,6 +1,7 @@
 digraph G {
 	dir=forward;
 	ranksep=0.3;
+	node [fontname="Helvetica"];
 	1689009450["shape"="box","labelloc"="l","label"="0: ICONST_1\l\l1: ISTORE_1\l\l2: GOTO 12↓\l"];
 	1689009450 -> 1683107788 [dir=forward];
 	1683107788["shape"="box","labelloc"="l","label"="12: ILOAD_0\l\l13: IFGT(true=5↑, false=↓)\l"];
