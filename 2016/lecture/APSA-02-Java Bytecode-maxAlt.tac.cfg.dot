@@ -1,6 +1,7 @@
 digraph G {
 	dir=forward;
-	ranksep=1.0;
+	ranksep=0.3;
+	node [fontname="Helvetica"]
 	0["style"="filled","label"="[0,0]","fillcolor"="green","labelloc"="l","shape"="box"];
 	0 -> 8 [dir=forward];
 	0 -> 5 [dir=forward];
@@ -8,7 +9,7 @@ digraph G {
 	8 -> 10 [dir=forward];
 	5["shape"="box","labelloc"="l","label"="[1,2]"];
 	5 -> 10 [dir=forward];
-	10["shape"="box","labelloc"="l","label"="[4,5]"];
+	10["shape"="box","labelloc"="l","label"="[4,4]"];
 	10 -> -9223372036854775808 [dir=forward];
 	-9223372036854775808["labelloc"="l","fillcolor"="green","style"="filled","label"="Normal Return"];
 }
