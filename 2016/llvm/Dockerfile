@@ -48,10 +48,19 @@ RUN wget http://llvm.org/releases/3.8.0/llvm-3.8.0.src.tar.xz && \
     cmake -g “Unix Makefiles” ../ && \
     make
 
-
+ENV LLVMSRC_DIR=/home/llvm/llvm-3.8.0.src/build/share/llvm/cmake/
 
 ADD examples examples
 ADD exercises exercises
 
 RUN sudo chown -R llvm examples
 RUN sudo chown -R llvm exercises
+
+RUN mkdir workspace
+RUN sudo chown -R llvm workspace
+VOLUME /home/llvm/workspace
+
+RUN echo "alias opt-3.8='/home/llvm/llvm-3.8.0.src/build/bin/opt'" > /home/llvm/.bashrc && \
+    sudo chown -R llvm /home/llvm/.bashrc
+
+
