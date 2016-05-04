@@ -36,7 +36,7 @@ WORKDIR /home/llvm
 RUN sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${LLVM_VERSION} 360
 RUN sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_VERSION} 360
 RUN sudo update-alternatives --install /usr/bin/opt opt /usr/bin/opt-${LLVM_VERSION} 360
-RUN sudo update-alternatives --install /usr/bin/opt opt /usr/bin/opt-${LLVM_VERSION} 360
+RUN sudo update-alternatives --install /usr/bin/llvm-dis opt /usr/bin/llvm-dis-${LLVM_VERSION} 360
 RUN sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 360
 
 RUN wget http://llvm.org/releases/3.8.0/llvm-3.8.0.src.tar.xz && \
