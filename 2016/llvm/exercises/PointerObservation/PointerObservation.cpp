@@ -17,14 +17,14 @@ namespace {
 		bool runOnFunction(Function& f) override {
 
       // Identify injection points
-DenseSet<Instruction*> pointerInstructions;
-for(BasicBlock &bb : f) {
-  	for(Instruction &i : bb) {
-  		if (GetElementPtrInst* gep = dyn_cast<GetElementPtrInst>(&i)) {
-        pointerInstructions.insert(gep);
-  		}
-  	}
-}
+      DenseSet<Instruction*> pointerInstructions;
+      for(BasicBlock &bb : f) {
+        	for(Instruction &i : bb) {
+        		if (GetElementPtrInst* gep = dyn_cast<GetElementPtrInst>(&i)) {
+              pointerInstructions.insert(gep);
+        		}
+        	}
+      }
 
       // Inject instructions
       for (Instruction *i : pointerInstructions) {
