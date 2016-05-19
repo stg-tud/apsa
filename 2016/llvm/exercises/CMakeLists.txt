@@ -13,3 +13,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -std=c++11")
 
 add_subdirectory(FirstPass)
 add_subdirectory(InstructionCount)
+add_subdirectory(ParameterFlow)
+add_subdirectory(FirstTransform)
+add_subdirectory(PointerObservation)
