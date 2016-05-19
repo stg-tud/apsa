@@ -28,11 +28,11 @@ namespace {
 
       // Inject instructions
       for (Instruction *i : pointerInstructions) {
-        errs() << "Injections print operation\n";
+        errs() << "Injecting print operation\n";
         IRBuilder<> builder(i);
         Function *printfFunction = getPrintFPrototype(i->getContext(), i->getModule());
 
-        builder.CreateCall(printfFunction, geti8StrVal(*i->getModule(), "test\n", "name"));
+        builder.CreateCall(printfFunction, geti8StrVal(*i->getModule(), "Pointer instruction\n", "name"));
       }
 
 			return true;
