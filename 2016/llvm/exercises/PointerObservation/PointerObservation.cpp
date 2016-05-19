@@ -17,14 +17,14 @@ namespace {
 		bool runOnFunction(Function& f) override {
 
       // Identify injection points
-      DenseSet<Instruction*> pointerInstructions;
-      for(BasicBlock &bb : f) {
-        	for(Instruction &i : bb) {
-        		if (GetElementPtrInst* gep = dyn_cast<GetElementPtrInst>(&i)) {
-              pointerInstructions.insert(gep);
-        		}
-        	}
-      }
+DenseSet<Instruction*> pointerInstructions;
+for(BasicBlock &bb : f) {
+  	for(Instruction &i : bb) {
+  		if (GetElementPtrInst* gep = dyn_cast<GetElementPtrInst>(&i)) {
+        pointerInstructions.insert(gep);
+  		}
+  	}
+}
 
       // Inject instructions
       for (Instruction *i : pointerInstructions) {
@@ -32,9 +32,6 @@ namespace {
         IRBuilder<> builder(i);
         Function *printfFunction = getPrintFPrototype(i->getContext(), i->getModule());
 
-        //std::vector<Value*> args;
-        //args.push_back(ConstantInt::getSigned(IntegerType::get(i->getContext(), 32), 42));
-        //args.push_back(42);
         builder.CreateCall(printfFunction, geti8StrVal(*i->getModule(), "test\n", "name"));
       }
 
