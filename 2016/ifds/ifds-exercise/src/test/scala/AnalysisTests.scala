@@ -49,7 +49,7 @@ class AnalysisTests extends FunSpec with Matchers {
     //Enable logging of IDESolver
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
 
-    val theProject = Project(new File("../Testcases/bin"))
+    val theProject = Project(new File("../testcases/bin"))
 
     val ComputedCallGraph(callGraph, /*we don't care about unresolved methods etc. */ _, _) =
         theProject.get(VTACallGraphKey)
