@@ -1,0 +1,9 @@
+*.class
+
+bin/
+target/
+.settings/
+ifds-exercise/.classpath
+ifds-exercise/.project
+.cache-main
+.cache-tests
