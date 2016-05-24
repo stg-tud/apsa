@@ -52,7 +52,7 @@ namespace {
                              GlobalValue::InternalLinkage, strConstant, name);
       Constant* zero = Constant::getNullValue(IntegerType::getInt32Ty(ctx));
       Constant* indices[] = {zero, zero};
-      Constant* strVal = ConstantExpr::getGetElementPtr(Type::getInt8PtrTy(ctx), GVStr, indices, true);
+      Constant* strVal = ConstantExpr::getGetElementPtr(0, GVStr, indices, true);
       return strVal;
     }
 
