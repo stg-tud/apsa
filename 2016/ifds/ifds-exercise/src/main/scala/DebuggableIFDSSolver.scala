@@ -29,6 +29,20 @@ class DebuggableIFDSSolver(
           case (source, target) => PathEdge(instr.pc, instr.i, instr.m, source, target)
       }
     }
+    
+    override def restoreContextOnReturnedFact(callSite: MInstruction, incomingFact: Fact, returnedFact: Fact) : Fact = {
+        (incomingFact, returnedFact) match {
+            case (incomingFact: FactWithOperandStack, returnedFact: FactWithOperandStack) =>
+                val pops = callSite.i.numberOfPoppedOperands { x ⇒ incomingFact.opStack(x).ctc}
+                if(pops > incomingFact.opStack.size)
+                    returnedFact
+                else {
+                    returnedFact.copy(returnedFact.opStack ++ incomingFact.opStack.drop(pops))
+                }
+                    
+            case _ => returnedFact
+        }
+    }
 }
 
 case class PathEdge(

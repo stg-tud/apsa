@@ -90,7 +90,7 @@ class AnalysisTests extends FunSpec with Matchers {
             val method = classFile.methods.find { method ⇒ method.name == methodName }.get
             lazy val edges = {
                 val solver = runAnalysis(method)
-                theProject.methodsWithBody.flatMap { method ⇒
+                theProject.methodsWithBody.filter(_.body.isDefined).flatMap { method ⇒
                     method.body.get.associateWithIndex().flatMap {
                         case (pc, instr) ⇒ solver.getPathEdgesByTarget(MInstruction(instr, pc, method))
                     }

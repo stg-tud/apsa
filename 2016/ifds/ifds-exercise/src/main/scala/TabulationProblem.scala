@@ -94,7 +94,11 @@ class TabulationProblem(
                 
                 case _ ⇒
                     val pops = instr.numberOfPoppedOperands { x ⇒ fact.opStack(x).ctc}
-                    val pushs = instr.numberOfPushedOperands { x ⇒ fact.opStack(x).ctc }
+                    val pushs = if(instr.isInstanceOf[FieldWriteAccess]) {
+                        0
+                    } else {
+                        instr.numberOfPushedOperands { x ⇒ fact.opStack(x).ctc }
+                    }
 
                     fact match {
                         case OperandStackFact(index, _) if index < pops ⇒ kill()
