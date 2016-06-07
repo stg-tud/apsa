@@ -7,5 +7,7 @@ ifds-exercise/.classpath
 ifds-exercise/.project
 ifds-solution/.classpath
 ifds-solution/.project
+ide-exercise/.classpath
+ide-exercise/.project
 .cache-main
 .cache-tests
