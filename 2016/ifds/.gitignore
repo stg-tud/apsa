@@ -5,5 +5,7 @@ target/
 .settings/
 ifds-exercise/.classpath
 ifds-exercise/.project
+ifds-solution/.classpath
+ifds-solution/.project
 .cache-main
 .cache-tests
