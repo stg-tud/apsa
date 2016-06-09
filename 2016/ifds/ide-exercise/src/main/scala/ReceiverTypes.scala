@@ -7,13 +7,18 @@ import org.opalj.br.ClassHierarchy
 
 class ReceiverTypes() {
   //TODO: Implement me
+  /**
+   * This type represents the values that are passed along the computed edge functions in phase 2 of the algorithm.
+   * However, we are only interested in reachability and do not require phase 2 to be executed at all.
+   * Therefore, it is not strictly necessary to implement this class.
+   */
 }
 
 object Top extends ReceiverTypes {
 
 }
 
-case class MapRegisterToTypeFunction() extends EdgeFunction[ReceiverTypes] {
+case class MapRegisterToTypeFunction(/* TODO: Implement me */) extends EdgeFunction[ReceiverTypes] {
 
   def composeWith(edgeFn: heros.EdgeFunction[ReceiverTypes]): heros.EdgeFunction[ReceiverTypes] = ??? //TODO: Implement me
 
@@ -25,7 +30,9 @@ case class MapRegisterToTypeFunction() extends EdgeFunction[ReceiverTypes] {
 }
 
 object MapRegisterToTypeFunction {
-  def apply(registerIndex: Int, receiverType: ObjectType, classHierarchy: ClassHierarchy): MapRegisterToTypeFunction = ??? //TODO: Implement me
+  def apply(registerIndex: Int, receiverType: ObjectType, classHierarchy: ClassHierarchy): MapRegisterToTypeFunction = ??? //TODO: Implement me 
+  //Hint: you will need the ClassHierarchy object to compute common supertypes and common subtypes. 
+  //For example, ClassHierarchy provides the methods joinObjectTypesUntilSingleUpperBound and isSupertypeOf
 }
 
 object MapSingleRegister {
