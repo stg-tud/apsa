@@ -9,5 +9,7 @@ ifds-solution/.classpath
 ifds-solution/.project
 ide-exercise/.classpath
 ide-exercise/.project
+ide-solution/.classpath
+ide-solution/.project
 .cache-main
 .cache-tests
