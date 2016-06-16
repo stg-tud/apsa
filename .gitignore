@@ -5,6 +5,10 @@
 
 # Package Files #
 *.jar
+!rt.jar
+!jce.jar
+!charsets.jar
+!jsse.jar
 *.war
 *.ear
 
