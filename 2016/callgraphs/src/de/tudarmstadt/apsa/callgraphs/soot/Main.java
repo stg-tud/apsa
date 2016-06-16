@@ -12,9 +12,11 @@ import java.util.stream.Collectors;
 
 import soot.G;
 import soot.PhaseOptions;
+import soot.PointsToAnalysis;
 import soot.Scene;
 import soot.jimple.spark.SparkTransformer;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.Options;
@@ -25,7 +27,7 @@ public class Main {
 		String jre = Files.list(Paths.get("jre", "1.6.0_45")).map(p -> p.toAbsolutePath().toString())
 				.collect(Collectors.joining(File.pathSeparator));
 
-		String mainClass = "de.tudarmstadt.apsa.callgraphs.examples.Shapes";
+		String mainClass = "de.tudarmstadt.apsa.callgraphs.examples.Coll";
 
 		/* Reset Soot */
 		G.reset();
@@ -54,14 +56,9 @@ public class Main {
 		Scene.v().setEntryPoints(Arrays.asList(Scene.v().getMainMethod()));
 
 		/* Run the call graph transfomer */
-		// CHATransformer.v().transform();
-
-		Map<String, String> opts = new HashMap<String, String>(PhaseOptions.v().getPhaseOptions("cg.spark"));
-		opts.put("enabled", "true");
-		// opts.put("on-fly-cg", "false");
-		// opts.put("rta", "true");
-		opts.put("vta", "true");
-		SparkTransformer.v().transform("", opts);
+//		applyCHA();
+		applyRTA();
+//		applyVTA();
 
 		/* Retrieve the call graph */
 		dumpCG();
@@ -71,18 +68,49 @@ public class Main {
 	}
 
 	/**
+	 * Run the CHA analysis.
+	 */
+	private static void applyCHA() {
+		CHATransformer.v().transform();
+	}
+
+	/**
+	 * Run the RTA analysis from SPARK.
+	 */
+	private static void applyRTA() {
+		Map<String, String> opts = new HashMap<String, String>(PhaseOptions.v().getPhaseOptions("cg.spark"));
+		opts.put("enabled", "true");
+		opts.put("on-fly-cg", "false");
+		opts.put("rta", "true");
+		SparkTransformer.v().transform("", opts);
+	}
+
+	/**
+	 * Run the VTA analysis from SPARK.
+	 */
+	private static void applyVTA() {
+		Map<String, String> opts = new HashMap<String, String>(PhaseOptions.v().getPhaseOptions("cg.spark"));
+		opts.put("enabled", "true");
+		opts.put("vta", "true");
+		SparkTransformer.v().transform("", opts);
+	}
+
+	/**
 	 * Dump some statistics about the pointer-assignment graph, including the
 	 * points-to sets of the local variables in the main method.
 	 */
 	private static void dumpPAG() {
-		PAG pag = (PAG) Scene.v().getPointsToAnalysis();
-		System.out.println("VarNodes: " + pag.getVarNodeNumberer().size());
-		System.out.println("FieldRefNodes: " + pag.getFieldRefNodeNumberer().size());
-		System.out.println("AllocNodes: " + pag.getAllocNodeNumberer().size());
-		System.out.println();
-		
+		PointsToAnalysis pts = Scene.v().getPointsToAnalysis();
+		if (pts instanceof PAG) {
+			PAG pag = (PAG) pts;
+			System.out.println("VarNodes: " + pag.getVarNodeNumberer().size());
+			System.out.println("FieldRefNodes: " + pag.getFieldRefNodeNumberer().size());
+			System.out.println("AllocNodes: " + pag.getAllocNodeNumberer().size());
+			System.out.println();
+		}
+
 		Scene.v().getMainMethod().getActiveBody().getLocals().stream().forEach(l -> {
-			System.out.println("Points-to set of " + l + " is " + pag.reachingObjects(l));
+			System.out.println("Points-to set of " + l + " is " + pts.reachingObjects(l));
 		});
 	}
 
@@ -92,7 +120,7 @@ public class Main {
 	 */
 	private static void dumpCG() {
 		CallGraph cg = Scene.v().getCallGraph();
-		
+
 		System.out.println();
 		System.out.println();
 		System.out.println("The call graph has " + cg.size() + " edges.");
