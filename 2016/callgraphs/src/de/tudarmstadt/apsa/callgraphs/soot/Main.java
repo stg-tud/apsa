@@ -5,19 +5,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import probe.ObjectManager;
-import probe.ProbeClass;
-import probe.ProbeMethod;
-import soot.ClassProvider;
 import soot.G;
+import soot.PhaseOptions;
 import soot.Scene;
-import soot.SootClass;
-import soot.SootMethod;
+import soot.jimple.spark.SparkTransformer;
 import soot.jimple.spark.pag.PAG;
-import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.Options;
 
 public class Main {
@@ -55,50 +54,56 @@ public class Main {
 		Scene.v().setEntryPoints(Arrays.asList(Scene.v().getMainMethod()));
 
 		/* Run the call graph transfomer */
-		CHATransformer.v().transform();
+		// CHATransformer.v().transform();
+
+		Map<String, String> opts = new HashMap<String, String>(PhaseOptions.v().getPhaseOptions("cg.spark"));
+		opts.put("enabled", "true");
+		// opts.put("on-fly-cg", "false");
+		// opts.put("rta", "true");
+		opts.put("vta", "true");
+		SparkTransformer.v().transform("", opts);
 
 		/* Retrieve the call graph */
-		CallGraph cg = Scene.v().getCallGraph();
-		System.out.println(cg);
+		dumpCG();
 
 		/* Retrieve the points-to sets from the PAG */
-		PAG pag = (PAG) Scene.v().getPointsToAnalysis();
-		System.out.println(pag);
+		dumpPAG();
 	}
 
 	/**
-	 * Convert a soot method to a probe method.
-	 * 
-	 * @param sootMethod
-	 * @return
+	 * Dump some statistics about the pointer-assignment graph, including the
+	 * points-to sets of the local variables in the main method.
 	 */
-	private static ProbeMethod probeMethod(SootMethod sootMethod) {
-		SootClass sootClass = sootMethod.getDeclaringClass();
-		ProbeClass cls = ObjectManager.v().getClass(sootClass.toString());
-		return ObjectManager.v().getMethod(cls, sootMethod.getName(), sootMethod.getBytecodeParms());
+	private static void dumpPAG() {
+		PAG pag = (PAG) Scene.v().getPointsToAnalysis();
+		System.out.println("VarNodes: " + pag.getVarNodeNumberer().size());
+		System.out.println("FieldRefNodes: " + pag.getFieldRefNodeNumberer().size());
+		System.out.println("AllocNodes: " + pag.getAllocNodeNumberer().size());
+		System.out.println();
+		
+		Scene.v().getMainMethod().getActiveBody().getLocals().stream().forEach(l -> {
+			System.out.println("Points-to set of " + l + " is " + pag.reachingObjects(l));
+		});
 	}
 
-	private static void addCommonDynamicClass(ClassProvider provider, String className) {
-		if (provider.find(className) != null) {
-			Scene.v().addBasicClass(className);
+	/**
+	 * Dump some statistics about the call graph, including the out-edges of the
+	 * main method.
+	 */
+	private static void dumpCG() {
+		CallGraph cg = Scene.v().getCallGraph();
+		
+		System.out.println();
+		System.out.println();
+		System.out.println("The call graph has " + cg.size() + " edges.");
+		System.out.println();
+		System.out.println("Edges out of the main method " + Scene.v().getMainMethod());
+		Iterator<Edge> edgesOutOf = cg.edgesOutOf(Scene.v().getMainMethod());
+		while (edgesOutOf.hasNext()) {
+			System.out.println(edgesOutOf.next());
 		}
-	}
 
-	private static void addCommonDynamicClasses(ClassProvider provider) {
-		/*
-		 * For simulating the FileSystem class, we need the implementation of
-		 * the FileSystem, but the classes are not loaded automatically due to
-		 * the indirection via native code.
-		 */
-		addCommonDynamicClass(provider, "java.io.UnixFileSystem");
-		addCommonDynamicClass(provider, "java.io.WinNTFileSystem");
-		addCommonDynamicClass(provider, "java.io.Win32FileSystem");
-
-		/* java.net.URL loads handlers dynamically */
-		addCommonDynamicClass(provider, "sun.net.www.protocol.file.Handler");
-		addCommonDynamicClass(provider, "sun.net.www.protocol.ftp.Handler");
-		addCommonDynamicClass(provider, "sun.net.www.protocol.http.Handler");
-		addCommonDynamicClass(provider, "sun.net.www.protocol.https.Handler");
-		addCommonDynamicClass(provider, "sun.net.www.protocol.jar.Handler");
+		System.out.println();
+		System.out.println();
 	}
 }
