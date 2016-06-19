@@ -24,21 +24,20 @@ import soot.options.Options;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		String bin = Paths.get("bin").toAbsolutePath().toString();
-		String jre = Files.list(Paths.get("jre", "1.6.0_45")).map(p -> p.toAbsolutePath().toString())
+		String jreVersion = "1.6.0_45";//"1.4.2_11";
+		String jre = Files.list(Paths.get("jre", jreVersion)).map(p -> p.toAbsolutePath().toString())
 				.collect(Collectors.joining(File.pathSeparator));
 
-		String mainClass = "de.tudarmstadt.apsa.callgraphs.examples.Coll";
+		String mainClass = "de.tudarmstadt.apsa.callgraphs.examples.HelloWorld";
 
 		/* Reset Soot */
 		G.reset();
 
 		/* Set some soot parameters */
 		// Set input classes
-		// Options.v().set_process_dir(Arrays.asList("bin"));
 		Options.v().classes().add(mainClass);
 
 		// Set the class path
-		// Options.v().set_prepend_classpath(true);
 		Options.v().set_soot_classpath(bin + File.pathSeparator + jre);
 
 		// Set the main class
@@ -55,16 +54,18 @@ public class Main {
 		/* Setting entry points (i.e., main method of the main class) */
 		Scene.v().setEntryPoints(Arrays.asList(Scene.v().getMainMethod()));
 
-		/* Run the call graph transfomer */
-//		applyCHA();
-//		applyRTA();
-		applyVTA();
+		/* Run the call graph transformer */
+		// applyCHA();
+		// applyRTA();
+		// applyVTA();
+		applySpark(false);
+		// applySpark(true);
 
 		/* Retrieve the call graph */
 		dumpCG();
 
 		/* Retrieve the points-to sets from the PAG */
-//		dumpPAG();
+		dumpPAG();
 	}
 
 	/**
@@ -96,6 +97,18 @@ public class Main {
 	}
 
 	/**
+	 * Run the default call graph analysis from SPARK.
+	 */
+	private static void applySpark(boolean isAve) {
+		Map<String, String> opts = new HashMap<String, String>(PhaseOptions.v().getPhaseOptions("cg.spark"));
+		opts.put("enabled", "true");
+		opts.put("verbose", "true");
+//		opts.put("apponly", "true"); // Similar to setting entry point to just HelloWorld.main()
+		if(isAve) opts.put("simulate-natives", "false"); // this should only be false for SparkAve
+		SparkTransformer.v().transform("", opts);
+	}
+
+	/**
 	 * Dump some statistics about the pointer-assignment graph, including the
 	 * points-to sets of the local variables in the main method.
 	 */
@@ -120,6 +133,9 @@ public class Main {
 	 */
 	private static void dumpCG() {
 		CallGraph cg = Scene.v().getCallGraph();
+		
+		/* Print out all call graph edges */
+		// cg.iterator().forEachRemaining(System.out::println);
 
 		System.out.println();
 		System.out.println();
