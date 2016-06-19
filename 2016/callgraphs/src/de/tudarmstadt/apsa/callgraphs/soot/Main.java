@@ -57,14 +57,14 @@ public class Main {
 
 		/* Run the call graph transfomer */
 		applyCHA();
-//		applyRTA();
-//		applyVTA();
+		applyRTA();
+		applyVTA();
 
 		/* Retrieve the call graph */
 		dumpCG();
 
 		/* Retrieve the points-to sets from the PAG */
-		dumpPAG();
+//		dumpPAG();
 	}
 
 	/**
