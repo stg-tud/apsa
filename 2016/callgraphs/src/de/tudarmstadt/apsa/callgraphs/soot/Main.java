@@ -56,8 +56,8 @@ public class Main {
 		Scene.v().setEntryPoints(Arrays.asList(Scene.v().getMainMethod()));
 
 		/* Run the call graph transfomer */
-		applyCHA();
-		applyRTA();
+//		applyCHA();
+//		applyRTA();
 		applyVTA();
 
 		/* Retrieve the call graph */
