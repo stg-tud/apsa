@@ -12,8 +12,7 @@
                 <attribute name="Main-Class" value="de.tudarmstadt.apsa.callgraphs.examples.HelloWorld"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="${dir.workspace}/apsa/2016/callgraphs/bin"/>
-            <fileset dir="${dir.workspace}/probe/bin"/>
+            <fileset dir="${dir.workspace}/apsa/2016/callgraphs/bin" includes="de/tudarmstadt/apsa/callgraphs/examples/HelloWorld.class"/>
         </jar>
     </target>
 </project>

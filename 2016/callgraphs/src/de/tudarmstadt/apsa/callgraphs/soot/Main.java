@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import soot.G;
 import soot.PhaseOptions;
 import soot.PointsToAnalysis;
 import soot.Scene;
+import soot.SootMethod;
 import soot.jimple.spark.SparkTransformer;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.callgraph.CHATransformer;
@@ -24,11 +26,14 @@ import soot.options.Options;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		String bin = Paths.get("bin").toAbsolutePath().toString();
-		String jreVersion = "1.6.0_45";//"1.4.2_11";
+		String jreVersion = "1.6.0_45";// "1.4.2_11";
 		String jre = Files.list(Paths.get("jre", jreVersion)).map(p -> p.toAbsolutePath().toString())
 				.collect(Collectors.joining(File.pathSeparator));
+		String ave = Paths.get("hello", "averroes", "averroes-lib-class.jar").toAbsolutePath().toString();
+		String placeholder = Paths.get("hello", "averroes", "placeholder-lib.jar").toAbsolutePath().toString();
 
 		String mainClass = "de.tudarmstadt.apsa.callgraphs.examples.HelloWorld";
+		boolean isAverroes = true;
 
 		/* Reset Soot */
 		G.reset();
@@ -36,9 +41,11 @@ public class Main {
 		/* Set some soot parameters */
 		// Set input classes
 		Options.v().classes().add(mainClass);
+		if(isAverroes) Options.v().classes().add("averroes.Library");
 
 		// Set the class path
-		Options.v().set_soot_classpath(bin + File.pathSeparator + jre);
+		// Options.v().set_soot_classpath(bin + File.pathSeparator + jre);
+		Options.v().set_soot_classpath(bin + File.pathSeparator + ave + File.pathSeparator + placeholder);
 
 		// Set the main class
 		Options.v().set_main_class(mainClass);
@@ -52,20 +59,36 @@ public class Main {
 												// the classes
 
 		/* Setting entry points (i.e., main method of the main class) */
-		Scene.v().setEntryPoints(Arrays.asList(Scene.v().getMainMethod()));
+		Scene.v().setEntryPoints(entryPoints(isAverroes));
 
 		/* Run the call graph transformer */
 		// applyCHA();
 		// applyRTA();
 		// applyVTA();
-		applySpark(false);
-		// applySpark(true);
+		// applySpark(false);
+		applySpark(isAverroes);
 
 		/* Retrieve the call graph */
 		dumpCG();
 
 		/* Retrieve the points-to sets from the PAG */
 		dumpPAG();
+	}
+
+	/**
+	 * The main method of the main class set in the Soot scene is the only entry
+	 * point to the call graph.
+	 * 
+	 * @param isAverroes
+	 * @return
+	 */
+	private static List<SootMethod> entryPoints(boolean isAverroes) {
+		List<SootMethod> result = new ArrayList<SootMethod>();
+		result.add(Scene.v().getMainMethod());
+		if (isAverroes) {
+			result.add(Scene.v().getMethod("<averroes.Library: void <clinit>()>"));
+		}
+		return result;
 	}
 
 	/**
@@ -98,13 +121,18 @@ public class Main {
 
 	/**
 	 * Run the default call graph analysis from SPARK.
+	 * 
+	 * @param isAverroes
 	 */
-	private static void applySpark(boolean isAve) {
+	private static void applySpark(boolean isAverroes) {
 		Map<String, String> opts = new HashMap<String, String>(PhaseOptions.v().getPhaseOptions("cg.spark"));
 		opts.put("enabled", "true");
 		opts.put("verbose", "true");
-//		opts.put("apponly", "true"); // Similar to setting entry point to just HelloWorld.main()
-		if(isAve) opts.put("simulate-natives", "false"); // this should only be false for SparkAve
+		// opts.put("apponly", "true"); // Similar to setting entry point to
+		// just HelloWorld.main()
+		if (isAverroes)
+			opts.put("simulate-natives", "false"); // this should only be false
+													// for SparkAve
 		SparkTransformer.v().transform("", opts);
 	}
 
@@ -133,7 +161,7 @@ public class Main {
 	 */
 	private static void dumpCG() {
 		CallGraph cg = Scene.v().getCallGraph();
-		
+
 		/* Print out all call graph edges */
 		// cg.iterator().forEachRemaining(System.out::println);
 
