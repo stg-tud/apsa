@@ -9,6 +9,7 @@
 !jce.jar
 !charsets.jar
 !jsse.jar
+!hello.jar
 *.war
 *.ear
 
