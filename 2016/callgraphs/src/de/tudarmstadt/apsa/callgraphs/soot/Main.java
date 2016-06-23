@@ -33,7 +33,7 @@ public class Main {
 		String placeholder = Paths.get("hello", "averroes", "placeholder-lib.jar").toAbsolutePath().toString();
 
 		String mainClass = "de.tudarmstadt.apsa.callgraphs.examples.HelloWorld";
-		boolean isAverroes = false;
+		boolean isAverroes = true;
 
 		/* Reset Soot */
 		G.reset();
