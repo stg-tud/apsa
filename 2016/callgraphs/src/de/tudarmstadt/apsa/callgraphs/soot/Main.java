@@ -33,7 +33,7 @@ public class Main {
 		String placeholder = Paths.get("hello", "averroes", "placeholder-lib.jar").toAbsolutePath().toString();
 
 		String mainClass = "de.tudarmstadt.apsa.callgraphs.examples.HelloWorld";
-		boolean isAverroes = true;
+		boolean isAverroes = false;
 
 		/* Reset Soot */
 		G.reset();
@@ -44,8 +44,9 @@ public class Main {
 		if(isAverroes) Options.v().classes().add("averroes.Library");
 
 		// Set the class path
-		// Options.v().set_soot_classpath(bin + File.pathSeparator + jre);
-		Options.v().set_soot_classpath(bin + File.pathSeparator + ave + File.pathSeparator + placeholder);
+		if(isAverroes) Options.v().set_soot_classpath(bin + File.pathSeparator + ave + File.pathSeparator + placeholder);
+		else Options.v().set_soot_classpath(bin + File.pathSeparator + jre);
+		
 
 		// Set the main class
 		Options.v().set_main_class(mainClass);
@@ -55,11 +56,10 @@ public class Main {
 
 		/* Load the necessary classes */
 		Scene.v().loadNecessaryClasses();
-		Scene.v().setMainClassFromOptions(); // has to be called after loading
-												// the classes
+		Scene.v().setMainClassFromOptions(); // has to be called after loading the classes
 
 		/* Setting entry points (i.e., main method of the main class) */
-		Scene.v().setEntryPoints(entryPoints(isAverroes));
+		if(isAverroes) Scene.v().setEntryPoints(entryPoints());
 
 		/* Run the call graph transformer */
 		// applyCHA();
@@ -79,15 +79,12 @@ public class Main {
 	 * The main method of the main class set in the Soot scene is the only entry
 	 * point to the call graph.
 	 * 
-	 * @param isAverroes
 	 * @return
 	 */
-	private static List<SootMethod> entryPoints(boolean isAverroes) {
+	private static List<SootMethod> entryPoints() {
 		List<SootMethod> result = new ArrayList<SootMethod>();
 		result.add(Scene.v().getMainMethod());
-		if (isAverroes) {
-			result.add(Scene.v().getMethod("<averroes.Library: void <clinit>()>"));
-		}
+		result.add(Scene.v().getMethod("<averroes.Library: void <clinit>()>"));
 		return result;
 	}
 
@@ -128,11 +125,8 @@ public class Main {
 		Map<String, String> opts = new HashMap<String, String>(PhaseOptions.v().getPhaseOptions("cg.spark"));
 		opts.put("enabled", "true");
 		opts.put("verbose", "true");
-		// opts.put("apponly", "true"); // Similar to setting entry point to
-		// just HelloWorld.main()
-		if (isAverroes)
-			opts.put("simulate-natives", "false"); // this should only be false
-													// for SparkAve
+		// opts.put("apponly", "true"); // Similar to setting entry point to just HelloWorld.main()
+		if (isAverroes) opts.put("simulate-natives", "false"); // this should only be false for SparkAve
 		SparkTransformer.v().transform("", opts);
 	}
 
