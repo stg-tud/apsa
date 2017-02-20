@@ -45,7 +45,7 @@ object StackEntry {
 
     def apply(ctc: ComputationalTypeCategory, registerIndex: Int): StackEntry = StackEntry(ctc, Some(registerIndex))
 
-    def apply(ct: ComputationalType, registerIndex: Int): StackEntry = StackEntry(ct.computationalTypeCategory, Some(registerIndex))
+    def apply(ct: ComputationalType, registerIndex: Int): StackEntry = StackEntry(ct.category, Some(registerIndex))
 }
 object AssociatedRegister {
     def unapply(se: StackEntry): Option[Int] = se.associatedRegister

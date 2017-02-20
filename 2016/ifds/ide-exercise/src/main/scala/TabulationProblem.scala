@@ -51,15 +51,18 @@ class TabulationProblem(
     project: Project[URL],
     icfg: OpalICFG,
     seeds: Iterable[MInstruction],
-    isSink: INVOKESTATIC ⇒ Boolean) extends IDETabulationProblem[MInstruction, Fact, Method, ReceiverTypes, OpalICFG] {
+    isSink: INVOKESTATIC ⇒ Boolean
+) extends IDETabulationProblem[MInstruction, Fact, Method, ReceiverTypes, OpalICFG] {
 
   implicit def ctToStackEntry(tpe: Type): StackEntry = {
-    StackEntry(tpe.computationalType.computationalTypeCategory)
+    StackEntry(tpe.computationalType.category)
   }
 
   implicit def ctToStackEntry(ct: ComputationalType): StackEntry = {
-    StackEntry(ct.computationalTypeCategory)
+    StackEntry(ct.category)
   }
+
+  def recordEdges(): Boolean = true
 
   def autoAddZero(): Boolean = false
 
@@ -229,7 +232,7 @@ class TabulationProblem(
           case Zero                ⇒ gen(OperandStackFact(0, List(UnknownCTC1Value)))
           case _: OperandStackFact ⇒ kill()
           case fact @ RegisterFact(lvIndex, AssociatedRegister(lvIndexOnStack) :: _) ⇒ callSite.i match {
-            case INVOKESTATIC(_, "sanitize", _) if lvIndex == lvIndexOnStack ⇒ kill()
+            case INVOKESTATIC(_, _, "sanitize", _) if lvIndex == lvIndexOnStack ⇒ kill()
             case _ ⇒ handleStackEffect(fact, callSite.i)
           }
           case fact: RegisterFact         ⇒ handleStackEffect(fact, callSite.i)

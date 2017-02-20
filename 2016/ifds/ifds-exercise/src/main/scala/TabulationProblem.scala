@@ -1,11 +1,11 @@
 import heros.IFDSTabulationProblem
 import org.opalj.br.Method
 import heros.FlowFunctions
+import heros.FlowFunction
 import java.util.{ Set ⇒ JSet }
 import java.util.{ Map ⇒ JMap }
 import heros.DefaultSeeds
 import scala.collection.JavaConverters._
-import heros.FlowFunction
 import java.util.HashSet
 import org.opalj.br.instructions.INVOKESTATIC
 import org.opalj.br.instructions.Instruction
@@ -50,12 +50,14 @@ class TabulationProblem(
         isSink: INVOKESTATIC ⇒ Boolean) extends IFDSTabulationProblem[MInstruction, Fact, Method, OpalICFG] {
 
     implicit def ctToStackEntry(tpe: Type): StackEntry = {
-        StackEntry(tpe.computationalType.computationalTypeCategory)
+        StackEntry(tpe.computationalType.category)
     }
 
     implicit def ctToStackEntry(ct: ComputationalType): StackEntry = {
-        StackEntry(ct.computationalTypeCategory)
+        StackEntry(ct.category)
     }
+
+    def recordEdges(): Boolean = false
 
     def autoAddZero(): Boolean = false
 

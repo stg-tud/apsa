@@ -49,7 +49,7 @@ class AnalysisTests extends FunSpec with Matchers {
     //Enable logging of IDESolver
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
 
-    val theProject = Project(new File("../testcases/bin"))
+    val theProject = Project(new File("../testcases/target/scala-2.10/test-classes"))
 
     val ComputedCallGraph(callGraph, /*we don't care about unresolved methods etc. */ _, _) =
         theProject.get(VTACallGraphKey)
@@ -90,7 +90,7 @@ class AnalysisTests extends FunSpec with Matchers {
             val method = classFile.methods.find { method ⇒ method.name == methodName }.get
             lazy val edges = {
                 val solver = runAnalysis(method)
-                theProject.methodsWithBody.filter(_.body.isDefined).flatMap { method ⇒
+                theProject.allMethodsWithBody.filter(_.body.isDefined).flatMap { method ⇒
                     method.body.get.associateWithIndex().flatMap {
                         case (pc, instr) ⇒ solver.getPathEdgesByTarget(MInstruction(instr, pc, method))
                     }
@@ -231,7 +231,7 @@ class AnalysisTests extends FunSpec with Matchers {
                 exactly(1, edges) should matchPattern { case PathEdge(_, i: INVOKESTATIC, _, Zero, Zero) if isSource(i) ⇒ }
             }
             it("should have field f tainted (field based) when invoking bar") {
-                exactly(1, edges) should matchPattern { case PathEdge(_, INVOKESTATIC(_, "bar", _), _, Zero, FieldBasedFact(_, "f", _)) ⇒ }
+                exactly(1, edges) should matchPattern { case PathEdge(_, INVOKESTATIC(_, _, "bar", _), _, Zero, FieldBasedFact(_, "f", _)) ⇒ }
             }
             it("should have a self-loop edge at the start of bar") {
                 exactly(1, edges) should matchPattern { case PathEdge(0, _, Method(_, "bar", _), FieldBasedFact(_, "f", _), FieldBasedFact(_, "f", _)) ⇒ }

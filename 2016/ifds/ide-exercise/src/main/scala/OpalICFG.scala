@@ -148,7 +148,7 @@ class OpalICFG(cg: CallGraph) extends InterproceduralCFG[MInstruction, Method] {
         val res = new ConcurrentLinkedQueue[MInstruction]
         cg.project.parForeachMethodWithBody() { mi ⇒
             val m = mi.method
-            m.body.get.foreach { (pc, instr) ⇒
+            m.body.get.iterate { (pc, instr) ⇒
                 if (pc != 0 && !(instr.isInstanceOf[MethodInvocationInstruction]))
                     res.add(MInstruction(instr, pc, m))
             }
