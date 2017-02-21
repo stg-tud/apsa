@@ -49,10 +49,13 @@ class OpalICFG(cg: CallGraph) extends InterproceduralCFG[MInstruction, Method] {
 
     val aiCFGs: ConcurrentHashMap[Method, AIResult { val domain: Domain with RecordCFG with RecordDefUse }] = {
         val aiCFGs = new ConcurrentHashMap[Method, AIResult { val domain: Domain with RecordCFG with RecordDefUse }]
-        cg.project.parForeachMethodWithBody() { methodInfo ⇒
-            val c = methodInfo.classFile
-            val m = methodInfo.method
+        for {c <- cg.project.allProjectClassFiles; m <- c.methods; if m.body.isDefined } {
+//        cg.project.parForeachMethodWithBody() { methodInfo ⇒
+//            val c = methodInfo.classFile
+//            val m = methodInfo.method
+            println(s"computing cfg for: ${m.toJava(c)}")
             val aiResult = BaseAI(c, m, new DefaultDomainWithCFGAndDefUse(cg.project, c, m))
+
             aiCFGs.put(m, aiResult)
         }
         aiCFGs
@@ -98,6 +101,8 @@ class OpalICFG(cg: CallGraph) extends InterproceduralCFG[MInstruction, Method] {
     //    }
 
     def getSuccsOf(instr: MInstruction): JList[MInstruction] = {
+        assert(instr != null)
+        assert(aiCFGs.get(instr.m) != null,s"${instr.m.toJava(cg.project.classFile(instr.m))} has no associated cfg")
         val pcs = aiCFGs.get(instr.m).domain.successorsOf(instr.pc, regularSuccessorOnly = false)
         pcs.map { succPc ⇒
             MInstruction(instr.m.body.get.instructions(succPc), succPc, instr.m)

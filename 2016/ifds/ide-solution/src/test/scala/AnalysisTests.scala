@@ -5,10 +5,12 @@ import org.opalj.br.analyses.Project
 import java.io.File
 
 import org.opalj.ai.analyses.cg.ComputedCallGraph
-import org.opalj.ai.analyses.cg.VTACallGraphKey
+import org.opalj.fpcf.analysis.cg.cha.CHACallGraphKey
+
 import heros.InterproceduralCFG
 import org.opalj.br.instructions.Instruction
 import org.opalj.br.Method
+import org.opalj.AnalysisMode
 import java.util.{ List ⇒ JList }
 import java.util.{ Collection ⇒ JCollection }
 import java.util.{ Set ⇒ JSet }
@@ -41,6 +43,12 @@ import org.opalj.br.instructions.ReturnValueInstruction
 import org.opalj.br.instructions.GETSTATIC
 import org.opalj.br.ObjectType
 import heros.edgefunc.EdgeIdentity
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.Config
+import org.opalj.log.DefaultLogContext
+import org.opalj.log.ConsoleOPALLogger
+import org.opalj.log.OPALLogger
+
 
 class AnalysisTests extends FunSpec with Matchers {
 
@@ -51,10 +59,18 @@ class AnalysisTests extends FunSpec with Matchers {
     //Enable logging of IDESolver
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
 
-    val theProject = Project(new File("../testcases/target/scala-2.10/test-classes"))
+    val analysisModeSpecification = s"${AnalysisMode.ConfigKey} = library with open packages assumption"
+    val analysisModeConfig = ConfigFactory.parseString(analysisModeSpecification)
+    val logContext = new DefaultLogContext
+    OPALLogger.register(logContext,new ConsoleOPALLogger)
+    val theProject = Project(
+        new File("../testcases/target/scala-2.10/test-classes"),
+        logContext,
+        analysisModeConfig.withFallback(ConfigFactory.load())
+    )
 
     val ComputedCallGraph(callGraph, /*we don't care about unresolved methods etc. */ _, _) =
-        theProject.get(VTACallGraphKey)
+        theProject.get(CHACallGraphKey)
     val icfg = new OpalICFG(callGraph)
 
     def runAnalysis(method: Method): DebuggableIDESolver = {
@@ -81,6 +97,7 @@ class AnalysisTests extends FunSpec with Matchers {
 
     def testClass(className: String)(fun: ClassFile ⇒ Unit) {
         describe("For class "+className) {
+            println(s"looking for class: $className")
             val classFile = theProject.allClassFiles.find { classFile ⇒ classFile.thisType.fqn == className }.get
             fun(classFile)
         }

@@ -41,6 +41,13 @@ import org.opalj.br.instructions.ReturnValueInstruction
 import org.opalj.br.instructions.GETSTATIC
 import org.opalj.br.ObjectType
 import heros.edgefunc.EdgeIdentity
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.Config
+import org.opalj.log.DefaultLogContext
+import org.opalj.log.ConsoleOPALLogger
+import org.opalj.log.OPALLogger
+import org.opalj.fpcf.analysis.cg.cha.CHACallGraphKey
+import org.opalj.AnalysisMode
 
 class AnalysisTests extends FunSpec with Matchers {
 
@@ -51,11 +58,24 @@ class AnalysisTests extends FunSpec with Matchers {
     //Enable logging of IDESolver
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
 
+    /*
     val theProject = Project(new File("../testcases/target/scala-2.10/test-classes"))
 
     val ComputedCallGraph(callGraph, /*we don't care about unresolved methods etc. */ _, _) =
         theProject.get(VTACallGraphKey)
     val icfg = new OpalICFG(callGraph)
+    */
+    
+    val AnalysisModeKey = AnalysisMode.ConfigKey
+    val analysisModeSpecification = s"$AnalysisModeKey = library with open packages assumption"
+    val analysisModeConfig = ConfigFactory.parseString(analysisModeSpecification)
+    val logContext = new DefaultLogContext
+    OPALLogger.register(logContext,new ConsoleOPALLogger)
+    val theProject = Project(
+        new File("../testcases/target/scala-2.10/test-classes"),
+        logContext,
+        analysisModeConfig.withFallback(ConfigFactory.load())
+    )
 
     def runAnalysis(method: Method): DebuggableIDESolver = {
         val seeds = method.body.get.collectWithIndex {
