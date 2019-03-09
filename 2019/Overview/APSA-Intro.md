@@ -61,7 +61,7 @@ The exercises will help you to prepare for the exam.
 
 --- 
 
-#Prerequisites
+# Prerequisites
 
  * A keen interest in analyzing code.
  * Basic knowledge in compiler construction is helpful.
