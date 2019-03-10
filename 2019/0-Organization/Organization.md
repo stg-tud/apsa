@@ -9,25 +9,23 @@ __*Dr. Michael Eichberg*__
 
 Summer Term 2019
 
-
-
-
-
 ---
 
 # Lecture
-Every week at 11:40am in S101|A03,
+Every week at 11:40am in S101|A03.
 
-The theoretical concepts generally apply to a very wide range of languages and programming language paradigms; however, in the examples etc. we will primarily analyze Java (Bytecode). The language that we use for implementing analyses is [Scala](https://www.scala-lang.org)).
+- The concepts generally apply to a very wide range of languages and programming language paradigms.
+- The examples and analyses are primarily concerned with Java (Bytecode). 
+- The language that we use for implementing analyses is [Scala](https://www.scala-lang.org)).
 
-The lecture slides can be found at: [https://github.com/stg-tud/apsa](https://github.com/stg-tud/apsa/tree/master/2019)
+The lecture slides can be found at: [https://github.com/stg-tud/apsa](https://github.com/stg-tud/apsa/tree/master/2019).
 
 ^ The lecture slides are basically markdown files that are presented using [Deskset](https://www.deskset.com). The final PDF is rendered using [Marked 2](https://marked2app.com) after preprocessing them using the following [sed](https://en.wikipedia.org/wiki/Sed) program:
 ```bash
 /usr/bin/sed -E -e 's/^\[\..+\:.+\]//' -e 's/^\^[[:space:]]//' -e 's/#[[:space:]]\[fit\]/#/'
 ```
-The program basically removes all non-standard markdown commands required by Deskset.
-Hence, if you find typos or more significant issues don't hesitate to create [issues](https://github.com/stg-tud/apsa/issues). Pull requests are also very welcome. 
+The program basically removes all non-standard markdown commands which are only used/required by Deskset.
+Hence, if you have suggestions for improvement or if you find typos or more significant issues don't hesitate to create [issues](https://github.com/stg-tud/apsa/issues). Pull requests are also very welcome. 
 
 ---
 
