@@ -14,9 +14,10 @@ Summer Term 2019
 # Lecture
 Every week at 11:40am in S101|A03.
 
+- We are going to discuss algorithms (static analyses) that can be used to detect code smells and security vulnerabilities by analyzing the (binary) code of applications.
 - The concepts generally apply to a very wide range of languages and programming language paradigms.
 - The examples and analyses are primarily concerned with Java (Bytecode). 
-- The language that we use for implementing analyses is [Scala](https://www.scala-lang.org)).
+- The language that we use for implementing analyses is [Scala](https://www.scala-lang.org).
 
 The lecture slides can be found at: [https://github.com/stg-tud/apsa](https://github.com/stg-tud/apsa/tree/master/2019).
 
@@ -40,7 +41,7 @@ Hence, if you have suggestions for improvement or if you find typos or more sign
 # Exercise
 Every week we will have ~60minutes of lecture and ~30minutes exercises. 
 
-Some exercise will just be theory and some will require you to comprehend and write concrete static analyses. The analyses will be developed using the [OPAL](www.opal-project.de) framework.
+Some exercises will just be theory and some will require you to comprehend and write concrete static analyses. The analyses will be developed using the [OPAL](www.opal-project.de) framework.
 
 The exercises will help you to prepare for the exam.
 
@@ -52,7 +53,7 @@ The exercises will help you to prepare for the exam.
 * Code representations (e.g., three-address code)
 * Parallelization of static analyses
 * Call-graph construction
-* Inter-procedural data-flow analyses (IFDS, IDE, Weighted Pushdown Systems)
+* Inter-procedural data-flow analyses (IFDS, IDE, ...)
 * Purity and immutability analysis
 * Escape analysis/Points-to analysis
 * Code slicing
