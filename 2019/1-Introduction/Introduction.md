@@ -103,7 +103,7 @@ A static analysis of a program is a _**sound**_, _finite_, and _**approximate**_
 
 ^ Analyses which, e.g., identify code duplicates or which compute metrics are frequently used to perform quality assessments; however, these analyses are not static analyses.
 
-^ Refactorings (e.g., extract method) often required (sound) static analyses to ensure that the refactoring does not break the code.
+^ Refactorings (e.g., extract method) often require (sound) static analyses to ensure that the refactoring does not break the code.
 
 ^ Debugging is supported, e.g., by computing slices which encompass all statements in a program that affect a given statement.
 
