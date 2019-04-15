@@ -73,7 +73,7 @@ int main(int argc, const char * argv[]) {
 
 # What is Static Analysis?
 
-A static analysis of a program is a _**sound**_, _finite_, and _**approximate**_ calculation of the program's execution semantics which helps us to solve practical problems.
+A static analysis of a program is a _**sound**_, _**finite**_, or _**approximate**_ calculation of the program's execution semantics which helps us to solve practical problems.
 
 ^ **Sound** means that the analysis is consistent with the actual concrete execution semantics and that the result models all possible executions of the analyzed program.
 
