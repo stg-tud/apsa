@@ -3,7 +3,7 @@ slidenumbers: true
 
 # Applied Static Analysis
 
-## Static Analysis (Tools)
+## Why Static Analysis?
 
 
 Software Technology Group 
@@ -75,13 +75,13 @@ int main(int argc, const char * argv[]) {
 
 A static analysis of a program is a _**sound**_, _finite_, and _**approximate**_ calculation of the program's execution semantics which helps us to solve practical problems.
 
-^ **Sound** means that the analysis is consistent with the actual concrete execution semantics. 
+^ **Sound** means that the analysis is consistent with the actual concrete execution semantics and that the result models all possible executions of the analyzed program.
 
 ^ An analysis is **conservative** if all errors lean to the same side. For example, if we want to remove useless synchronization primitives, then an analysis should always only identify those primitives as useless that are definitively not required. In case of doubt, it should return that the synchronization primitive is required.
 
 ^ Sound static analyses are generally _overapproximations_ which describe a superset of the program's possible/observable executions. However, the analyses should still be precise enough to be practically useable. For example, an analysis that would list all methods as being possible targets for a 
 
-^ Sometimes, analyses compute only _underapproximations_; i.e., the analysis does not describe all observable executions. This is, e.g., done to improve an analysis' scalability and/or to improve an analyses precision. For practical analyses it may be more important to produce fewer so called _false positives_ then to report more _potential issues_. [^FindBugsInTheRealWorld]
+^ Sometimes, analyses compute only _underapproximations_; i.e., the analysis does not describe all observable executions. This is, e.g., done to improve an analysis' scalability and/or to improve an analyses precision. For practical analyses it may be more important to produce fewer so called _false positives_ then to report more _potential issues_. 
 
 ^ A static analysis is finite in the sense that it will terminate for any given program. The analysis will not execute the program.
 
@@ -329,6 +329,8 @@ class com.sun.corba.se.impl.naming.pcosnaming.NamingContextImpl {
 
 # Finding Bugs Using Static Code Analysis ?
 
+^ Found in `javax.crypto.CryptoPolicyParser` (Java 8u25):
+
 [.code-highlight: 7-11]
 
 ```java
@@ -348,10 +350,7 @@ private boolean ...isConsistent(
 }
 ```
 
-^ The code shown in line 7 to 11 has no sideeffect; however, identifying this situation in a generic manner requires sophisticated analyses; if possible at all.
-
-^ Found in `javax.crypto.CryptoPolicyParser` (Java 8u25).
-
+^ The code shown in line 7 to 11 has no sideeffect; however, identifying this situation in a generic manner requires sophisticated analyses.
 
 ---
 
@@ -401,7 +400,7 @@ void printIt(String args[]) {
 }
 ```
 
-^ In this case, the first access of args (arg.length in line 3) is guarded by an explicit null check. However, the second access isn't! Hence, we could detect such code smells using a basic analysis that detects object accesses (e.g., `args.length`) that appear in a guarded context (if (o != null)) and also outside of an explicitly guarded context.
+^ In this case, the first access of `args` (`args.length` in line 3) is guarded by an explicit null check. However, the second access (line 5) isn't! Hence, we could detect such code smells (here, lack of inner consistency) using a basic analysis that detects object accesses (e.g., `args.length`) that appear in a guarded context (`if (o != null)`) and also outside of an explicitly guarded context.
 
 ---
 
@@ -428,9 +427,13 @@ void printReverse(String args[]) {
 
 # Irrelevant True Positives
 
-^ Better static analyses can sometimes prove assertions to always hold; which are then useless. E.g., let's assume that the following function is only called with `non-null` parameters. In that case the `assert` statement is useless, but adding an assert statement (even in such cases) is a common best practice!
+^ Better static analyses can sometimes prove assertions to always hold; which are then useless. 
 
-```
+Let's assume that the following function is only called with `non-null` parameters. 
+
+^ In that case the `assert` statement is useless, but adding an assert statement (even in such cases) is a common best practice!
+
+```java
 private boolean isSmallEnough(Object i) {
 	assert(i != null);
 	Object o = " "+i;
@@ -462,10 +465,68 @@ if (dx != 0 || dy != 0) {
 # Complex True Positives - Assessment  
 
 The sad reality:
-^ [^FindBugsInTheRealWorld]
 
-> […]the general trend holds; a not-understood bug report is commonly labeled a false positive, rather than spurring the programmer to delve deeper. The result? We have completely abandoned some analyses that might generate difficult to understand reports.
+> […] the general trend holds; a not-understood bug report is commonly labeled a false positive, rather than spurring the programmer to delve deeper. The result? We have completely abandoned some analyses that might generate difficult to understand reports. [^FindBugsInTheRealWorld]
 
+
+---
+
+# Soundiness
+
+> […] in practice, soundness is commonly eschewed: we [the authors] are not aware of a single realistic whole-programa analysis tool […] that does not purposely make unsound choices. 
+> […] 
+> Soundness is not even necessary for most modern analysis applications, however, as many clients can tolerate unsoundness. [^Soundiness]
+
+^ Reasons for soundiness: engineering effort or (likely) costs w.r.t. the precision and scalability of the resulting analysis.
+
+^ Most practical analysis have a sound core w.r.t. some language features and APIs. In particular the most relevant language features and APIs are typically soundly supported. Such analyses are called **soundy**; i.e., the analyses are concerned with soundness, but do not support _a well identified set of features_. Unfortunately, often the set of features that is unsoundly handled is not at all well identified as often suggested. 
+
+---
+
+# Soundiness - Java
+
+Common features that are often not soundly handled in Java:
+ 
+ - Reflection (_often mentioned in research papers_)
+ - Native methods (_often mentioned in research papers_)
+ - Dynamic Class Loading / Class Loaders (_sometimes mentioned in research papers_
+ - (De)Serialization (_often not considered at all_)
+ - Special System Hooks (e.g., `shutdownHooks`)
+
+^ Examples in C/C++ are `setJmp`/`longJmp` or pointer arithmetic.
+^ Examples in Javascript are `eval` if the code is not _trivially_ known or data-flow through the DOM.
+
+
+---
+
+# Compilers and Static Analyses
+
+^ Usually (static) code analyses are built on top of the the results of the first phases of compilers.
+
+![inline](CompilerPhases.pdf)
+
+---
+
+# Compilers and Static Analyses
+
+Source Code:  
+`i = j + 1;`
+
+Tokens:  
+`Ident(i) WS Assign WS Ident(j) WS Operator(+) WS Const(1) Semicolon`
+
+AST with annotations: 
+
+```scala
+AssignmentStatement(
+	target     = Var(name=i,type=Int),
+	expression = AddExpression(
+					 type  = Int,
+					 left  = Var(name=j,type=Int),
+					 right = Const(1)))
+```
+
+^ In the (later) intermediate representations, nested Control-flow and complex expressions are unraveled. Intermediate values are given explicit names. The instruction set is usually limited. All of that facilitates static analysis (but renders syntax oriented code analyses impossible).
 
 
 ^ <!----------------------------------------------------------------------------------------------->
@@ -483,3 +544,5 @@ The sad reality:
 ^ [^HiddenTruth]: Eichberg, M., Hermann, B., Mezini, M., & Glanz, L.; Hidden truths in dead software paths; ACM, 2015,  [doi](http://doi.org/10.1145/2786805.2786865)
 
 ^ [^CogniCrypt]: Krüger, S., Nadi, S., Reif, M., Ali, K., Mezini, M., Bodden, E., et al.; CogniCrypt: supporting developers in using cryptography; IEEE Press., 2017
+
+^ [^Soundiness]: Livshits, B., Sridharan, M., Smaragdakis, Y., Amaral, J. N., Møller, A., Lhoták, O., et al.; In Defense of Soundiness: A Manifesto; Communications of the ACM, 2015 , 58(2). 
