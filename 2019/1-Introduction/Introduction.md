@@ -208,8 +208,8 @@ setPoint(y_dim, x_dim);
 
 # Finding Bugs Using Machine Learning (Assessment)
 
- - Finds bugs that are practically impossible to find using other approaches; hence, often complementary to classic static analyses and also bug patterns based analyses.
- - Requires the analysis of a huge code base; its may be hard to find enough code examples for less frequently used APIs.
+ - Finds bugs that are practically impossible to find using other approaches; hence, often complementary to classic static analyses and also bug pattern based analyses.
+ - Requires the analysis of a huge code base; it's may be hard to find enough code examples for less frequently used APIs.
  
 ^ Today, a lot of code can be found on open source code repositories such as BitBucket, GitHub and SourceForge; even for niche languages. This generally facilitates all kinds of _big code_ based analyses.
 
