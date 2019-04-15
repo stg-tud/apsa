@@ -187,7 +187,7 @@ p.allMethodsWithBody.foreach{m =>
 
 ![inline](DeepBugs.pdf)
 
-^ An interesting approach which is able to find bugs which could not be find with others approaches is described by Michael Pradel et al.[^DeepBugs]. The idea is to find contradicting code snippets.
+^ An interesting approach which is able to find bugs which could not be found with others approaches is described by Michael Pradel et al.[^DeepBugs]. The idea is to find contradicting code snippets.
 
 ---
 
