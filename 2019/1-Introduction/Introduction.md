@@ -81,7 +81,7 @@ A static analysis of a program is a _**sound**_, _finite_, and _**approximate**_
 
 ^ Sound static analyses are generally _overapproximations_ which describe a superset of the program's possible/observable executions. However, the analyses should still be precise enough to be practically useable. For example, an analysis that would list all methods as being possible targets for a method invocation would be impractical.
 
-^ Sometimes, analyses compute only _underapproximations_; i.e., the analysis does not describe all observable executions. This is, e.g., done to improve an analysis' scalability and/or to improve an analyses precision. For practical analyses it may be more important to produce fewer so called _false positives_ then to report more _potential issues_. 
+^ Sometimes, analyses are deliberately not sound and compute only _underapproximations_; i.e., the analysis does not describe all observable executions. This is, e.g., done to improve an analysis' scalability and/or to improve an analyses precision. For practical analyses it may be more important to produce fewer so called _false positives_ then to report more _potential issues_.
 
 ^ A static analysis is finite in the sense that it will terminate for any given program. The analysis will not execute the program.
 
@@ -208,8 +208,8 @@ setPoint(y_dim, x_dim);
 
 # Finding Bugs Using Machine Learning (Assessment)
 
- - Finds bugs that are practically impossible to find using other approaches; hence, often complementary to classic static analyses and also bug patterns based analyses.
- - Requires the analysis of a huge code base; its may be hard to find enough code examples for less frequently used APIs.
+ - Finds bugs that are practically impossible to find using other approaches; hence, often complementary to classic static analyses and also bug pattern based analyses.
+ - Requires the analysis of a huge code base; it may be hard to find enough code examples for less frequently used APIs.
  
 ^ Today, a lot of code can be found on open source code repositories such as BitBucket, GitHub and SourceForge; even for niche languages. This generally facilitates all kinds of _big code_ based analyses.
 
