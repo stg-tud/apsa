@@ -1,10 +1,9 @@
 # Applied Static Analysis
 
-Technische Universität Darmstadt
-Department of Computer Science
-Software Technology Group
-
-Dr. Michael Eichberg
+Software Technology Group  
+Department of Computer Science  
+Technische Universität Darmstadt  
+[Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
 
 # Simple Static Analyses
 
