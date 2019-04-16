@@ -89,7 +89,7 @@ Technische Universität Darmstadt
  - (Primitive/Base) Type conversion instructions (e.g., i2d,l2d,l2i)
  - Object/Array creation and manipulation (e.g., new, newarray, checkcast)
  - (Generic) Operand stack management instructions (e.g., dup, dup2, dup2_x2)
- - Control transfer instructions (e.g., itlt, if_icmplt, goto)
+ - Control transfer instructions (e.g., iflt, if_icmplt, goto)
  - Method invocation instructions (e.g., invokespecial, invokestatic, invokevirtual)
  - Return instructions (e.g., return, areturn)
  - Throwing exceptions (athrow)
@@ -98,7 +98,7 @@ Technische Universität Darmstadt
 ^ The control-transfer instructions `jsr` and `ret` are outdated and only found in very old Java code (Java 5 and earlier.)
 ^ Except of the load and store instructions, the only other instruction that manipulates a local variable is iinc.
 ^ The semantics of the generic stack management instructions depends on the computational type categories of the values on the stack.
-^ To enable long jumps some of the control transfer instructions can be modified using the _*wide*_ operator.
+^ To enable long jumps some of the control transfer-instructions can be modified using the _*wide*_ operator.
 
 ---
 
@@ -199,7 +199,7 @@ l.sort(
 
 ^ Lambda expression in Java source code are compiled to individual methods in the scope of the defining class, these special methods are invoked using `invokedynamic` instructions.
 
-^ Handling of lambda expressions in static analysis frameworks basically requires that the JVM's resolution mechanism, which includes the language's specific CallSite factory, is reimplemented in the static analysis frameworks. It is in particular necessary to generate _fake objects_ to encapsulate the call and to make it possible to pass the reference to the lambda method around.
+^ Handling of lambda expressions in a static analysis frameworks basically requires that the JVM's resolution mechanism, which includes the language's specific CallSite factory, is reimplemented in the static analysis frameworks. It is in particular necessary to generate _fake objects_ to encapsulate the call and to make it possible to pass the reference to the lambda method around.
 
 ---
 
