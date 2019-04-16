@@ -6,7 +6,14 @@ Software Technology Group
 
 Dr. Michael Eichberg
 
-## Exercise: Arrays.equals
+# Simple Data-flow Analysis
+
+You should use `MyOPALProject` as a template. That project is preconfigured to use the latest snapshot version of OPAL. You can clone the project using:  
+`git clone --depth 1 git@bitbucket.org:OPAL-Project/myopalproject.git Project`
+
+For further details regarding the development of static analysis using OPAL see the OPAL tutorial.
+
+## Use Arrays.equals
 
 Develop an analysis which finds violations of the following rule taken from The CERT Oracle Secure Coding Standard for Java:
 
@@ -28,9 +35,7 @@ Arrays.equals(a1,a2); // <= TRUE (compares the content)
 
 Recall that arrays are objects and that it is therefore possible to call those methods (e.g., wait, notify and equals) on arrays which are defined by `java.lang.Object`. Furthermore, the declared receiver of the call will be the class type `java.lang.Object`.
 
-You can prototype this analysis using the console or develop a small stand-alone analysis. 
+***Tasks***
 
-> **If you use the console, don't use the methods which execute the analysis in parallel (e.g., Project.parForeachMethodWithBody). The console is broken when multiple threads are used and will run into a deadlock!)**
-
-Test your analysis using the class `ArraysEquals`.
+ 1. Test your analysis using the class `ArraysEquals`.
 
