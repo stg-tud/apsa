@@ -6,7 +6,7 @@ slidenumbers: true
 Software Technology Group  
 Department of Computer Science  
 Technische Universität Darmstadt  
-__*Dr. Michael Eichberg*__
+[Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
 
 Summer Term 2019
 
