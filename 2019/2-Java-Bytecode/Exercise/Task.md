@@ -33,3 +33,6 @@ Test your analysis by running it against the JDK. What do you think about the re
 You can prototype this analysis using the console or develop a small stand-alone analysis.
 
 > If you use the console, don’t use the methods which execute the analysis in parallel (e.g., Project.parForeachMethodWithBody). The console is broken when multiple threads are used and will run into a deadlock!)
+
+If you want to develop it as a real application, you should use `MyOPALProject` as a template.  That project is preconfigured to use the latest snapshot version of OPAL. You can clone the project using:  
+`git clone --depth 1 git@bitbucket.org:OPAL-Project/myopalproject.git Project`
