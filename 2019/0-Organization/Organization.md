@@ -21,7 +21,7 @@ Every week at 11:40am in S101|A03.
 
 The lecture slides can be found at: [https://github.com/stg-tud/apsa](https://github.com/stg-tud/apsa/tree/master/2019).
 
-^ The lecture slides are basically markdown files that are presented using [Deskset](https://www.deskset.com). The final PDF is rendered using [Marked 2](https://marked2app.com) after preprocessing them using the following [sed](https://en.wikipedia.org/wiki/Sed) program:
+^ The lecture slides are basically markdown files that are presented using [Deckset](https://www.deckset.com). The final PDF is rendered using [Marked 2](https://marked2app.com) after preprocessing them using the following [sed](https://en.wikipedia.org/wiki/Sed) program:
 ```bash
 /usr/bin/sed -E -e 's/^\[\..+\:.+\]//' -e 's/^\^[[:space:]]//' -e 's/#[[:space:]]\[fit\]/#/'
 ```
