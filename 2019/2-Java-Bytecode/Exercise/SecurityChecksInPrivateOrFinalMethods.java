@@ -2,11 +2,11 @@ import java.io.File;
 
 class SecurityChecksInPrivateOrFinalMethods {
 
-	public void nonCompliantPublicProcessSensitiveFile(){
+	public void nonCompliantPublicProcessSensitiveFile() {
 		String f = "FileName";
 		try {
 			SecurityManager sm = System.getSecurityManager();
-			if(sm != null) {
+			if (sm != null) {
 				sm.checkRead(f);
 			}
 			// process file
@@ -15,11 +15,11 @@ class SecurityChecksInPrivateOrFinalMethods {
 		}
 	}
 
-	public final void finalProcessSensitiveFile(){
+	public final void finalProcessSensitiveFile() {
 		String f = "FileName";
 		try {
 			SecurityManager sm = System.getSecurityManager();
-			if(sm != null) {
+			if (sm != null) {
 				sm.checkRead(f);
 			}
 			// process file
@@ -28,11 +28,11 @@ class SecurityChecksInPrivateOrFinalMethods {
 		}
 	}
 
-	private void privateProcessSensitiveFile(){
+	private void privateProcessSensitiveFile() {
 		String f = "FileName";
 		try {
 			SecurityManager sm = System.getSecurityManager();
-			if(sm != null) {
+			if (sm != null) {
 				sm.checkRead(f);
 			}
 			// process file
@@ -41,5 +41,8 @@ class SecurityChecksInPrivateOrFinalMethods {
 		}
 	}
 
-	public String toString() { privateProcessSensitiveFile(); return ""; }
+	public String toString() {
+		privateProcessSensitiveFile();
+		return "";
+	}
 }
