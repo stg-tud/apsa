@@ -5,9 +5,9 @@ slidenumbers: true
 
 ## Three Address Code
 
-
-Software Technology Group 
-Technische Universität Darmstadt
+Software Technology Group  
+Department of Computer Science  
+Technische Universität Darmstadt  
 [Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
 
 

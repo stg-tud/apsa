@@ -5,9 +5,9 @@ slidenumbers: true
 
 ## Java Bytecode
 
-
-Software Technology Group 
-Technische Universität Darmstadt
+SoSoftware Technology Group  
+Department of Computer Science  
+Technische Universität Darmstadt  
 [Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
 
 
