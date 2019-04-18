@@ -1,0 +1,3059 @@
+<html>
+            <head>
+                <title>Java Bytecode of ImmutableStore</title>
+                <style type="text/css">
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section { 
+    display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+table {
+	font-weight: inherit;
+	font-size: inherit;
+	font-variant: inherit;
+	font-style: inherit;
+}
+
+/* change colours to suit your needs */
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}</style>
+                <style type="text/css">/* BSD 2-Clause License - see OPAL/LICENSE for details. */
+html { font-family: "Helvetica Neue Light", Helvetica, "Arial"; }
+
+body{
+	font-weight: 300;
+	font-size: 14px;
+	color: #1d3c41;
+	overflow-y: scroll;
+}
+
+div{
+	margin-bottom:0em;
+	margin-top:0em;
+}
+
+ul {
+    padding-left: 2em;
+    margin-bottom: 0.25em;
+}
+
+fieldset{
+	padding:0.15em;
+	margin-bottom:0.25em;
+}
+
+.filter_settings{
+	padding: 1em;
+	background-color:#FFE7E7;
+}
+
+
+.members {
+	min-width: 900px;
+	width:100%;
+}
+
+.instruction,.lv_index{
+	font-weight:400;
+	font-style:italic;
+	color:#6666AA;
+	float:left;
+}
+.instruction{
+	width:8em;
+}
+.lv_index{
+	width: 4em;
+}
+
+.local_variable_name{
+	font-weight:400;
+}
+
+.field_name{
+	font-style:italic;
+	color:#66AA66;
+}
+
+table.fields tr {
+	padding:0.1em;
+}
+
+table.fields td {
+	padding-top: 0.25em;
+	padding-right: 0.5em
+}
+
+table.stack_map_table th,td {
+    padding-right: 8px;
+}
+
+div.methods,div.fields,div.attributes,div.constant_pool {
+	border-top: 1px solid #cccccc;
+}
+
+div.field {
+    padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+span.throws {
+    color : red;
+}
+
+div#source {
+    margin: 0 0;
+    background: rgb(20,20,20);
+    color: #DDD;
+    padding: 0.4em 1em 0.4em 1em;
+    font-size : smaller;
+    text-align: center ;
+}
+
+td.exception {
+	position: relative;
+}
+
+td.exception div {
+	height: 100%;
+	margin: 0 2px;
+	width: 23px;
+	position: absolute;
+	border-radius: 2px;
+}
+
+td.exception div.exception {
+	background: rgb(255, 168, 152);
+}
+
+td.exception_empty, th.exception_empty, td.exception {
+	background-color: rgb(245, 245, 172)
+}
+
+th.exception_header {
+	width: 2em;
+	max-width: 2em;
+}
+
+td.exception div.exception_handler{
+	background: #77FD77;
+	z-index: 1;
+	height: 15px;
+}
+td.exception div.handler_overlap:before {
+	position: absolute;
+	height: 15px;
+	width: 15px;
+	z-index: 2;
+	background: #77FD77;
+	content: " ";
+	border-radius: 2px;
+}
+
+td.exception span{
+	-webkit-transform: rotate(90deg) translate(0px, -17px);
+	-webkit-transform-origin: 0% 0%;
+	position: absolute;
+	text-align: center;
+	height: 25px;
+	margin-left: 5px;
+	margin-top: 5px;
+	white-space: nowrap;
+	pointer-events: none;
+	z-index: 3;
+}
+
+.simple_attribute{
+	padding-left: 1em;
+	padding-right: 1em;
+	padding-top: 1em;
+	padding-bottom: 0em;
+}
+
+
+div#class_file_header {
+	background-color:#fcfcec;
+	padding: 0.5em 1em 0.5em 1em;
+	line-height: 1.5em;
+}
+
+.selfref {
+	color:#888888;
+}
+
+.runtime_visible {
+	color:#ccFFcc;
+}
+
+.runtime_visible {
+	color:#ccDDDD;
+}
+
+.element_value_pair + .element_value_pair::before {
+	content:", ";
+	color:#AA22FF;
+}
+
+.nested_details {
+	background-color: #f4e8e8;
+}
+
+details {
+	padding: 5px 5px 5px 5px;
+}
+
+summary {
+	background-color: #eeeeee;
+	padding: 5px 5px 5px 5px;
+}
+
+div.method, details.method {
+    background-color: #F6F6F6;
+    border-top-color: BBB;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+div.method {
+ 	padding: 10px 10px 10px 10px;
+}
+
+
+.method_body {
+	background-color:#F7F7F7;
+	margin:0 0 0 0;
+	padding:0 0 0 0;
+}
+
+span.signature {
+    line-height: 2em;
+    vertical-align: baseline;
+    font-family: monospace;
+    font-size: smaller;
+}
+
+.method_signature {
+	margin-top: 2em;
+	font-weight: 600;
+}
+
+table.method_bytecode{
+	margin: 1em 1em 1em 1em;
+}
+
+.annotation{
+	color: #228B22;
+	font-weight:lighter;
+	font-style:italic;
+}
+.access_flags {
+	color: rgba(0, 0, 100, 0.6);
+}
+
+.index, .pc{
+	color: #FFA500;
+}
+
+.line{
+	color: #A5CC00;
+}
+
+th {
+	text-align: left;
+}
+
+th.pc, td.pc, th.line, td.line {
+	width: 3.5em;
+}
+
+.reservedwords,.verification{
+	color: #0000ff;
+}
+
+.constant_value{
+	color: #FF00A5;
+}
+
+.attribute_name{
+	color: #d73b04;
+}
+
+.tooltip:hover > span{
+	display:inline;
+	position:absolute;
+	color:#111;
+	border:1px solid #DCA;
+	background:#fffAF0;}
+.callout {z-index:20;position:absolute;top:30px;border:0;left:-12px;}
+   /*CSS3 extras*/
+.tooltip > span {
+	color:gray;
+	z-index:10;
+	display:none;
+	padding:0.5em 0.5em;
+	margin-top:-0.5em;
+	margin-left:0.5em;
+	line-height:1.5em;
+	border-radius:4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-box-shadow: 5px 5px 8px #CCC;
+	-webkit-box-shadow: 5px 5px 8px #CCC;
+	box-shadow: 5px 5px 8px #CCC;
+}
+
+ol.cp_entries, ol.exception_table {
+	padding-left: 2.5em;
+	padding-top:1em;
+	padding-bottom: 1em;
+	padding-right: 0em;
+}
+
+ol.cp_entries > li {
+	padding-top:0.5em;
+	white-space: nowrap;
+}
+
+ol.exception_table {
+	line-height: 1.5em;
+}
+
+div.cp_ref, div.attributes_ref {
+	margin-left:1em;
+}
+
+div.cp_ref > div.cp_entry{
+	border-left:1px solid #666666;
+	padding-left:0.5em;
+}
+
+.close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+.constant_pool_link{
+	padding:10px 10px;
+	margin-top:10px;
+	padding-top:20px;
+	/**give the bubble's background a gradient**/
+	background:gray; /*fallback colour for non-supporting browsers*/
+	background:-webkit-gradient(linear, 0 0, 0 100%, from(#fac868), to(#f3961c));
+	background:-moz-linear-gradient(#fac868, #f3961c);
+	background:-o-linear-gradient(#fac868, #f3961c);
+	background:linear-gradient(#fac868, #f3961c);
+	/**give the corners a large curve**/
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
+	/**add a drop shadow to the bubble**/
+	-webkit-box-shadow: -3px 4px 8px #989898;
+	-moz-box-shadow: -3px 4px 8px #989898;
+	box-shadow: -3px 4px 8px #989898;
+	/**style the text**/
+	color:black;
+	letter-spacing:.06em;
+}
+.close:hover { background: #00d9ff; }
+</style>
+                <script>/* BSD 2-Clause License:
+ * Copyright (c) 2009 - 2014
+ * Software Technology Group
+ * Department of Computer Science
+ * Technische Universität Darmstadt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  - Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+"use strict";
+
+NodeList.prototype.forEach = Array.prototype.forEach;
+
+function toogleFilter() {
+ var flagsFilter = document.querySelectorAll('input:checked[type="checkbox"],input:checked[type="radio"]');
+ var nameFilter = document.querySelector('input[type="text"]').value
+ if(flagsFilter.length == 0 && nameFilter.length == 0) {
+	 // clear filter property
+	 document.querySelectorAll('.method').forEach(function(e){e.style.display = 'block'})
+ } else {
+	 // 1. hide all
+	 document.querySelectorAll(".method").forEach(function(e){e.style.display = 'none'})
+
+	 var filterString = ".method"
+	 flagsFilter.forEach(function(e){filterString += "[data-access-flags*='"+e.value+"']"});
+	 if(nameFilter.length > 0)
+		 filterString += "[data-name*='"+document.querySelector('input[type="text"]').value+"']";
+
+	 // 2. show filtered
+	 console.log(filterString);
+	 document.querySelectorAll(filterString).forEach(function(e){e.style.display = 'block'})
+ }
+ toggleUnusedFlags();
+}
+
+function clearFilter(){
+	// clear flags filter
+	var flagsFilter = document.querySelectorAll('input:checked[type="checkbox"],input:checked[type="radio"]');
+	flagsFilter.forEach(function(f){f.checked = false});
+
+	// clear name filter
+	document.querySelectorAll('input[type="text"]').forEach(function(e){e.value = ""})
+
+	// update "view"
+	toogleFilter();
+}
+
+function toggleUnusedFlags() {
+	// sets the input element on disabled and puts a corresponding color on its label
+	var disableInput = function(element, disable) {
+		element.disabled = disable;
+		var label = document.querySelector('label[for="'+ element.id +'"]');
+		if (disable)
+			label.style.color = "lightgray";
+		else
+			label.style.color = "black";
+	}
+    var possibleFlags = document.querySelectorAll('input:not(:checked)[type="checkbox"],input:not(:checked)[type="radio"]');
+	var selectedFlags = document.querySelectorAll('input:checked[type="checkbox"],input:checked[type="radio"]');
+
+	var filterString = ".method"
+	selectedFlags.forEach(function(e){filterString += "[data-access-flags*='"+e.value+"']"});
+
+    possibleFlags.forEach(function (e) {
+		if (e.type == "radio") {
+			// on radio types, we have to filter the currently set radio-button in the same set as they are mutually exclusive
+			filterString = ".method"
+			selectedFlags.forEach(function(f){
+				if (e.name != f.name)
+					filterString += "[data-access-flags*='"+f.value+"']";
+			});
+		}
+		var possibleElements = document.querySelectorAll(filterString + "[data-access-flags*='"+ e.value +"']").length;
+		if (possibleElements > 0)
+			disableInput(e, false);
+		else
+			disableInput(e, true);
+    });
+}
+
+/**
+ * Trims the package names of classes that are on the same package-path
+ * as the disassembled class. Each match is replaced by a dot.
+ *
+ * Examples with java.awt.event.ActionEvent as disassembled class:
+ * 		java.awt.event.InputEvent -> ...InputEvent
+ *	 	java.awt.font.GraphicAttribute -> ..font.GraphicAttribute
+ * 		org.opalj.SomeClass -> org.opalj.SomeClass
+*/
+function trimPackageNames() {
+	// get defining class name and split for packages
+	var definingClassNameFQN = document.querySelector("#defined_class").innerHTML;
+	var definingPackages = definingClassNameFQN.split(".");
+	// splice removes the class name from the package array and returns it:
+	var definingClassName = definingPackages.splice(definingPackages.length-1);
+
+	for(var i=1;i<definingPackages.length;i++) {
+		definingPackages[i] = definingPackages[i-1] + "." + definingPackages[i];
+	}
+	document.querySelectorAll(".object_type").forEach(function(e) {
+		for(var i=definingPackages.length-1;i>=0;i--) {
+			while (e.innerHTML.indexOf(definingPackages[i]+".") >= 0) {
+				e.innerHTML = e.innerHTML.replace(definingPackages[i], new Array(i + 1).join( "." ));
+				e.title = definingPackages[i] + ".";
+			}
+		}
+	});
+}
+
+
+/**
+ * Removes the exception name from the exceptions overview if the containing element
+ * (span) would overlap to the next section of the document.
+ */
+function removeLongExceptionNames() {
+
+	var exceptions = document.querySelectorAll('td.exception');
+	exceptions.forEach(function(e) {
+		var span = e.querySelector('span');
+		if (span != null) {
+			var tbody = span.parentNode.parentNode.parentNode;
+
+			// if the totalOffset+width of the span is greater than totalOffset+height of
+			// the table body it would overlap to the next section (exception table)
+			if (totalOffset(span).top+span.clientWidth > totalOffset(tbody).top+tbody.clientHeight) {
+				span.innerHTML = span.getAttribute("data-exception-index") + ': ...';
+			}
+			if (totalOffset(span).top+span.clientWidth > totalOffset(tbody).top+tbody.clientHeight) {
+				span.innerHTML = span.getAttribute("data-exception-index") + ':';
+			}
+		}
+	});
+}
+
+/**
+ * Computes the offset of an HTMLElement from the top/left corner of the document
+ * in contrast to HTMLElement.offsetLeft/offsetTop which computes the offset relative
+ * to their HTMLElement.offsetParent node.
+ */
+function totalOffset(elem) {
+	if(!elem) elem = this;
+
+	var x = elem.offsetLeft;
+	var y = elem.offsetTop;
+
+	while (elem = elem.offsetParent) {
+		x += elem.offsetLeft;
+		y += elem.offsetTop;
+	}
+
+	return { left: x, top: y };
+}
+
+
+/**
+ * Removes (too) long exception names. This is a callback function that is called when
+ * a details.method_body is set to open, i.e., the methods instructions can be seen.
+ */
+function executeOnMethodBodyOpen() {
+	removeLongExceptionNames();
+}
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    toggleUnusedFlags();
+	trimPackageNames();
+
+	// adds a listener to details.method_body that is called when its attributes change
+	var targets = document.querySelectorAll('details.method_body');
+	var observer = new MutationObserver(function(mutations) {
+		executeOnMethodBodyOpen();
+	});
+	var config = { attributes: true, childList: false, characterData: false};
+	targets.forEach(function(target) {
+		observer.observe(target, config);
+	});
+});
+</script>
+                
+            </head>
+            <body>
+                <div class="class_file">
+            <div id="source">file:/Users/Michael/Documents/Lehre/Vorlesungen%20SS16/APSA/Lecture/2019/2-Java-Bytecode/ImmutableStore.class</div>
+            <div id="class_file_header">
+                <span class="access_flags">class</span>
+                <span id="defined_class">ImmutableStore</span>
+                extends <span class="extends object_type">java.lang.Object</span> 
+                <br/><span class="signature">&lt;T:Ljava/lang/Object;&gt;Ljava/lang/Object;</span>
+                <br/>
+                Source file: <span class="source_file">ImmutableStore.java </span>&nbsp; &mdash; &nbsp;
+                <span id="class_file_version">Version:&nbsp;52.0 (Java 8)</span>
+                &nbsp; &mdash; &nbsp;
+                <span>Size:&nbsp;2359bytes</span>
+            </div>
+            <div class="constant_pool">
+                <details>
+                    <summary>Constant Pool</summary>
+                    <ol class="cp_entries"><li value="1"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=20
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            77
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=52
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=81
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="2"><div class="cp_entry">
+            CONSTANT_Fieldref_info
+            (<div class="cp_ref">
+                 class_index=11
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            62
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ImmutableStore</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=53
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=21
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">t</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=22
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Ljava/lang/Object;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="3"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            54
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/ObjectInputStream</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="4"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            55
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/FileInputStream</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="5"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=4
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            55
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/FileInputStream</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=56
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=30
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/io/File;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="6"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=3
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            54
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/ObjectInputStream</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=57
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=82
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/io/InputStream;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="7"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=3
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            54
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/ObjectInputStream</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=58
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=83
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">readObject</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=40
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/lang/Object;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="8"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=3
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            54
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/ObjectInputStream</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=59
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=84
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">close</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=81
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="9"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            60
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Throwable</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="10"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=9
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            60
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Throwable</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=61
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=85
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">addSuppressed</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=86
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Throwable;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="11"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            62
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ImmutableStore</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="12"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=20
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            77
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=63
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=42
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">equals</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=43
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;)Z</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="13"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            64
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/util/ArrayList</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="14"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=13
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            64
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/util/ArrayList</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=65
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=87
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(I)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="15"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=20
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            77
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=66
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=88
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">toString</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=89
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/lang/String;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="16"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=13
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            64
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/util/ArrayList</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=67
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=90
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">add</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=43
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;)Z</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="17"><div class="cp_entry">
+            CONSTANT_InvokeDynamic_info
+            (<div class="attributes_ref">
+                 bootstrap_method_attr_index=0
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=73
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=94
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">compare</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=95
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/util/Comparator;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="18"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=13
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            64
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/util/ArrayList</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=74
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=96
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">sort</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=97
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/util/Comparator;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="19"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=75
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            98
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/String</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=76
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=99
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">length</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=100
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()I</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="20"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            77
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="21"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">t</span>&quot;)</span></li><li value="22"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Ljava/lang/Object;</span>&quot;)</span></li><li value="23"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Signature</span>&quot;)</span></li><li value="24"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">TT;</span>&quot;)</span></li><li value="25"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span></li><li value="26"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;)V</span>&quot;)</span></li><li value="27"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Code</span>&quot;)</span></li><li value="28"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">LineNumberTable</span>&quot;)</span></li><li value="29"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(TT;)V</span>&quot;)</span></li><li value="30"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/io/File;)V</span>&quot;)</span></li><li value="31"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">StackMapTable</span>&quot;)</span></li><li value="32"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            62
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ImmutableStore</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="33"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            78
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/File</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="34"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            54
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/ObjectInputStream</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="35"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            60
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Throwable</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="36"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Exceptions</span>&quot;)</span></li><li value="37"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            79
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/IOException</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="38"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            80
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/ClassNotFoundException</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="39"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">getT</span>&quot;)</span></li><li value="40"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/lang/Object;</span>&quot;)</span></li><li value="41"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()TT;</span>&quot;)</span></li><li value="42"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">equals</span>&quot;)</span></li><li value="43"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;)Z</span>&quot;)</span></li><li value="44"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">sortByStringLengthRepresentation</span>&quot;)</span></li><li value="45"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(LImmutableStore;)Ljava/util/List;</span>&quot;)</span></li><li value="46"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(LImmutableStore&lt;*&gt;;)Ljava/util/List&lt;Ljava/lang/String;&gt;;</span>&quot;)</span></li><li value="47"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">lambda$sortByStringLengthRepresentation$0</span>&quot;)</span></li><li value="48"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/String;Ljava/lang/String;)I</span>&quot;)</span></li><li value="49"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;T:Ljava/lang/Object;&gt;Ljava/lang/Object;</span>&quot;)</span></li><li value="50"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">SourceFile</span>&quot;)</span></li><li value="51"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ImmutableStore.java</span>&quot;)</span></li><li value="52"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=81
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="53"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=21
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">t</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=22
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Ljava/lang/Object;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="54"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/ObjectInputStream</span>&quot;)</span></li><li value="55"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/FileInputStream</span>&quot;)</span></li><li value="56"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=30
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/io/File;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="57"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=82
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/io/InputStream;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="58"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=83
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">readObject</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=40
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/lang/Object;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="59"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=84
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">close</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=81
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="60"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Throwable</span>&quot;)</span></li><li value="61"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=85
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">addSuppressed</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=86
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Throwable;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="62"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ImmutableStore</span>&quot;)</span></li><li value="63"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=42
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">equals</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=43
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;)Z</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="64"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/util/ArrayList</span>&quot;)</span></li><li value="65"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=25
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=87
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(I)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="66"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=88
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">toString</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=89
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/lang/String;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="67"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=90
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">add</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=43
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;)Z</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="68"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">BootstrapMethods</span>&quot;)</span></li><li value="69"><span class="cp_entry">
+            CONSTANT_MethodHandle_info
+            (reference_kind=6
+            /*
+            <span class="method_handle_reference_kind">REF_invokeStatic(class) invokestatic C.m:(A*)T</span>
+            */,
+            reference_index=91
+            /*
+            <span class="cp_ref"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=101
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            104
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/LambdaMetafactory</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=102
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=105
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">metafactory</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=109
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></span>
+            */)
+        </span></li><li value="70"><span class="cp_entry">
+            Constant_Type_Value(92
+            /*
+            <span class="cp_ref"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;Ljava/lang/Object;)I</span>&quot;)</span></span>
+            */)
+        </span></li><li value="71"><span class="cp_entry">
+            CONSTANT_MethodHandle_info
+            (reference_kind=6
+            /*
+            <span class="method_handle_reference_kind">REF_invokeStatic(class) invokestatic C.m:(A*)T</span>
+            */,
+            reference_index=93
+            /*
+            <span class="cp_ref"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=11
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            62
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ImmutableStore</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=103
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=47
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">lambda$sortByStringLengthRepresentation$0</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=48
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/String;Ljava/lang/String;)I</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></span>
+            */)
+        </span></li><li value="72"><span class="cp_entry">
+            Constant_Type_Value(48
+            /*
+            <span class="cp_ref"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/String;Ljava/lang/String;)I</span>&quot;)</span></span>
+            */)
+        </span></li><li value="73"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=94
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">compare</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=95
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/util/Comparator;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="74"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=96
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">sort</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=97
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/util/Comparator;)V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="75"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            98
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/String</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="76"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=99
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">length</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=100
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()I</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="77"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span></li><li value="78"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/File</span>&quot;)</span></li><li value="79"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/io/IOException</span>&quot;)</span></li><li value="80"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/ClassNotFoundException</span>&quot;)</span></li><li value="81"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span></li><li value="82"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/io/InputStream;)V</span>&quot;)</span></li><li value="83"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">readObject</span>&quot;)</span></li><li value="84"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">close</span>&quot;)</span></li><li value="85"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">addSuppressed</span>&quot;)</span></li><li value="86"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Throwable;)V</span>&quot;)</span></li><li value="87"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(I)V</span>&quot;)</span></li><li value="88"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">toString</span>&quot;)</span></li><li value="89"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/lang/String;</span>&quot;)</span></li><li value="90"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">add</span>&quot;)</span></li><li value="91"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=101
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            104
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/LambdaMetafactory</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=102
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=105
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">metafactory</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=109
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="92"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;Ljava/lang/Object;)I</span>&quot;)</span></li><li value="93"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=11
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            62
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ImmutableStore</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=103
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=47
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">lambda$sortByStringLengthRepresentation$0</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=48
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/String;Ljava/lang/String;)I</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="94"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">compare</span>&quot;)</span></li><li value="95"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()Ljava/util/Comparator;</span>&quot;)</span></li><li value="96"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">sort</span>&quot;)</span></li><li value="97"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/util/Comparator;)V</span>&quot;)</span></li><li value="98"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/String</span>&quot;)</span></li><li value="99"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">length</span>&quot;)</span></li><li value="100"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()I</span>&quot;)</span></li><li value="101"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            104
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/LambdaMetafactory</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="102"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=105
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">metafactory</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=109
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="103"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=47
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">lambda$sortByStringLengthRepresentation$0</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=48
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/String;Ljava/lang/String;)I</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="104"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/LambdaMetafactory</span>&quot;)</span></li><li value="105"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">metafactory</span>&quot;)</span></li><li value="106"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            111
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/MethodHandles$Lookup</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="107"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Lookup</span>&quot;)</span></li><li value="108"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">InnerClasses</span>&quot;)</span></li><li value="109"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;</span>&quot;)</span></li><li value="110"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            112
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/MethodHandles</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="111"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/MethodHandles$Lookup</span>&quot;)</span></li><li value="112"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/invoke/MethodHandles</span>&quot;)</span></li></ol>
+                </details>
+            </div>
+            <div class="members">
+                <div class="attributes">
+                            <details>
+                                <summary>Attributes</summary>
+                                <div id="inner_classes">
+            <details>
+                <summary class="attribute_name">InnerClasses [size: 1 item(s)]</summary>
+                <div class="inner_class">
+                <span class="fqn">
+                    java.lang.invoke.MethodHandles
+                    {
+                    <span class="access_flags">public static final </span>
+                    <span class="sn tooltip">
+                                Lookup
+                                <span class="fqn">java.lang.invoke.MethodHandles$Lookup</span>
+                            </span>
+                    }
+                </span>
+            </div>
+            </details>
+        </div><details class="attribute">
+            <summary class="attribute_name">BootstrapMethods</summary>
+            <details class="bootstrap_method">
+            <summary><span class="method_handle">MethodHandle(kind=<span class="method_handle_reference_kind">REF_invokeStatic(class) invokestatic C.m:(A*)T</span>, <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.invoke.LambdaMetafactory</span>
+            <span>{ <span class="method_signature">
+            <span class="return object_type">java.lang.invoke.CallSite</span>
+            <span class="name">metafactory</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.invoke.MethodHandles$Lookup</span>, <span class="parameter object_type">java.lang.String</span>, <span class="parameter object_type">java.lang.invoke.MethodType</span>, <span class="parameter object_type">java.lang.invoke.MethodType</span>, <span class="parameter object_type">java.lang.invoke.MethodHandle</span>, <span class="parameter object_type">java.lang.invoke.MethodType</span>)</span>
+        </span> }</span>
+        </span>)</span></summary>
+            <div><span>MethodType(<span class="method_signature">
+            <span class="return primitive_type">int</span>
+            <span class="name"></span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Object</span>, <span class="parameter object_type">java.lang.Object</span>)</span>
+        </span>)</span></div><div><span class="method_handle">MethodHandle(kind=<span class="method_handle_reference_kind">REF_invokeStatic(class) invokestatic C.m:(A*)T</span>, <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class="method_signature">
+            <span class="return primitive_type">int</span>
+            <span class="name">lambda$sortByStringLengthRepresentation$0</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.String</span>, <span class="parameter object_type">java.lang.String</span>)</span>
+        </span> }</span>
+        </span>)</span></div><div><span>MethodType(<span class="method_signature">
+            <span class="return primitive_type">int</span>
+            <span class="name"></span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.String</span>, <span class="parameter object_type">java.lang.String</span>)</span>
+        </span>)</span></div>
+        </details>
+        </details>
+                            </details>
+                        </div><div class="fields">
+                            <details open="">
+                                <summary>Fields</summary><details class="field" data-name="t" data-access-flags="private">
+                <summary><span class="field_declaration">
+                <span class="access_flags">private</span> 
+                <span class="field_type object_type">java.lang.Object</span>
+                <span class="name">t</span>
+                
+            </span></summary>
+                <details><summary class="attribute_name">Signature</summary>TT;</details>
+            </details>
+                            </details>
+                        </div>
+                <div class="methods">
+                            <details open="">
+                                <summary>Methods</summary>
+                                <details class="filter_settings" open="true">
+            <summary>Filter</summary>
+            <fieldset>
+                <input type="radio" id="access_flag_private" name="visibility" value="private" onclick="toogleFilter();"></input><label for="access_flag_private">private</label>
+                <input type="radio" id="access_flag_default" name="visibility" value="default" onclick="toogleFilter();"></input><label for="access_flag_default">&lt;default&gt;</label>
+                <input type="radio" id="access_flag_protected" name="visibility" value="protected" onclick="toogleFilter();"></input><label for="access_flag_protected">protected</label>
+                <input type="radio" id="access_flag_public" name="visibility" value="public" onclick="toogleFilter();"></input><label for="access_flag_public">public</label>
+            </fieldset>
+            <fieldset>
+                <input type="radio" id="access_flag_final" name="final_or_abstract" value="final" onclick="toogleFilter();"></input><label for="access_flag_final">final</label>
+                <input type="radio" id="access_flag_abstract" name="final_or_abstract" value="abstract" onclick="toogleFilter();"></input><label for="access_flag_abstract">abstract</label>
+            </fieldset>
+            <div class="java_flags">
+                <input type="checkbox" id="access_flag_static" name="static" value="static" onclick="toogleFilter();"></input><label for="access_flag_static">static</label>
+                <input type="checkbox" id="access_flag_strict" value="strict" onclick="toogleFilter();"></input><label for="access_flag_strict">strict</label>
+                <input type="checkbox" id="access_flag_native" value="native" onclick="toogleFilter();"></input><label for="access_flag_native">native</label>
+                <input type="checkbox" id="access_flag_synchronized" value="synchronized" onclick="toogleFilter();"></input><label for="access_flag_synchronized">synchronized</label>
+            </div>
+            <div class="jvm_flags">
+                <input type="checkbox" id="jvm_modifier_bridge" value="bridge" onclick="toogleFilter();"></input><label for="jvm_modifier_bridge">bridge</label>
+                <input type="checkbox" id="jvm_modifier_varargs" value="varargs" onclick="toogleFilter();"></input><label for="jvm_modifier_varargs">varargs</label>
+            </div>
+            <div class="name_filter">
+                <label for="filter_by_method_name">Name:</label><input id="filter_by_method_name" type="text" title="filter by method name" onkeyup="toogleFilter();"></input>
+            </div>
+            <button value="clear" onclick="clearFilter();">clear</button>
+        </details>
+                                <details open="" class="method" id="&lt;init&gt;(Ljava/lang/Object;)V" data-index="0" data-name="&lt;init&gt;" data-access-flags="public">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public</span> <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Object</span>)</span>
+        </span>
+            </span>[size: 10 bytes, max Stack: 2, max Locals: 2]
+                    <br/><span class="signature">(TT;)V</span>
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m0_pc0">0</td>
+            <td class="line">13</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m0_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokespecial">invokespecial </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Object</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m0_pc4">4</td>
+            <td class="line">14</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m0_pc5">5</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_1">aload_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m0_pc6">6</td>
+            <td class="line">|</td>
+            <td> <span><span class="instruction putfield">putfield </span><span class="ref">
+            
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class=" object_type">java.lang.Object</span> <span class="name">t </span> }</span>
+        </span></span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m0_pc9">9</td>
+            <td class="line">15</td>
+            <td> <span class="instruction return">return</span></td>
+            
+        </tr>
+        </table>
+                    
+                    
+                </div>
+                
+            </details><details open="" class="method" id="&lt;init&gt;(Ljava/io/File;)V" data-index="1" data-name="&lt;init&gt;" data-access-flags="public">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public</span> <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">(<span class="parameter object_type">java.io.File</span>)</span>
+        </span><span class="throws">
+                throws
+                <span class=" object_type">java.io.IOException</span>, <span class=" object_type">java.lang.ClassNotFoundException</span>
+            </span>
+            </span>[size: 107 bytes, max Stack: 5, max Locals: 7]
+                    
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                <th class="exception_header">Exceptions</th><th class="exception_header"></th><th class="exception_header"></th><th class="exception_header"></th><th class="exception_header"></th>
+            </tr>
+            <tr>
+            <td class="pc" id="m1_pc0">0</td>
+            <td class="line">18</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokespecial">invokespecial </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Object</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc4">4</td>
+            <td class="line">19</td>
+            <td> <span>
+                        <span class="instruction new">new </span>
+                        <span class=" object_type">java.io.ObjectInputStream</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc7">7</td>
+            <td class="line">|</td>
+            <td> <span class="instruction dup">dup</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc8">8</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction new">new </span>
+                        <span class=" object_type">java.io.FileInputStream</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc11">11</td>
+            <td class="line">|</td>
+            <td> <span class="instruction dup">dup</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc12">12</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_1">aload_1</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc13">13</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokespecial">invokespecial </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.io.FileInputStream</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">(<span class="parameter object_type">java.io.File</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc16">16</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokespecial">invokespecial </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.io.ObjectInputStream</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">(<span class="parameter object_type">java.io.InputStream</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc19">19</td>
+            <td class="line">|</td>
+            <td> <span class="instruction astore_2">astore_2</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc20">20</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aconst_null">aconst_null</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc21">21</td>
+            <td class="line">|</td>
+            <td> <span class="instruction astore_3">astore_3</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc22">22</td>
+            <td class="line">20</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            <td class="exception_empty"></td><td rowspan="4" class="exception">
+                    <span data-exception-index="2" alt="the ranges in the code array at which the exception handler is active">2: java.lang.Throwable</span>
+                    <div class="exception" title="2: java.lang.Throwable"> </div>
+                </td><td rowspan="4" class="exception">
+                    <span data-exception-index="3" alt="the ranges in the code array at which the exception handler is active">3: Any</span>
+                    <div class="exception" title="3: Any"> </div>
+                </td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc23">23</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc24">24</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.io.ObjectInputStream</span>
+            <span>{ <span class="method_signature">
+            <span class="return object_type">java.lang.Object</span>
+            <span class="name">readObject</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc27">27</td>
+            <td class="line">|</td>
+            <td> <span><span class="instruction putfield">putfield </span><span class="ref">
+            
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class=" object_type">java.lang.Object</span> <span class="name">t </span> }</span>
+        </span></span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc30">30</td>
+            <td class="line">21</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc31">31</td>
+            <td class="line">|</td>
+            <td> <span>
+                <span class="instruction ifnull">ifnull</span>
+                <a href="#m1_pc106" class="pc">106</a>
+            </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc34">34</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_3">aload_3</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc35">35</td>
+            <td class="line">|</td>
+            <td> <span>
+                <span class="instruction ifnull">ifnull</span>
+                <a href="#m1_pc56" class="pc">56</a>
+            </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc38">38</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            <td rowspan="2" class="exception">
+                    <span data-exception-index="1" alt="the ranges in the code array at which the exception handler is active">1: java.lang.Throwable</span>
+                    <div class="exception" title="1: java.lang.Throwable"> </div>
+                </td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc39">39</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.io.ObjectInputStream</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">close</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc42">42</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction goto">goto </span>
+                        <a href="#m1_pc106" class="pc">106</a>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc45">45</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction astore">astore </span>
+                        <span class="lv_index">4</span>
+                    </span></td>
+            <td class="exception">
+                        <div title="1: java.lang.Throwable" class="exception_handler" alt="the start of the exception handler"></div>
+                    </td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc47">47</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_3">aload_3</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc48">48</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction aload">aload </span>
+                        <span class="lv_index">4</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc50">50</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Throwable</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">addSuppressed</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Throwable</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc53">53</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction goto">goto </span>
+                        <a href="#m1_pc106" class="pc">106</a>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc56">56</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc57">57</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.io.ObjectInputStream</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">close</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc60">60</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction goto">goto </span>
+                        <a href="#m1_pc106" class="pc">106</a>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc63">63</td>
+            <td class="line">19</td>
+            <td> <span>
+                        <span class="instruction astore">astore </span>
+                        <span class="lv_index">4</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception">
+                        <div title="2: java.lang.Throwable" class="exception_handler" alt="the start of the exception handler"></div>
+                    </td><td class="exception_empty"></td><td class="exception_empty"></td><td rowspan="6" class="exception">
+                    <span data-exception-index="5" alt="the ranges in the code array at which the exception handler is active">5: Any</span>
+                    <div class="exception" title="5: Any"> </div>
+                </td>
+        </tr><tr>
+            <td class="pc" id="m1_pc65">65</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction aload">aload </span>
+                        <span class="lv_index">4</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc67">67</td>
+            <td class="line">|</td>
+            <td> <span class="instruction astore_3">astore_3</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc68">68</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction aload">aload </span>
+                        <span class="lv_index">4</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc70">70</td>
+            <td class="line">|</td>
+            <td> <span class="instruction athrow">athrow</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc71">71</td>
+            <td class="line">21</td>
+            <td> <span>
+                        <span class="instruction astore">astore </span>
+                        <span class="lv_index">5</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception">
+                        <div title="3: Any" class="exception_handler" alt="the start of the exception handler"></div>
+                    </td><td class="exception_empty"></td><td class="exception">
+                        <div title="5: Any" class="exception_handler" alt="the start of the exception handler"></div>
+                    </td>
+        </tr><tr>
+            <td class="pc" id="m1_pc73">73</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc74">74</td>
+            <td class="line">|</td>
+            <td> <span>
+                <span class="instruction ifnull">ifnull</span>
+                <a href="#m1_pc103" class="pc">103</a>
+            </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc77">77</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_3">aload_3</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc78">78</td>
+            <td class="line">|</td>
+            <td> <span>
+                <span class="instruction ifnull">ifnull</span>
+                <a href="#m1_pc99" class="pc">99</a>
+            </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc81">81</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td rowspan="2" class="exception">
+                    <span data-exception-index="4" alt="the ranges in the code array at which the exception handler is active">4: java.lang.Throwable</span>
+                    <div class="exception" title="4: java.lang.Throwable"> </div>
+                </td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc82">82</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.io.ObjectInputStream</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">close</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc85">85</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction goto">goto </span>
+                        <a href="#m1_pc103" class="pc">103</a>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc88">88</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction astore">astore </span>
+                        <span class="lv_index">6</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception">
+                        <div title="4: java.lang.Throwable" class="exception_handler" alt="the start of the exception handler"></div>
+                    </td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc90">90</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_3">aload_3</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc91">91</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction aload">aload </span>
+                        <span class="lv_index">6</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc93">93</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Throwable</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">addSuppressed</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Throwable</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc96">96</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction goto">goto </span>
+                        <a href="#m1_pc103" class="pc">103</a>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc99">99</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc100">100</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.io.ObjectInputStream</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">close</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc103">103</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction aload">aload </span>
+                        <span class="lv_index">5</span>
+                    </span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc105">105</td>
+            <td class="line">|</td>
+            <td> <span class="instruction athrow">athrow</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr><tr>
+            <td class="pc" id="m1_pc106">106</td>
+            <td class="line">22</td>
+            <td> <span class="instruction return">return</span></td>
+            <td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td><td class="exception_empty"></td>
+        </tr>
+        </table>
+                    <details class="exception_table">
+                <summary>Exception Table:</summary>
+                <ol class="exception_table">
+                    <li>try [38-42) catch 45 <span class=" object_type">java.lang.Throwable</span></li><li>try [22-30) catch 63 <span class=" object_type">java.lang.Throwable</span></li><li>try [22-30) catch 71 &lt;ANY&gt;</li><li>try [81-85) catch 88 <span class=" object_type">java.lang.Throwable</span></li><li>try [63-73) catch 71 &lt;ANY&gt;</li>
+                </ol>
+            </details>
+                    <div>
+            <details class="attribute">
+                <summary class="attribute_name">StackMapTable [size: 8 item(s)]</summary>
+                <table class="stack_map_table">
+            <thead>
+                <tr><th>PC</th><th>Kind</th><th>Frame Type</th><th>Offset Delta</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>45</td>
+                <td>FullFrame</td>
+                <td>255</td>
+                <td>45</td>
+                <td>
+                    Stack:&nbsp;<span class="verification_type object_type">java.lang.Throwable</span><br/>
+                    Locals:&nbsp;<span class="verification_type object_type">ImmutableStore</span>, <span class="verification_type object_type">java.io.File</span>, <span class="verification_type object_type">java.io.ObjectInputStream</span>, <span class="verification_type object_type">java.lang.Throwable</span>
+                </td>
+            </tr><tr>
+                <td>56</td>
+                <td>SameFrame</td>
+                <td>10</td>
+                <td>10</td>
+                <td>Stack:&nbsp;&lt;Empty&gt;<br/>Locals:&nbsp;Unchanged</td>
+            </tr><tr>
+                <td>63</td>
+                <td>SameLocals1StackItemFrame</td>
+                <td>70</td>
+                <td>6</td>
+                <td>
+                    Stack:&nbsp;<i>&lt;Empty&gt;</i>
+                    ,&nbsp;<span class="verification_type object_type">java.lang.Throwable</span><br/>
+                    Locals:&nbsp;Unchanged
+                </td>
+            </tr><tr>
+                <td>71</td>
+                <td>SameLocals1StackItemFrame</td>
+                <td>71</td>
+                <td>7</td>
+                <td>
+                    Stack:&nbsp;<i>&lt;Empty&gt;</i>
+                    ,&nbsp;<span class="verification_type object_type">java.lang.Throwable</span><br/>
+                    Locals:&nbsp;Unchanged
+                </td>
+            </tr><tr>
+                <td>88</td>
+                <td>FullFrame</td>
+                <td>255</td>
+                <td>16</td>
+                <td>
+                    Stack:&nbsp;<span class="verification_type object_type">java.lang.Throwable</span><br/>
+                    Locals:&nbsp;<span class="verification_type object_type">ImmutableStore</span>, <span class="verification_type object_type">java.io.File</span>, <span class="verification_type object_type">java.io.ObjectInputStream</span>, <span class="verification_type object_type">java.lang.Throwable</span>, <span class="verification_type">&lt;TOP&gt;</span>, <span class="verification_type object_type">java.lang.Throwable</span>
+                </td>
+            </tr><tr>
+                <td>99</td>
+                <td>SameFrame</td>
+                <td>10</td>
+                <td>10</td>
+                <td>Stack:&nbsp;&lt;Empty&gt;<br/>Locals:&nbsp;Unchanged</td>
+            </tr><tr>
+                <td>103</td>
+                <td>SameFrame</td>
+                <td>3</td>
+                <td>3</td>
+                <td>Stack:&nbsp;&lt;Empty&gt;<br/>Locals:&nbsp;Unchanged</td>
+            </tr><tr>
+                <td>106</td>
+                <td>FullFrame</td>
+                <td>255</td>
+                <td>2</td>
+                <td>
+                    Stack:&nbsp;<i>&lt;Empty&gt;</i><br/>
+                    Locals:&nbsp;<span class="verification_type object_type">ImmutableStore</span>, <span class="verification_type object_type">java.io.File</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+            </details>
+        </div>
+                </div>
+                
+            </details><details open="" class="method" id="getT()Ljava/lang/Object;" data-index="2" data-name="getT" data-access-flags="public">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public</span> <span class="method_signature">
+            <span class="return object_type">java.lang.Object</span>
+            <span class="name">getT</span>
+            <span class="parameters">()</span>
+        </span>
+            </span>[size: 5 bytes, max Stack: 1, max Locals: 1]
+                    <br/><span class="signature">()TT;</span>
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m2_pc0">0</td>
+            <td class="line">25</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction getfield">getfield </span>
+                        <span class="ref">
+            
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class=" object_type">java.lang.Object</span> <span class="name">t </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc4">4</td>
+            <td class="line">|</td>
+            <td> <span class="instruction areturn">areturn</span></td>
+            
+        </tr>
+        </table>
+                    
+                    
+                </div>
+                
+            </details><details open="" class="method" id="equals(Ljava/lang/Object;)Z" data-index="3" data-name="equals" data-access-flags="public">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public</span> <span class="method_signature">
+            <span class="return primitive_type">boolean</span>
+            <span class="name">equals</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Object</span>)</span>
+        </span>
+            </span>[size: 24 bytes, max Stack: 2, max Locals: 2]
+                    
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m3_pc0">0</td>
+            <td class="line">30</td>
+            <td> <span class="instruction aload_1">aload_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction instanceof">instanceof </span>
+                        <span class=" object_type">ImmutableStore</span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc4">4</td>
+            <td class="line">|</td>
+            <td> <span>
+                <span class="instruction ifeq">ifeq</span>
+                <a href="#m3_pc22" class="pc">22</a>
+            </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc7">7</td>
+            <td class="line">31</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc8">8</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction getfield">getfield </span>
+                        <span class="ref">
+            
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class=" object_type">java.lang.Object</span> <span class="name">t </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc11">11</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_1">aload_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc12">12</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction checkcast">checkcast </span>
+                        <span class=" object_type">ImmutableStore</span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc15">15</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction getfield">getfield </span>
+                        <span class="ref">
+            
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class=" object_type">java.lang.Object</span> <span class="name">t </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc18">18</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Object</span>
+            <span>{ <span class="method_signature">
+            <span class="return primitive_type">boolean</span>
+            <span class="name">equals</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Object</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc21">21</td>
+            <td class="line">|</td>
+            <td> <span class="instruction ireturn">ireturn</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc22">22</td>
+            <td class="line">33</td>
+            <td> <span class="instruction iconst_0">iconst_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc23">23</td>
+            <td class="line">|</td>
+            <td> <span class="instruction ireturn">ireturn</span></td>
+            
+        </tr>
+        </table>
+                    
+                    <div>
+            <details class="attribute">
+                <summary class="attribute_name">StackMapTable [size: 1 item(s)]</summary>
+                <table class="stack_map_table">
+            <thead>
+                <tr><th>PC</th><th>Kind</th><th>Frame Type</th><th>Offset Delta</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>22</td>
+                <td>SameFrame</td>
+                <td>22</td>
+                <td>22</td>
+                <td>Stack:&nbsp;&lt;Empty&gt;<br/>Locals:&nbsp;Unchanged</td>
+            </tr>
+            </tbody>
+        </table>
+            </details>
+        </div>
+                </div>
+                
+            </details><details open="" class="method" id="sortByStringLengthRepresentation(LImmutableStore;)Ljava/util/List;" data-index="4" data-name="sortByStringLengthRepresentation" data-access-flags="public">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public</span> <span class="method_signature">
+            <span class="return object_type">java.util.List</span>
+            <span class="name">sortByStringLengthRepresentation</span>
+            <span class="parameters">(<span class="parameter object_type">ImmutableStore</span>)</span>
+        </span>
+            </span>[size: 44 bytes, max Stack: 3, max Locals: 3]
+                    <br/><span class="signature">(LImmutableStore&lt;*&gt;;)Ljava/util/List&lt;Ljava/lang/String;&gt;;</span>
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m4_pc0">0</td>
+            <td class="line">37</td>
+            <td> <span>
+                        <span class="instruction new">new </span>
+                        <span class=" object_type">java.util.ArrayList</span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc3">3</td>
+            <td class="line">|</td>
+            <td> <span class="instruction dup">dup</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc4">4</td>
+            <td class="line">|</td>
+            <td> <span class="instruction iconst_2">iconst_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc5">5</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokespecial">invokespecial </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.util.ArrayList</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">(<span class="parameter primitive_type">int</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc8">8</td>
+            <td class="line">|</td>
+            <td> <span class="instruction astore_2">astore_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc9">9</td>
+            <td class="line">38</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc10">10</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc11">11</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction getfield">getfield </span>
+                        <span class="ref">
+            
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class=" object_type">java.lang.Object</span> <span class="name">t </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc14">14</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Object</span>
+            <span>{ <span class="method_signature">
+            <span class="return object_type">java.lang.String</span>
+            <span class="name">toString</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc17">17</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.util.ArrayList</span>
+            <span>{ <span class="method_signature">
+            <span class="return primitive_type">boolean</span>
+            <span class="name">add</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Object</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc20">20</td>
+            <td class="line">|</td>
+            <td> <span class="instruction pop">pop</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc21">21</td>
+            <td class="line">39</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc22">22</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_1">aload_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc23">23</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction getfield">getfield </span>
+                        <span class="ref">
+            
+            <span class=" object_type">ImmutableStore</span>
+            <span>{ <span class=" object_type">java.lang.Object</span> <span class="name">t </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc26">26</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Object</span>
+            <span>{ <span class="method_signature">
+            <span class="return object_type">java.lang.String</span>
+            <span class="name">toString</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc29">29</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.util.ArrayList</span>
+            <span>{ <span class="method_signature">
+            <span class="return primitive_type">boolean</span>
+            <span class="name">add</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Object</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc32">32</td>
+            <td class="line">|</td>
+            <td> <span class="instruction pop">pop</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc33">33</td>
+            <td class="line">40</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc34">34</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokedynamic">invokedynamic </span>
+                        <span class="cp_entry"><span class="method_signature">
+            <span class="return object_type">java.util.Comparator</span>
+            <span class="name">compare</span>
+            <span class="parameters">()</span>
+        </span> //Bootstrap Method Attribute[0]</span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc39">39</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.util.ArrayList</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">sort</span>
+            <span class="parameters">(<span class="parameter object_type">java.util.Comparator</span>)</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc42">42</td>
+            <td class="line">43</td>
+            <td> <span class="instruction aload_2">aload_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m4_pc43">43</td>
+            <td class="line">|</td>
+            <td> <span class="instruction areturn">areturn</span></td>
+            
+        </tr>
+        </table>
+                    
+                    
+                </div>
+                
+            </details><details open="" class="method" id="lambda$sortByStringLengthRepresentation$0(Ljava/lang/String;Ljava/lang/String;)I" data-index="5" data-name="lambda$sortByStringLengthRepresentation$0" data-access-flags="private static /*SYNTHETIC*/">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">private static /*SYNTHETIC*/</span> <span class="method_signature">
+            <span class="return primitive_type">int</span>
+            <span class="name">lambda$sortByStringLengthRepresentation$0</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.String</span>, <span class="parameter object_type">java.lang.String</span>)</span>
+        </span>
+            </span>[size: 10 bytes, max Stack: 2, max Locals: 2]
+                    
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m5_pc0">0</td>
+            <td class="line">41</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m5_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.String</span>
+            <span>{ <span class="method_signature">
+            <span class="return primitive_type">int</span>
+            <span class="name">length</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m5_pc4">4</td>
+            <td class="line">|</td>
+            <td> <span class="instruction aload_1">aload_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m5_pc5">5</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokevirtual">invokevirtual </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.String</span>
+            <span>{ <span class="method_signature">
+            <span class="return primitive_type">int</span>
+            <span class="name">length</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m5_pc8">8</td>
+            <td class="line">|</td>
+            <td> <span class="instruction isub">isub</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m5_pc9">9</td>
+            <td class="line">|</td>
+            <td> <span class="instruction ireturn">ireturn</span></td>
+            
+        </tr>
+        </table>
+                    
+                    
+                </div>
+                
+            </details>
+                            </details>
+                        </div>
+            </div>
+        </div>
+            </body>
+        </html>

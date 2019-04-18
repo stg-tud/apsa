@@ -1,3 +1,4 @@
+theme: APSA Lecture
 autoscale: true
 slidenumbers: true
 

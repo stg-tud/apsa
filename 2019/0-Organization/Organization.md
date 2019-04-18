@@ -1,5 +1,6 @@
 autoscale: true
 slidenumbers: true
+theme: APSA Lecture
 
 # [fit] Applied Static Analysis  
 

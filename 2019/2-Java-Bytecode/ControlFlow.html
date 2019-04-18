@@ -1,0 +1,1124 @@
+<html>
+            <head>
+                <title>Java Bytecode of ControlFlow</title>
+                <style type="text/css">
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section { 
+    display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+table {
+	font-weight: inherit;
+	font-size: inherit;
+	font-variant: inherit;
+	font-style: inherit;
+}
+
+/* change colours to suit your needs */
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}</style>
+                <style type="text/css">/* BSD 2-Clause License - see OPAL/LICENSE for details. */
+html { font-family: "Helvetica Neue Light", Helvetica, "Arial"; }
+
+body{
+	font-weight: 300;
+	font-size: 14px;
+	color: #1d3c41;
+	overflow-y: scroll;
+}
+
+div{
+	margin-bottom:0em;
+	margin-top:0em;
+}
+
+ul {
+    padding-left: 2em;
+    margin-bottom: 0.25em;
+}
+
+fieldset{
+	padding:0.15em;
+	margin-bottom:0.25em;
+}
+
+.filter_settings{
+	padding: 1em;
+	background-color:#FFE7E7;
+}
+
+
+.members {
+	min-width: 900px;
+	width:100%;
+}
+
+.instruction,.lv_index{
+	font-weight:400;
+	font-style:italic;
+	color:#6666AA;
+	float:left;
+}
+.instruction{
+	width:8em;
+}
+.lv_index{
+	width: 4em;
+}
+
+.local_variable_name{
+	font-weight:400;
+}
+
+.field_name{
+	font-style:italic;
+	color:#66AA66;
+}
+
+table.fields tr {
+	padding:0.1em;
+}
+
+table.fields td {
+	padding-top: 0.25em;
+	padding-right: 0.5em
+}
+
+table.stack_map_table th,td {
+    padding-right: 8px;
+}
+
+div.methods,div.fields,div.attributes,div.constant_pool {
+	border-top: 1px solid #cccccc;
+}
+
+div.field {
+    padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+span.throws {
+    color : red;
+}
+
+div#source {
+    margin: 0 0;
+    background: rgb(20,20,20);
+    color: #DDD;
+    padding: 0.4em 1em 0.4em 1em;
+    font-size : smaller;
+    text-align: center ;
+}
+
+td.exception {
+	position: relative;
+}
+
+td.exception div {
+	height: 100%;
+	margin: 0 2px;
+	width: 23px;
+	position: absolute;
+	border-radius: 2px;
+}
+
+td.exception div.exception {
+	background: rgb(255, 168, 152);
+}
+
+td.exception_empty, th.exception_empty, td.exception {
+	background-color: rgb(245, 245, 172)
+}
+
+th.exception_header {
+	width: 2em;
+	max-width: 2em;
+}
+
+td.exception div.exception_handler{
+	background: #77FD77;
+	z-index: 1;
+	height: 15px;
+}
+td.exception div.handler_overlap:before {
+	position: absolute;
+	height: 15px;
+	width: 15px;
+	z-index: 2;
+	background: #77FD77;
+	content: " ";
+	border-radius: 2px;
+}
+
+td.exception span{
+	-webkit-transform: rotate(90deg) translate(0px, -17px);
+	-webkit-transform-origin: 0% 0%;
+	position: absolute;
+	text-align: center;
+	height: 25px;
+	margin-left: 5px;
+	margin-top: 5px;
+	white-space: nowrap;
+	pointer-events: none;
+	z-index: 3;
+}
+
+.simple_attribute{
+	padding-left: 1em;
+	padding-right: 1em;
+	padding-top: 1em;
+	padding-bottom: 0em;
+}
+
+
+div#class_file_header {
+	background-color:#fcfcec;
+	padding: 0.5em 1em 0.5em 1em;
+	line-height: 1.5em;
+}
+
+.selfref {
+	color:#888888;
+}
+
+.runtime_visible {
+	color:#ccFFcc;
+}
+
+.runtime_visible {
+	color:#ccDDDD;
+}
+
+.element_value_pair + .element_value_pair::before {
+	content:", ";
+	color:#AA22FF;
+}
+
+.nested_details {
+	background-color: #f4e8e8;
+}
+
+details {
+	padding: 5px 5px 5px 5px;
+}
+
+summary {
+	background-color: #eeeeee;
+	padding: 5px 5px 5px 5px;
+}
+
+div.method, details.method {
+    background-color: #F6F6F6;
+    border-top-color: BBB;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+div.method {
+ 	padding: 10px 10px 10px 10px;
+}
+
+
+.method_body {
+	background-color:#F7F7F7;
+	margin:0 0 0 0;
+	padding:0 0 0 0;
+}
+
+span.signature {
+    line-height: 2em;
+    vertical-align: baseline;
+    font-family: monospace;
+    font-size: smaller;
+}
+
+.method_signature {
+	margin-top: 2em;
+	font-weight: 600;
+}
+
+table.method_bytecode{
+	margin: 1em 1em 1em 1em;
+}
+
+.annotation{
+	color: #228B22;
+	font-weight:lighter;
+	font-style:italic;
+}
+.access_flags {
+	color: rgba(0, 0, 100, 0.6);
+}
+
+.index, .pc{
+	color: #FFA500;
+}
+
+.line{
+	color: #A5CC00;
+}
+
+th {
+	text-align: left;
+}
+
+th.pc, td.pc, th.line, td.line {
+	width: 3.5em;
+}
+
+.reservedwords,.verification{
+	color: #0000ff;
+}
+
+.constant_value{
+	color: #FF00A5;
+}
+
+.attribute_name{
+	color: #d73b04;
+}
+
+.tooltip:hover > span{
+	display:inline;
+	position:absolute;
+	color:#111;
+	border:1px solid #DCA;
+	background:#fffAF0;}
+.callout {z-index:20;position:absolute;top:30px;border:0;left:-12px;}
+   /*CSS3 extras*/
+.tooltip > span {
+	color:gray;
+	z-index:10;
+	display:none;
+	padding:0.5em 0.5em;
+	margin-top:-0.5em;
+	margin-left:0.5em;
+	line-height:1.5em;
+	border-radius:4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-box-shadow: 5px 5px 8px #CCC;
+	-webkit-box-shadow: 5px 5px 8px #CCC;
+	box-shadow: 5px 5px 8px #CCC;
+}
+
+ol.cp_entries, ol.exception_table {
+	padding-left: 2.5em;
+	padding-top:1em;
+	padding-bottom: 1em;
+	padding-right: 0em;
+}
+
+ol.cp_entries > li {
+	padding-top:0.5em;
+	white-space: nowrap;
+}
+
+ol.exception_table {
+	line-height: 1.5em;
+}
+
+div.cp_ref, div.attributes_ref {
+	margin-left:1em;
+}
+
+div.cp_ref > div.cp_entry{
+	border-left:1px solid #666666;
+	padding-left:0.5em;
+}
+
+.close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+.constant_pool_link{
+	padding:10px 10px;
+	margin-top:10px;
+	padding-top:20px;
+	/**give the bubble's background a gradient**/
+	background:gray; /*fallback colour for non-supporting browsers*/
+	background:-webkit-gradient(linear, 0 0, 0 100%, from(#fac868), to(#f3961c));
+	background:-moz-linear-gradient(#fac868, #f3961c);
+	background:-o-linear-gradient(#fac868, #f3961c);
+	background:linear-gradient(#fac868, #f3961c);
+	/**give the corners a large curve**/
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
+	/**add a drop shadow to the bubble**/
+	-webkit-box-shadow: -3px 4px 8px #989898;
+	-moz-box-shadow: -3px 4px 8px #989898;
+	box-shadow: -3px 4px 8px #989898;
+	/**style the text**/
+	color:black;
+	letter-spacing:.06em;
+}
+.close:hover { background: #00d9ff; }
+</style>
+                <script>/* BSD 2-Clause License:
+ * Copyright (c) 2009 - 2014
+ * Software Technology Group
+ * Department of Computer Science
+ * Technische Universität Darmstadt
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  - Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *  - Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+"use strict";
+
+NodeList.prototype.forEach = Array.prototype.forEach;
+
+function toogleFilter() {
+ var flagsFilter = document.querySelectorAll('input:checked[type="checkbox"],input:checked[type="radio"]');
+ var nameFilter = document.querySelector('input[type="text"]').value
+ if(flagsFilter.length == 0 && nameFilter.length == 0) {
+	 // clear filter property
+	 document.querySelectorAll('.method').forEach(function(e){e.style.display = 'block'})
+ } else {
+	 // 1. hide all
+	 document.querySelectorAll(".method").forEach(function(e){e.style.display = 'none'})
+
+	 var filterString = ".method"
+	 flagsFilter.forEach(function(e){filterString += "[data-access-flags*='"+e.value+"']"});
+	 if(nameFilter.length > 0)
+		 filterString += "[data-name*='"+document.querySelector('input[type="text"]').value+"']";
+
+	 // 2. show filtered
+	 console.log(filterString);
+	 document.querySelectorAll(filterString).forEach(function(e){e.style.display = 'block'})
+ }
+ toggleUnusedFlags();
+}
+
+function clearFilter(){
+	// clear flags filter
+	var flagsFilter = document.querySelectorAll('input:checked[type="checkbox"],input:checked[type="radio"]');
+	flagsFilter.forEach(function(f){f.checked = false});
+
+	// clear name filter
+	document.querySelectorAll('input[type="text"]').forEach(function(e){e.value = ""})
+
+	// update "view"
+	toogleFilter();
+}
+
+function toggleUnusedFlags() {
+	// sets the input element on disabled and puts a corresponding color on its label
+	var disableInput = function(element, disable) {
+		element.disabled = disable;
+		var label = document.querySelector('label[for="'+ element.id +'"]');
+		if (disable)
+			label.style.color = "lightgray";
+		else
+			label.style.color = "black";
+	}
+    var possibleFlags = document.querySelectorAll('input:not(:checked)[type="checkbox"],input:not(:checked)[type="radio"]');
+	var selectedFlags = document.querySelectorAll('input:checked[type="checkbox"],input:checked[type="radio"]');
+
+	var filterString = ".method"
+	selectedFlags.forEach(function(e){filterString += "[data-access-flags*='"+e.value+"']"});
+
+    possibleFlags.forEach(function (e) {
+		if (e.type == "radio") {
+			// on radio types, we have to filter the currently set radio-button in the same set as they are mutually exclusive
+			filterString = ".method"
+			selectedFlags.forEach(function(f){
+				if (e.name != f.name)
+					filterString += "[data-access-flags*='"+f.value+"']";
+			});
+		}
+		var possibleElements = document.querySelectorAll(filterString + "[data-access-flags*='"+ e.value +"']").length;
+		if (possibleElements > 0)
+			disableInput(e, false);
+		else
+			disableInput(e, true);
+    });
+}
+
+/**
+ * Trims the package names of classes that are on the same package-path
+ * as the disassembled class. Each match is replaced by a dot.
+ *
+ * Examples with java.awt.event.ActionEvent as disassembled class:
+ * 		java.awt.event.InputEvent -> ...InputEvent
+ *	 	java.awt.font.GraphicAttribute -> ..font.GraphicAttribute
+ * 		org.opalj.SomeClass -> org.opalj.SomeClass
+*/
+function trimPackageNames() {
+	// get defining class name and split for packages
+	var definingClassNameFQN = document.querySelector("#defined_class").innerHTML;
+	var definingPackages = definingClassNameFQN.split(".");
+	// splice removes the class name from the package array and returns it:
+	var definingClassName = definingPackages.splice(definingPackages.length-1);
+
+	for(var i=1;i<definingPackages.length;i++) {
+		definingPackages[i] = definingPackages[i-1] + "." + definingPackages[i];
+	}
+	document.querySelectorAll(".object_type").forEach(function(e) {
+		for(var i=definingPackages.length-1;i>=0;i--) {
+			while (e.innerHTML.indexOf(definingPackages[i]+".") >= 0) {
+				e.innerHTML = e.innerHTML.replace(definingPackages[i], new Array(i + 1).join( "." ));
+				e.title = definingPackages[i] + ".";
+			}
+		}
+	});
+}
+
+
+/**
+ * Removes the exception name from the exceptions overview if the containing element
+ * (span) would overlap to the next section of the document.
+ */
+function removeLongExceptionNames() {
+
+	var exceptions = document.querySelectorAll('td.exception');
+	exceptions.forEach(function(e) {
+		var span = e.querySelector('span');
+		if (span != null) {
+			var tbody = span.parentNode.parentNode.parentNode;
+
+			// if the totalOffset+width of the span is greater than totalOffset+height of
+			// the table body it would overlap to the next section (exception table)
+			if (totalOffset(span).top+span.clientWidth > totalOffset(tbody).top+tbody.clientHeight) {
+				span.innerHTML = span.getAttribute("data-exception-index") + ': ...';
+			}
+			if (totalOffset(span).top+span.clientWidth > totalOffset(tbody).top+tbody.clientHeight) {
+				span.innerHTML = span.getAttribute("data-exception-index") + ':';
+			}
+		}
+	});
+}
+
+/**
+ * Computes the offset of an HTMLElement from the top/left corner of the document
+ * in contrast to HTMLElement.offsetLeft/offsetTop which computes the offset relative
+ * to their HTMLElement.offsetParent node.
+ */
+function totalOffset(elem) {
+	if(!elem) elem = this;
+
+	var x = elem.offsetLeft;
+	var y = elem.offsetTop;
+
+	while (elem = elem.offsetParent) {
+		x += elem.offsetLeft;
+		y += elem.offsetTop;
+	}
+
+	return { left: x, top: y };
+}
+
+
+/**
+ * Removes (too) long exception names. This is a callback function that is called when
+ * a details.method_body is set to open, i.e., the methods instructions can be seen.
+ */
+function executeOnMethodBodyOpen() {
+	removeLongExceptionNames();
+}
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    toggleUnusedFlags();
+	trimPackageNames();
+
+	// adds a listener to details.method_body that is called when its attributes change
+	var targets = document.querySelectorAll('details.method_body');
+	var observer = new MutationObserver(function(mutations) {
+		executeOnMethodBodyOpen();
+	});
+	var config = { attributes: true, childList: false, characterData: false};
+	targets.forEach(function(target) {
+		observer.observe(target, config);
+	});
+});
+</script>
+                
+            </head>
+            <body>
+                <div class="class_file">
+            <div id="source">file:/Users/Michael/Documents/Lehre/Vorlesungen%20SS16/APSA/Lecture/2019/2-Java-Bytecode/ControlFlow.class</div>
+            <div id="class_file_header">
+                <span class="access_flags">class</span>
+                <span id="defined_class">ControlFlow</span>
+                extends <span class="extends object_type">java.lang.Object</span> 
+                
+                <br/>
+                Source file: <span class="source_file">ControlFlow.java </span>&nbsp; &mdash; &nbsp;
+                <span id="class_file_version">Version:&nbsp;52.0 (Java 8)</span>
+                &nbsp; &mdash; &nbsp;
+                <span>Size:&nbsp;478bytes</span>
+            </div>
+            <div class="constant_pool">
+                <details>
+                    <summary>Constant Pool</summary>
+                    <ol class="cp_entries"><li value="1"><div class="cp_entry">
+            CONSTANT_Methodref_info
+            (<div class="cp_ref">
+                 class_index=3
+                 &laquo;
+                 <span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            19
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span>
+                 &raquo;
+             </div>
+            <div class="cp_ref">
+                name_and_type_index=17
+                &laquo;
+                <div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=4
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=5
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="2"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            18
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ControlFlow</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="3"><span class="cp_entry">
+            CONSTANT_Class_info(name_index=
+            19
+            &laquo;
+            <span class="cp_ref">
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span>
+            </span>
+            &raquo;
+            )
+        </span></li><li value="4"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span></li><li value="5"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span></li><li value="6"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">Code</span>&quot;)</span></li><li value="7"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">LineNumberTable</span>&quot;)</span></li><li value="8"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">id</span>&quot;)</span></li><li value="9"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(Ljava/lang/Object;)Ljava/lang/Object;</span>&quot;)</span></li><li value="10"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">max</span>&quot;)</span></li><li value="11"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(JJ)J</span>&quot;)</span></li><li value="12"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">StackMapTable</span>&quot;)</span></li><li value="13"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">sumOfInts</span>&quot;)</span></li><li value="14"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">(I)J</span>&quot;)</span></li><li value="15"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">SourceFile</span>&quot;)</span></li><li value="16"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ControlFlow.java</span>&quot;)</span></li><li value="17"><div class="cp_entry">
+            CONSTANT_NameAndType_info
+            (
+            <div class="cp_ref">
+                name_index=4
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">&lt;init&gt;</span>&quot;)</span>
+                &raquo;
+            </div>
+            <div class="cp_ref">
+                descriptor_index=5
+                &laquo;
+                <span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">()V</span>&quot;)</span>
+                &raquo;
+            </div>
+            )
+        </div></li><li value="18"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">ControlFlow</span>&quot;)</span></li><li value="19"><span class="cp_entry">CONSTANT_Utf8_info(&quot;<span class="constant_value">java/lang/Object</span>&quot;)</span></li></ol>
+                </details>
+            </div>
+            <div class="members">
+                
+                <div class="methods">
+                            <details open="">
+                                <summary>Methods</summary>
+                                <details class="filter_settings" open="true">
+            <summary>Filter</summary>
+            <fieldset>
+                <input type="radio" id="access_flag_private" name="visibility" value="private" onclick="toogleFilter();"></input><label for="access_flag_private">private</label>
+                <input type="radio" id="access_flag_default" name="visibility" value="default" onclick="toogleFilter();"></input><label for="access_flag_default">&lt;default&gt;</label>
+                <input type="radio" id="access_flag_protected" name="visibility" value="protected" onclick="toogleFilter();"></input><label for="access_flag_protected">protected</label>
+                <input type="radio" id="access_flag_public" name="visibility" value="public" onclick="toogleFilter();"></input><label for="access_flag_public">public</label>
+            </fieldset>
+            <fieldset>
+                <input type="radio" id="access_flag_final" name="final_or_abstract" value="final" onclick="toogleFilter();"></input><label for="access_flag_final">final</label>
+                <input type="radio" id="access_flag_abstract" name="final_or_abstract" value="abstract" onclick="toogleFilter();"></input><label for="access_flag_abstract">abstract</label>
+            </fieldset>
+            <div class="java_flags">
+                <input type="checkbox" id="access_flag_static" name="static" value="static" onclick="toogleFilter();"></input><label for="access_flag_static">static</label>
+                <input type="checkbox" id="access_flag_strict" value="strict" onclick="toogleFilter();"></input><label for="access_flag_strict">strict</label>
+                <input type="checkbox" id="access_flag_native" value="native" onclick="toogleFilter();"></input><label for="access_flag_native">native</label>
+                <input type="checkbox" id="access_flag_synchronized" value="synchronized" onclick="toogleFilter();"></input><label for="access_flag_synchronized">synchronized</label>
+            </div>
+            <div class="jvm_flags">
+                <input type="checkbox" id="jvm_modifier_bridge" value="bridge" onclick="toogleFilter();"></input><label for="jvm_modifier_bridge">bridge</label>
+                <input type="checkbox" id="jvm_modifier_varargs" value="varargs" onclick="toogleFilter();"></input><label for="jvm_modifier_varargs">varargs</label>
+            </div>
+            <div class="name_filter">
+                <label for="filter_by_method_name">Name:</label><input id="filter_by_method_name" type="text" title="filter by method name" onkeyup="toogleFilter();"></input>
+            </div>
+            <button value="clear" onclick="clearFilter();">clear</button>
+        </details>
+                                <details open="" class="method" id="&lt;init&gt;()V" data-index="0" data-name="&lt;init&gt;" data-access-flags="default">
+                <summary>
+                    <span class="method_declaration">
+                <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">()</span>
+        </span>
+            </span>[size: 5 bytes, max Stack: 1, max Locals: 1]
+                    
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m0_pc0">0</td>
+            <td class="line">1</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m0_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction invokespecial">invokespecial </span>
+                        <span class="ref">
+            <span>class&nbsp;</span>
+            <span class=" object_type">java.lang.Object</span>
+            <span>{ <span class="method_signature">
+            <span class="return void_type">void</span>
+            <span class="name">&lt;init&gt;</span>
+            <span class="parameters">()</span>
+        </span> }</span>
+        </span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m0_pc4">4</td>
+            <td class="line">|</td>
+            <td> <span class="instruction return">return</span></td>
+            
+        </tr>
+        </table>
+                    
+                    
+                </div>
+                
+            </details><details open="" class="method" id="id(Ljava/lang/Object;)Ljava/lang/Object;" data-index="1" data-name="id" data-access-flags="public static">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public static</span> <span class="method_signature">
+            <span class="return object_type">java.lang.Object</span>
+            <span class="name">id</span>
+            <span class="parameters">(<span class="parameter object_type">java.lang.Object</span>)</span>
+        </span>
+            </span>[size: 2 bytes, max Stack: 1, max Locals: 1]
+                    
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m1_pc0">0</td>
+            <td class="line">4</td>
+            <td> <span class="instruction aload_0">aload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m1_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span class="instruction areturn">areturn</span></td>
+            
+        </tr>
+        </table>
+                    
+                    
+                </div>
+                
+            </details><details open="" class="method" id="max(JJ)J" data-index="2" data-name="max" data-access-flags="public static">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public static</span> <span class="method_signature">
+            <span class="return primitive_type">long</span>
+            <span class="name">max</span>
+            <span class="parameters">(<span class="parameter primitive_type">long</span>, <span class="parameter primitive_type">long</span>)</span>
+        </span>
+            </span>[size: 12 bytes, max Stack: 4, max Locals: 4]
+                    
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m2_pc0">0</td>
+            <td class="line">8</td>
+            <td> <span class="instruction lload_0">lload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lload_2">lload_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc2">2</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lcmp">lcmp</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc3">3</td>
+            <td class="line">|</td>
+            <td> <span>
+                <span class="instruction ifle">ifle</span>
+                <a href="#m2_pc10" class="pc">10</a>
+            </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc6">6</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lload_0">lload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc7">7</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction goto">goto </span>
+                        <a href="#m2_pc11" class="pc">11</a>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc10">10</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lload_2">lload_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m2_pc11">11</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lreturn">lreturn</span></td>
+            
+        </tr>
+        </table>
+                    
+                    <div>
+            <details class="attribute">
+                <summary class="attribute_name">StackMapTable [size: 2 item(s)]</summary>
+                <table class="stack_map_table">
+            <thead>
+                <tr><th>PC</th><th>Kind</th><th>Frame Type</th><th>Offset Delta</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>10</td>
+                <td>SameFrame</td>
+                <td>10</td>
+                <td>10</td>
+                <td>Stack:&nbsp;&lt;Empty&gt;<br/>Locals:&nbsp;Unchanged</td>
+            </tr><tr>
+                <td>11</td>
+                <td>SameLocals1StackItemFrame</td>
+                <td>64</td>
+                <td>0</td>
+                <td>
+                    Stack:&nbsp;<i>&lt;Empty&gt;</i>
+                    ,&nbsp;<span class="verification_type">long</span><br/>
+                    Locals:&nbsp;Unchanged
+                </td>
+            </tr>
+            </tbody>
+        </table>
+            </details>
+        </div>
+                </div>
+                
+            </details><details open="" class="method" id="sumOfInts(I)J" data-index="3" data-name="sumOfInts" data-access-flags="public static">
+                <summary>
+                    <span class="method_declaration">
+                <span class="access_flags">public static</span> <span class="method_signature">
+            <span class="return primitive_type">long</span>
+            <span class="name">sumOfInts</span>
+            <span class="parameters">(<span class="parameter primitive_type">int</span>)</span>
+        </span>
+            </span>[size: 22 bytes, max Stack: 4, max Locals: 4]
+                    
+                </summary>
+                <div>
+                    <table class="method_bytecode">
+            <tr>
+                <th class="pc">PC</th>
+                <th class="line">Line</th>
+                <th>Instruction</th>
+                
+            </tr>
+            <tr>
+            <td class="pc" id="m3_pc0">0</td>
+            <td class="line">12</td>
+            <td> <span class="instruction lconst_1">lconst_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc1">1</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lstore_1">lstore_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc2">2</td>
+            <td class="line">13</td>
+            <td> <span class="instruction iconst_2">iconst_2</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc3">3</td>
+            <td class="line">|</td>
+            <td> <span class="instruction istore_3">istore_3</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc4">4</td>
+            <td class="line">14</td>
+            <td> <span class="instruction iload_3">iload_3</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc5">5</td>
+            <td class="line">|</td>
+            <td> <span class="instruction iload_0">iload_0</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc6">6</td>
+            <td class="line">|</td>
+            <td> <span>
+                <span class="instruction if_icmpge">if_icmpge</span>
+                <a href="#m3_pc20" class="pc">20</a>
+            </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc9">9</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lload_1">lload_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc10">10</td>
+            <td class="line">|</td>
+            <td> <span class="instruction iload_3">iload_3</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc11">11</td>
+            <td class="line">|</td>
+            <td> <span class="instruction i2l">i2l</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc12">12</td>
+            <td class="line">|</td>
+            <td> <span class="instruction ladd">ladd</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc13">13</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lstore_1">lstore_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc14">14</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction iinc">iinc </span>
+                        <span class="lv_index">3</span>
+                        <span class="constant_value">1</span>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc17">17</td>
+            <td class="line">|</td>
+            <td> <span>
+                        <span class="instruction goto">goto </span>
+                        <a href="#m3_pc4" class="pc">4</a>
+                    </span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc20">20</td>
+            <td class="line">15</td>
+            <td> <span class="instruction lload_1">lload_1</span></td>
+            
+        </tr><tr>
+            <td class="pc" id="m3_pc21">21</td>
+            <td class="line">|</td>
+            <td> <span class="instruction lreturn">lreturn</span></td>
+            
+        </tr>
+        </table>
+                    
+                    <div>
+            <details class="attribute">
+                <summary class="attribute_name">StackMapTable [size: 2 item(s)]</summary>
+                <table class="stack_map_table">
+            <thead>
+                <tr><th>PC</th><th>Kind</th><th>Frame Type</th><th>Offset Delta</th><th>Details</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>4</td>
+                <td>AppendFrame</td>
+                <td>253</td>
+                <td>4</td>
+                <td>
+                    Stack:&nbsp;<i>&lt;Empty&gt;</i><br/>
+                    Locals:&nbsp;<span class="verification_type">long</span>, <span class="verification_type">int</span>
+                </td>
+            </tr><tr>
+                <td>20</td>
+                <td>SameFrame</td>
+                <td>15</td>
+                <td>15</td>
+                <td>Stack:&nbsp;&lt;Empty&gt;<br/>Locals:&nbsp;Unchanged</td>
+            </tr>
+            </tbody>
+        </table>
+            </details>
+        </div>
+                </div>
+                
+            </details>
+                            </details>
+                        </div>
+            </div>
+        </div>
+            </body>
+        </html>

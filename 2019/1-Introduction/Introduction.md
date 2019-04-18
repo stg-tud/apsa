@@ -1,5 +1,6 @@
 autoscale: true
 slidenumbers: true
+theme: APSA Lecture
 
 # Applied Static Analysis
 
@@ -141,13 +142,12 @@ There is typically more than one way to find certain bugs and not all require (s
 
 ^ A complete implementation of an analysis in the OPAL static analysis framework which analyzes a Java project's bytecode is shown next:
 
-[.code-highlight: 8-9]
+[.code-highlight: 7-8]
 
 ```scala
 import org.opalj.br._
 import org.opalj.br.instructions.{INVOKEVIRTUAL,POP}
-import org.opalj.bytecode.JRELibraryFolder
-val p = analyses.Project(JRELibraryFolder) // <= analyze the code of the JRE
+val p = analyses.Project(org.opalj.bytecode.JRELibraryFolder) // <= analyze the JRE
 p.allMethodsWithBody.foreach{m => 
   m.body.get.collectPair{
     case (
@@ -160,11 +160,28 @@ p.allMethodsWithBody.foreach{m =>
 ```
 ^ The above static analysis uses Scala's pattern matching (line 8 and 9) to find the sequence of instructions that calls the `setScale` method (`INVOKEVIRTUAL`) and then immediately throws the returned result away (`POP`).
 
-^ Even the analysis is so trivial it already finds a real instance in Java 8u191: `com.sun.rowset.CachedRowSetImpl.updateObject(int,java.lang.Object,int)`
+> Real instance in Java 8u191: [com.sun.rowset.CachedRowSetImpl.updateObject(int,Object,int)](http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/com/sun/rowset/CachedRowSetImpl.java)
+
+^ ```java
+^ public void updateObject(int columnIndex, Object x, int scale) throws SQLException {
+^     // sanity check.
+^     checkIndex(columnIndex);
+^     // make sure the cursor is on a valid row
+^     checkCursor();
+^ 
+^     int type = RowSetMD.getColumnType(columnIndex);
+^     if (type == Types.DECIMAL || type == Types.NUMERIC) {
+^         ((java.math.BigDecimal)x).setScale(scale);
+^     }
+^     getCurrentRow().setColumnObject(columnIndex, x);
+^ }
+^ ```
 
 ---
 
 # Finding Bugs Using Bug Patterns (Assessment)
+
+[.build-lists: true]
 
  - Advantages:
    - very fast and scale well to very large programs
@@ -175,7 +192,7 @@ p.allMethodsWithBody.foreach{m =>
    - typically highly specialized to specific language constructs and APIs
    - requires some understanding how the issue typically manifests itself in the (binary) code
    - small variations in the code may escape the anaylsis
-   - to cover a broader range of similar issues huge efforts are necessary
+   - to cover a broader range of similar issues significant effort is necessary
    
 ^ Finding bugs using bug patterns is supported by, e.g., [FindBugs/SpotBugs](https://spotbugs.github.io).    
 
@@ -196,7 +213,8 @@ p.allMethodsWithBody.foreach{m =>
 Guess the problem of the following JavaScript code snippet:
 
 ```javascript
-function setPoint(x, y) { ... }
+function setPoint(x, y) { ... } // <= given
+
 var x_dim = 23;
 var y_dim = 5; 
 setPoint(y_dim, x_dim);
@@ -239,6 +257,7 @@ while (it.hasNext()) {
 # Finding Bugs Using Generic Static Code Analysis
 
 [.code-highlight: 4]
+[.code-highlight: 5]
 [.code-highlight: 7]
 
 ```java
@@ -264,10 +283,11 @@ class com.sun.imageio.plugins.png.PNGMetadata{
 
 # Finding Bugs Using Generic Static Code Analysis
 
-[.code-highlight: 3]
+[.code-highlight: 2,4]
 
 ```java
 class sun.font.StandardGlyphVector {
+	private int[] glyphs; // always
 	public int getGlyphCharIndex(int ix) {
 		if (ix < 0 && ix >= glyphs.length) {
 			throw new IndexOutOfBoundsException("" + ix);
@@ -276,7 +296,7 @@ class sun.font.StandardGlyphVector {
 }
 ```
 
-^ The condition (line 3) will never be `true`; `glyphs.length` will either be a value equal or larger than `0` or will throw a `NullPointerException`. Hence, there is no effective validation of the parameter `ix`.
+^ The condition (line 4) will never be `true`; `glyphs.length` will either be a value equal or larger than `0` or will throw a `NullPointerException`. Hence, there is no effective validation of the parameter `ix`.
 
 ^ This bug can be found by the same (type of) analysis as the previous issue.
 
@@ -307,10 +327,11 @@ class sun.tracing.MultiplexProviderFactory {
 
 # Finding Bugs Using Generic Static Code Analysis
 
-[.code-highlight: 4]
+[.code-highlight: 5]
 
 ```java
-class com.sun.corba.se.impl.naming.pcosnaming.NamingContextImpl {
+package com.sun.corba.se.impl.naming.pcosnaming;
+class NamingContextImpl {
 	public static String nameToString(NameComponent[] name)
 		[...]
 		if (name != null || name.length > 0) {
@@ -321,7 +342,7 @@ class com.sun.corba.se.impl.naming.pcosnaming.NamingContextImpl {
 }
 ```
 
-^ If `name` is `null` the test `name.length > 0` (line 4) will be executed and will result in a `NullPointerException`. In this case, we have confused logical operators. The developer most likely wanted to use `&&`.
+^ If `name` is `null` the test `name.length > 0` (line 5) will be executed and will result in a `NullPointerException`. In this case, we have confused logical operators. The developer most likely wanted to use `&&`.
 
 ^ This bug can be found by the same (type of) analysis as the previous issues (but requires – at least rudimentarily – handling of null values.)
 
@@ -338,7 +359,8 @@ private boolean ...isConsistent(
 		String alg, 
 		String exemptionMechanism,
 		Hashtable<String, Vector<String>> processedPermissions) {
-	String thisExemptionMechanism = exemptionMechanism == null ? "none" : exemptionMechanism;
+	String thisExemptionMechanism = 
+		exemptionMechanism == null ? "none" : exemptionMechanism;
 	if (processedPermissions == null) {
 		processedPermissions = new Hashtable<String, Vector<String>>();
 		Vector<String> exemptionMechanisms = new Vector<>(1);
@@ -407,7 +429,7 @@ void printIt(String args[]) {
 # Implicitly Guarded Access
 
 [.code-highlight: 2,3]
-[.code-highlight: 2,3,5]
+[.code-highlight: 2,3,6]
 
 ```java
 void printReverse(String args[]) {
@@ -479,27 +501,32 @@ The sad reality:
 
 ^ Reasons for soundiness: engineering effort or (likely) costs w.r.t. the precision and scalability of the resulting analysis.
 
-^ Most practical analysis have a sound core w.r.t. some language features and APIs. In particular the most relevant language features and APIs are typically soundly supported. Such analyses are called **soundy**; i.e., the analyses are concerned with soundness, but do not support _a well identified set of features_. Unfortunately, often the set of features that is unsoundly handled is not at all well identified as often suggested. 
+^ Most practical analyses have a sound core w.r.t. some language features and APIs. In particular the most relevant language features and APIs are typically soundly supported. Such analyses are called **soundy**; i.e., the analyses are concerned with soundness, but do not support _a well identified set of features_. Unfortunately, often the set of features that is unsoundly handled is not at all well identified as often suggested. 
 
 ---
 
 # Soundiness - Java
 
-Common features that are often not soundly handled in Java:
- 
- - Reflection (_often mentioned in research papers_)
- - Native methods (_often mentioned in research papers_)
- - Dynamic Class Loading / Class Loaders (_sometimes mentioned in research papers_
- - (De)Serialization (_often not considered at all_)
- - Special System Hooks (e.g., `shutdownHooks`)
+[.build-lists: true]
 
-^ Examples in C/C++ are `setJmp`/`longJmp` or pointer arithmetic.
-^ Examples in Javascript are `eval` if the code is not _trivially_ known or data-flow through the DOM.
+Common features that are often not soundly handled in Java:
+
+ 1. Intents (in Android Programs) 
+ 1. Reflection (_often mentioned in research papers_)
+ 1. Native methods (_often mentioned in research papers_)
+ 1. Dynamic Class Loading / Class Loaders (_sometimes mentioned in research papers_)
+ 1. (De)Serialization (_often not considered at all_)
+ 1. Special System Hooks (e.g., `shutdownHooks`) (_often not considered at all_)
+ 1. "Newer" language features
+
+
+^ Examples in C/C++ are (1) `setJmp`/`longJmp` or (2) pointer arithmetic.
+^ Examples in Javascript are (1) `eval` if the code is not _trivially_ known or (2) data-flow through the DOM.
 
 
 ---
 
-# Compilers and Static Analyses
+# The Relation between  Compilers and Static Analyses
 
 ^ Usually (static) code analyses are built on top of the the results of the first phases of compilers.
 
@@ -507,7 +534,7 @@ Common features that are often not soundly handled in Java:
 
 ---
 
-# Compilers and Static Analyses
+# The Relation between Compilers and Static Analyses
 
 Source Code:  
 `i = j + 1;`
@@ -515,7 +542,7 @@ Source Code:
 Tokens:  
 `Ident(i) WS Assign WS Ident(j) WS Operator(+) WS Const(1) Semicolon`
 
-AST with annotations: 
+AST with (type) annotations: 
 
 ```scala
 AssignmentStatement(

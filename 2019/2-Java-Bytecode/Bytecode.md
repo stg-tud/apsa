@@ -1,11 +1,13 @@
 autoscale: true
 slidenumbers: true
+theme: APSA Lecture
+
 
 # Applied Static Analysis
 
 ## Java Bytecode
 
-SoSoftware Technology Group  
+Software Technology Group  
 Department of Computer Science  
 Technische Universität Darmstadt  
 [Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
@@ -19,7 +21,9 @@ Technische Universität Darmstadt
 
 > [Java Bytecode is ...] A hardware- and operating system-independent binary format, known as the class file format [^JavaSpec].
 
-^ Java Bytecode is interpreted by a Java Virtual Machine.
+Java Bytecode is interpreted by a Java Virtual Machine.
+
+The Java Virtual Machine is a stack machine; i.e., all (except one) operations are preformed on the stack. For example, to add two values both values first have to be put on the stack. The result is then either further processed or stored in a local register.
 
 
 --- 
@@ -41,6 +45,8 @@ Technische Universität Darmstadt
 | interface `(A)` | reference value / cat. 1 |
 
 ^ The JVM internally does not distinguish between boolean, byte, char, short and int values; they are all treated as int values. However, some special support for arrays may exist.
+
+^ The instruction mnemonics loosely use the field descriptors to specify which type of values it handles. For example, the instruction to add to int values is actually called `iadd` and the one two add two float values is called `fadd`. However, the instructions which process long value actually use an initial `l`.
 
 --- 
 
