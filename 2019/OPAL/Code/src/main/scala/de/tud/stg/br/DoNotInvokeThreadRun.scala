@@ -13,7 +13,9 @@ import org.opalj.br.instructions._
 
 object DoNotInvokeThreadRun extends DefaultOneStepAnalysis {
 
-  override def description: String = "Finds Thread.run calls."
+  override def description: String = {
+    "Finds Thread.run calls (See The CERT Oracle Secure Coding Standard for Java - Rule TH100-J - for details.)."
+  }
 
   final val ThreadType = ObjectType("java/lang/Thread")
 
@@ -42,7 +44,8 @@ object DoNotInvokeThreadRun extends DefaultOneStepAnalysis {
               if (ch.isSubtypeOf(declClass, ThreadType)) ⇒
             declClass
         }
-        violatingCalls.foreach { case PCAndAnyRef(pc, declClass) ⇒
+        violatingCalls.foreach {
+          case PCAndAnyRef(pc, declClass) ⇒
             val msg = m.toJava(s"$pc: call to run method of subtype of Thread: " + declClass.toJava)
             violations.add(msg)
         }
@@ -50,21 +53,23 @@ object DoNotInvokeThreadRun extends DefaultOneStepAnalysis {
       violations.asScala.mkString("\n")
     }
 
-    val r2 = PerformanceEvaluation.time(3, 15, 8, violationsUsingHigherOrderFunction, true) { (ns, nss) ⇒
-      val considered = nss.map(_.toSeconds).mkString("[", ", ","]")
-      println(s"violationsUsingHigherOrderFunction took ${ns.toSeconds} $considered")
+    val r2 = PerformanceEvaluation.time(3, 15, 8, violationsUsingHigherOrderFunction, true) {
+      (ns, nss) ⇒
+        val considered = nss.map(_.toSeconds).mkString("[", ", ", "]")
+        println(s"violationsUsingHigherOrderFunction took ${ns.toSeconds} $considered")
     }
 
-    val r1 = PerformanceEvaluation.time(3, 15, 8, violationsUsingForComprehension, true) { (ns, nss) ⇒
-      val considered = nss.map(_.toSeconds).mkString("[", ", ","]")
-      println(s"violationsUsingForComprehension took ${ns.toSeconds} $considered")
+    val r1 = PerformanceEvaluation.time(3, 15, 8, violationsUsingForComprehension, true) {
+      (ns, nss) ⇒
+        val considered = nss.map(_.toSeconds).mkString("[", ", ", "]")
+        println(s"violationsUsingForComprehension took ${ns.toSeconds} $considered")
     }
 
     // on a 6-core CPU...:
     //  - the ".par" version is roughly 4 times faster than the seq version
     //  - the "parForeachMethodWithBody" version is roughly 10 times faster than the seq version
 
-    if(r1.lines.size != r2.lines.size) throw new UnknownError(s"$r1 != $r2")
+    if (r1.lines.size != r2.lines.size) throw new UnknownError(s"$r1 != $r2")
     r1
   }
 }

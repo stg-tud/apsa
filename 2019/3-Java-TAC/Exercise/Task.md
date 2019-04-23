@@ -38,3 +38,18 @@ Recall that arrays are objects and that it is therefore possible to call those m
 
  1. Test your analysis using the class `ArraysEquals`.
 
+## BigDecimal and Floating Point Literals
+
+Develop an analysis which finds violations of the following rule taken from The CERT Oracle Secure Coding Standard for Java:
+
+> NUM10-J: Do not construct BigDecimal objects from floating-point literals.
+
+Non-compliant example:
+```java
+new BigDecimal(1.0f);
+```
+
+Compliant example:
+```java
+new BigDecimal("1.0");
+```

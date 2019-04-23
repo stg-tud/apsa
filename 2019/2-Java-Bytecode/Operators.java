@@ -1,6 +1,6 @@
 class Operators {
 
-    // NO NEGATION
+    // NO NEGATION and TRUE/FALSE ARE REPRESENTED USING INTs
 
     public static boolean neg(boolean b) {
         return !b;

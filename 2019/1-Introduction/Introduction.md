@@ -555,6 +555,15 @@ AssignmentStatement(
 
 ^ In the (later) intermediate representations, nested Control-flow and complex expressions are unraveled. Intermediate values are given explicit names. The instruction set is usually limited. All of that facilitates static analysis (but renders syntax oriented code analyses impossible).
 
+--- 
+
+# "Graphs"
+
+A directed graph $$G = (N,A)$$ consists of a finite set $$N$$ of nodes and a set $$A \subseteq N \times N$$ of edges. An edge $$(n_1,n_2)$$ has a source $$n_1$$ and a target $$n_2$$. If $$n1 == n2$$ it is a self-loop.
+
+^ In the scope of this lecture, when we talk about graphs, we generally mean directed graphs.
+
+
 
 ^ <!----------------------------------------------------------------------------------------------->
 ^ <!---------------------------------------- REFERENCES ------------------------------------------->
