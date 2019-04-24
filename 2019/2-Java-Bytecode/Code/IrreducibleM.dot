@@ -1,0 +1,20 @@
+digraph G {
+	dir=forward;
+	ranksep=0.8;
+	rankdir=TB;
+	node [shape=box,fontsize=12,width=1.75];
+
+	0[style="filled",label="[0,5]#=6",fillcolor="green",labelloc="r"];
+	0 -> 16 [dir=forward];
+	0 -> 8 [dir=forward];
+	16["shape"="box","labelloc"="l","label"="[16,19]#=4"];
+	16 -> 8 [dir=forward];
+	8["shape"="box","labelloc"="l","label"="[8,13]#=6"];
+	8 -> 22 [dir=forward];
+	8 -> 16 [dir=forward];
+	22["shape"="box","labelloc"="l","label"="[22,22]#=1"];
+	22 -> -2 [dir=forward];
+	22 -> -1 [dir=forward];
+	-2["style"="filled","label"="Abnormal Return","fillcolor"="red","labelloc"="l","shape"="octagon"];
+	-1["labelloc"="l","fillcolor"="green","style"="filled","label"="Normal Return"];
+}

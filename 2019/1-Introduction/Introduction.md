@@ -623,7 +623,7 @@ B = Backward Edge; F = Forward Edge
 
 ![inline](irreducible-partitionededges.dot.svg)
 
-^ The edges (n0, n1) and (n0, n2) are forward edges. Either (n1, n2) or  (n2, n1) can be considered a forward edge, but not both. However, neither of these edges is a backward edge. Hence, it is not possible to partition the edges in both sets $$E = E_f \cup E_b$$
+^ The edges (n0, n1) and (n0, n2) are forward edges. Either (n1, n2) or  (n2, n1) can be considered a forward edge, but not both at the same time. However, neither of these edges is a backward edge. Hence, it is not possible to partition the edges such that $$E = E_f \cup E_b$$
 
 ---
 
