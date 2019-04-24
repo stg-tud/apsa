@@ -110,12 +110,12 @@ The Java Virtual Machine is a stack machine; i.e., all (except one) operations a
 
 # Java Bytecode - Control Flow
 
+[.autoscale: false]
+
 ```java
 static int max(int i, int j) {
-	if (i > j)
-		return i;
-	else 
-		return j;
+	if (i > j) return i;
+	else       return j;    
 }
 ```
 
@@ -133,6 +133,29 @@ static int max(int i, int j) {
 ^ In case of an instance method, the first parameter is the implicit self reference and is stored in local 0. Hence, `this` is typically loaded using `aload_0`.
 
 ^ Notice the compilation of the if statement. It is common that in the bytecode the if operator is the inverse one, because if the condition evaluates to true, we then perform the jump (to the else branch) while in the source code, we simply fall through in case the condition evaluates to true.
+
+---
+
+# Java Bytecode - Infinite Loops
+
+^It is possible to have methods which never return (normally):
+
+[.code-highlight: 2]
+```java 
+public void run() {
+    while (true) { try { doIt(); } catch (Throwable t) { log(t); } }
+}
+```
+
+| PC | 	Instruction	|
+| ---- | -------------- | 
+| 0 |	invokestatic ControlFlow.doIt()	 |
+| 3 |	goto 0	|
+| 6 (catch exception) | 	astore_1 |	
+| 7 |	aload_1	|
+| 8 | 	invokestatic ControlFlow.log(java.lang.Throwable)	|
+| 11 |	goto 0 |
+
 
 ---
 
@@ -162,19 +185,16 @@ invokespecial java/lang/Object.<init>();
 # Java Bytecode - Exception Handling
 
 ```java
+public delete(String s) {
 try 
-/*1:*/ {
-		new java.io.File(s).delete();
+/*1:*/ { new java.io.File(s).delete();
 /*2:*/ } 
 catch (IOException e) 
-/*3:*/ {
-	// handle IOException...
+/*3:*/ { // handle IOException...
 } catch (Exception e) 
-/*4:*/ { 
-	// handle Exception...
+/*4:*/ { // handle Exception...
 } finally 
-/*5:*/ {
-	
+/*5:*/ { }
 }
 ```
 
@@ -188,6 +208,8 @@ Exception handler table:
 | 1 | 2 | 5 | < ANY > | 
 
 ^ Please note, that the finally block is generally included twice. Once, for the case if no exception is thrown and once for the case when an exception is thrown.
+
+^ Note that __this method has at least two exit points__: (5) - if some exception is thrown or if the execution returns normally.
 
 
 

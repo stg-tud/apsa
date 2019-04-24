@@ -1,0 +1,10 @@
+digraph reducible {
+graph [ranksep="0.325", nodesep="0.425"];
+node[shape=rectangle];
+
+ n0 -> n1 [label=F];
+ n0 -> n2 [label=F];
+ n1 -> n2 [label="?", style=dotted, color=red];
+ n2 -> n1 [label="?", style=dotted, pendwithd=5, color=red];
+ {rank = same; n1; n2;}
+}

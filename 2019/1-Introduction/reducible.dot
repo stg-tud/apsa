@@ -1,0 +1,9 @@
+digraph reducible {
+graph [ranksep="0.325", nodesep="0.425"];
+node[shape=rectangle];
+
+ n0 -> n1 -> n2 -> n4;
+ n1 -> n3 -> n4;
+ n4 -> n1;
+
+}

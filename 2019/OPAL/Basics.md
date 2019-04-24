@@ -213,4 +213,12 @@ information to optimize the processing of the project. E.g., OPAL's `parForeachM
 
 # Performance Measurements
 
+---
+
+# Getting the 3-Address Code (TAC(AI))
+
+---
+
+# CFG
+
 

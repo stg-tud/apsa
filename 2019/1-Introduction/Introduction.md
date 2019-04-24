@@ -6,9 +6,9 @@ theme: APSA Lecture
 
 ## Why Static Analysis?
 
-Software Technology Group  
-Department of Computer Science  
-Technische Universität Darmstadt  
+Software Technology Group
+Department of Computer Science
+Technische Universität Darmstadt
 [Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
 
 ^ > Some of the following material is taken from the script "Static Program Analysis" from Anders Møller and Michael I. Schwartzbach and from the Slides "Mechanics of Static Analysis" from David Schmitt.
@@ -20,15 +20,15 @@ Technische Universität Darmstadt
 [.build-lists: true]
 
  - Will the variable `x` always contain the same value?
- 
+
  - Which objects can variable `x` points to?
- 
+
  - What is a lower/upper bound on the value of the integer variable `x`?
- 
+
  - Which methods are called by a method invocation?
- 
+
  - How much memory is required to execute the program?
- 
+
  - Will it throw a `NullPointerException`?
 
  - Will it leak sensitive data? Will data from component `a` flow to component `b`?
@@ -64,7 +64,7 @@ int main(int argc, const char * argv[]) {
 
 ^ Line 7: The behavior of printf is undefined in the string referred to by %s is NULL. (Actually, the behavior of the program may even change depending on the optimizations done by the compiler!)
 
-^ Line 11: We have a use after free (detected by some modern compilers). 
+^ Line 11: We have a use after free (detected by some modern compilers).
 
 ^ Line 14 in combination with line 15: Resource leakage; the memory area is not freed.
 
@@ -115,8 +115,8 @@ A static analysis of a program is a _**sound**_, _finite_, and _**approximate**_
 
 # Finding Programming Bugs
 
-^ > [JavaDoc of java.lang.BigDecimal.setScale](https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#setScale-int-):   
-[...] Note that since BigDecimal objects are immutable, calls of this method do not result in the original object being modified, contrary to the usual convention of having methods named setX mutate field X. Instead, setScale returns an object with the proper scale; the returned object may or may not be newly allocated. 
+^ > [JavaDoc of java.lang.BigDecimal.setScale](https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#setScale-int-):
+[...] Note that since BigDecimal objects are immutable, calls of this method do not result in the original object being modified, contrary to the usual convention of having methods named setX mutate field X. Instead, setScale returns an object with the proper scale; the returned object may or may not be newly allocated.
 
 [.code-highlight: 5]
 
@@ -130,7 +130,7 @@ class X {
 }
 ```
 
-^ In this case the bug is that the `setScale` method is side-effect free (though the name `setScale` suggests something different) and therefore the call `d.setScale(...)` is useless. Hence, this code smells. 
+^ In this case the bug is that the `setScale` method is side-effect free (though the name `setScale` suggests something different) and therefore the call `d.setScale(...)` is useless. Hence, this code smells.
 
 There is typically more than one way to find certain bugs and not all require (sophisticated) static analyses!
 
@@ -138,7 +138,7 @@ There is typically more than one way to find certain bugs and not all require (s
 
 # Finding Bugs Using Bug Patterns
 
-^ Code smells such as useless calls to `setScale` can easily be described and found using _bug patterns_. A bug pattern is an abstract description of a problem that occurs over and over again and which can be used to identify concrete instances of the problem. 
+^ Code smells such as useless calls to `setScale` can easily be described and found using _bug patterns_. A bug pattern is an abstract description of a problem that occurs over and over again and which can be used to identify concrete instances of the problem.
 
 ^ A complete implementation of an analysis in the OPAL static analysis framework which analyzes a Java project's bytecode is shown next:
 
@@ -148,14 +148,14 @@ There is typically more than one way to find certain bugs and not all require (s
 import org.opalj.br._
 import org.opalj.br.instructions.{INVOKEVIRTUAL,POP}
 val p = analyses.Project(org.opalj.bytecode.JRELibraryFolder) // <= analyze the JRE
-p.allMethodsWithBody.foreach{m => 
+p.allMethodsWithBody.foreach{m =>
   m.body.get.collectPair{
     case (
     	i @ INVOKEVIRTUAL(ObjectType("java/math/BigDecimal"),"setScale",_),
     	POP
     ) => i
   }
-  .foreach(i => println(m.toJava(i.toString))) 
+  .foreach(i => println(m.toJava(i.toString)))
 }
 ```
 ^ The above static analysis uses Scala's pattern matching (line 8 and 9) to find the sequence of instructions that calls the `setScale` method (`INVOKEVIRTUAL`) and then immediately throws the returned result away (`POP`).
@@ -168,7 +168,7 @@ p.allMethodsWithBody.foreach{m =>
 ^     checkIndex(columnIndex);
 ^     // make sure the cursor is on a valid row
 ^     checkCursor();
-^ 
+^
 ^     int type = RowSetMD.getColumnType(columnIndex);
 ^     if (type == Types.DECIMAL || type == Types.NUMERIC) {
 ^         ((java.math.BigDecimal)x).setScale(scale);
@@ -193,14 +193,14 @@ p.allMethodsWithBody.foreach{m =>
    - requires some understanding how the issue typically manifests itself in the (binary) code
    - small variations in the code may escape the anaylsis
    - to cover a broader range of similar issues significant effort is necessary
-   
-^ Finding bugs using bug patterns is supported by, e.g., [FindBugs/SpotBugs](https://spotbugs.github.io).    
+
+^ Finding bugs using bug patterns is supported by, e.g., [FindBugs/SpotBugs](https://spotbugs.github.io).
 
 ---
 
-# Finding Bugs Using Machine Learning 
+# Finding Bugs Using Machine Learning
 
-^ The core idea is to use code that is known to be buggy and code that is expected to be correct to train a machine learning model. The resulting classifier is then used to find buggy code in new code. Buggy code can, e.g., be extracted from public repositories by analyzing the commit history and looking for issues. An alternative is to inject code that will most likely result in buggy code. 
+^ The core idea is to use code that is known to be buggy and code that is expected to be correct to train a machine learning model. The resulting classifier is then used to find buggy code in new code. Buggy code can, e.g., be extracted from public repositories by analyzing the commit history and looking for issues. An alternative is to inject code that will most likely result in buggy code.
 
 ![inline](DeepBugs.pdf)
 
@@ -208,7 +208,7 @@ p.allMethodsWithBody.foreach{m =>
 
 ---
 
-# Finding Bugs Using Machine Learning 
+# Finding Bugs Using Machine Learning
 
 Guess the problem of the following JavaScript code snippet:
 
@@ -216,7 +216,7 @@ Guess the problem of the following JavaScript code snippet:
 function setPoint(x, y) { ... } // <= given
 
 var x_dim = 23;
-var y_dim = 5; 
+var y_dim = 5;
 setPoint(y_dim, x_dim);
 ```
 
@@ -228,7 +228,7 @@ setPoint(y_dim, x_dim);
 
  - Finds bugs that are practically impossible to find using other approaches; hence, often complementary to classic static analyses and also bug pattern based analyses.
  - Requires the analysis of a huge code base; it may be hard to find enough code examples for less frequently used APIs.
- 
+
 ^ Today, a lot of code can be found on open source code repositories such as BitBucket, GitHub and SourceForge; even for niche languages. This generally facilitates all kinds of _big code_ based analyses.
 
 
@@ -356,10 +356,10 @@ class NamingContextImpl {
 
 ```java
 private boolean ...isConsistent(
-		String alg, 
+		String alg,
 		String exemptionMechanism,
 		Hashtable<String, Vector<String>> processedPermissions) {
-	String thisExemptionMechanism = 
+	String thisExemptionMechanism =
 		exemptionMechanism == null ? "none" : exemptionMechanism;
 	if (processedPermissions == null) {
 		processedPermissions = new Hashtable<String, Vector<String>>();
@@ -393,15 +393,15 @@ Cipher c = Cipher.getInstance("DES/CBC/PKCS5PADDING")
 
 # (True|False) (Positives|Negatives)
 
- - a **true positive** is the correct finding (of something relevant)  
- 
- - a **false positive** is a finding that is incorrect (i.e., which can't be observed at runtime)  
- 
+ - a **true positive** is the correct finding (of something relevant)
+
+ - a **false positive** is a finding that is incorrect (i.e., which can't be observed at runtime)
+
  - a **true negative** is the correct finding of no issue.
- 
+
  - a **false negative** refers to those issues that are not reported.
 
-^ Typically the goal of every static analysis is to only report true positives and to avoid as many false positives as possible. Often an analysis is considered useable if 80% of all findings are true positives. False positives are typically caused by imprecisions of the analysis. False negatives are usually not a (major) concern of static analyses; however, they are a primary concern of formal approaches.  
+^ Typically the goal of every static analysis is to only report true positives and to avoid as many false positives as possible. Often an analysis is considered useable if 80% of all findings are true positives. False positives are typically caused by imprecisions of the analysis. False negatives are usually not a (major) concern of static analyses; however, they are a primary concern of formal approaches.
 
 
 ---
@@ -449,9 +449,9 @@ void printReverse(String args[]) {
 
 # Irrelevant True Positives
 
-^ Better static analyses can sometimes prove assertions to always hold; which are then useless. 
+^ Better static analyses can sometimes prove assertions to always hold; which are then useless.
 
-Let's assume that the following function is only called with `non-null` parameters. 
+Let's assume that the following function is only called with `non-null` parameters.
 
 ^ In that case the `assert` statement is useless, but adding an assert statement (even in such cases) is a common best practice!
 
@@ -463,7 +463,7 @@ private boolean isSmallEnough(Object i) {
 }
 ```
 
-^ > Don't use assert for validating parameters of non-private methods, i.e., if you don't have full control of the calling context. 
+^ > Don't use assert for validating parameters of non-private methods, i.e., if you don't have full control of the calling context.
 
 ---
 
@@ -484,7 +484,7 @@ if (dx != 0 || dy != 0) {
 
 ---
 
-# Complex True Positives - Assessment  
+# Complex True Positives - Assessment
 
 The sad reality:
 
@@ -495,13 +495,13 @@ The sad reality:
 
 # Soundiness
 
-> […] in practice, soundness is commonly eschewed: we [the authors] are not aware of a single realistic whole-programa analysis tool […] that does not purposely make unsound choices. 
-> […] 
+> […] in practice, soundness is commonly eschewed: we [the authors] are not aware of a single realistic whole-programa analysis tool […] that does not purposely make unsound choices.
+> […]
 > Soundness is not even necessary for most modern analysis applications, however, as many clients can tolerate unsoundness. [^Soundiness]
 
 ^ Reasons for soundiness: engineering effort or (likely) costs w.r.t. the precision and scalability of the resulting analysis.
 
-^ Most practical analyses have a sound core w.r.t. some language features and APIs. In particular the most relevant language features and APIs are typically soundly supported. Such analyses are called **soundy**; i.e., the analyses are concerned with soundness, but do not support _a well identified set of features_. Unfortunately, often the set of features that is unsoundly handled is not at all well identified as often suggested. 
+^ Most practical analyses have a sound core w.r.t. some language features and APIs. In particular the most relevant language features and APIs are typically soundly supported. Such analyses are called **soundy**; i.e., the analyses are concerned with soundness, but do not support _a well identified set of features_. Unfortunately, often the set of features that is unsoundly handled is not at all well identified as often suggested.
 
 ---
 
@@ -511,7 +511,7 @@ The sad reality:
 
 Common features that are often not soundly handled in Java:
 
- 1. Intents (in Android Programs) 
+ 1. Intents (in Android Programs)
  1. Reflection (_often mentioned in research papers_)
  1. Native methods (_often mentioned in research papers_)
  1. Dynamic Class Loading / Class Loaders (_sometimes mentioned in research papers_)
@@ -528,7 +528,7 @@ Common features that are often not soundly handled in Java:
 
 # The Relation between  Compilers and Static Analyses
 
-^ Usually (static) code analyses are built on top of the the results of the first phases of compilers.
+^ Usually (static) code analyses are built on top of the results of the first phases of compilers.
 
 ![inline](CompilerPhases.pdf)
 
@@ -536,13 +536,13 @@ Common features that are often not soundly handled in Java:
 
 # The Relation between Compilers and Static Analyses
 
-Source Code:  
+Source Code:
 `i = j + 1;`
 
-Tokens:  
+Tokens:
 `Ident(i) WS Assign WS Ident(j) WS Operator(+) WS Const(1) Semicolon`
 
-AST with (type) annotations: 
+AST with (type) annotations:
 
 ```scala
 AssignmentStatement(
@@ -555,13 +555,80 @@ AssignmentStatement(
 
 ^ In the (later) intermediate representations, nested Control-flow and complex expressions are unraveled. Intermediate values are given explicit names. The instruction set is usually limited. All of that facilitates static analysis (but renders syntax oriented code analyses impossible).
 
---- 
+---
 
-# "Graphs"
+# (Classical) Compiler Optimizations
 
-A directed graph $$G = (N,A)$$ consists of a finite set $$N$$ of nodes and a set $$A \subseteq N \times N$$ of edges. An edge $$(n_1,n_2)$$ has a source $$n_1$$ and a target $$n_2$$. If $$n1 == n2$$ it is a self-loop.
+ - partial evaluation
+ - global scheduling
+ - loop fusion
+ - code motion
+ - ... ()
+
+often rely on the identification of the so-called control dependencies which are computed using (control-flow) graphs. The underlying techniques, such as, loop identification or live variable analyses are also relevant for static analyses.
+
+^ Traditional analyses[^DragonBook] often rely on a program's control-flow graphs to compute the control dependencies, but make unrealistic assumptions about the structure of the code. Exception handling and infinite loops which lead to methods with multiple exit points or no exit points are often neglected[^NewFoundationForControlDependenceAndSlicing]. Standard techniques to handle such methods (like __picking__ an arbitrary instruction and making it the exit-instruction in case of an infinite loop) potentially lead to incorrect control-dependencies.
+
+---
+
+# Graphs
+
+^ Next, we repeat the basics of control-flow graphs and how to compute control-dependencies. Both are needed by static analysis.
+
+A control-flow graph $$G = (N,A)$$ consists of a finite set $$N$$ of nodes and a set $$A \subseteq N \times N$$ of edges. An edge $$(n_1,n_2)$$ has a source $$n_1$$ and a target $$n_2$$. If $$n1 == n2$$ it is a self-loop.
 
 ^ In the scope of this lecture, when we talk about graphs, we generally mean directed graphs.
+
+---
+
+# Dominance
+
+A Node... dom
+
+---
+
+# (Control-)Flow Graph
+
+ - The control-flow graph (CFG) represents the control flow of a single method.
+
+ - Each node represents a basic block. A basic block is a maximal-length sequence of statements without jumps in and out (and no exceptions are thrown by intermediate instructions).
+The arcs represent the inter-node control flow.
+
+---
+
+# Irreducible ((Control-)Flow) Graphs
+
+A CFG $$G=(N,E,n0)$$ is __reducible__ if ...
+
+ - E can be partitioned into disjoint sets $$E_f$$ (forward edges) and $$E_b$$ (backward edges)
+ - such that $$(N,E_f)$$ forms a directed-acyclic graph (DAG) in which __each__ node can be reached from the start node $$n_0$$
+ - and for all edges $$e \in E_b$$, the target of e dominates the source of e.
+
+---
+
+# Reducible ((Control-)Flow) Graphs - Example
+
+B = Backward Edge; F = Forward Edge
+
+![inline](reducible-partitionededges.dot.svg)
+
+^ It is (trivially) possible to partition the edges in forward and backward edges.
+
+
+ ---
+
+# Irreducible ((Control-)Flow) Graphs - Example
+
+B = Backward Edge; F = Forward Edge
+
+![inline](irreducible-partitionededges.dot.svg)
+
+^ The edges (n0, n1) and (n0, n2) are forward edges. Either (n1, n2) or  (n2, n1) can be considered a forward edge, but not both. However, neither of these edges is a backward edge. Hence, it is not possible to partition the edges in both sets $$E = E_f \cup E_b$$
+
+---
+
+
+
 
 
 
@@ -572,7 +639,7 @@ A directed graph $$G = (N,A)$$ consists of a finite set $$N$$ of nodes and a set
 ^ # References
 
 ^ [^DeepBugs]: Pradel, M., & Sen, K.; DeepBugs: a learning approach to name-based bug detection. Proceedings of the ACM - OOPSLA, 2018, [doi](http://doi.org/10.1145/3276517)
- 
+
 ^ [^FindBugsInTheRealWorld]: Bessey, A., Block, K., Chelf, B.; A few billion lines of code later: using static analysis to find bugs in the real world; Communications of the ACM, 2010, vol. 53, No. 2
 
 ^ [^MuBench]: Sven Amann, Hoan Anh Nguyen, Sarah Nadi, Tien N. Nguyen, and Mira Mezin; A Systematic Evaluation of Static API-Misuse Detectors; IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, 2018
@@ -581,4 +648,8 @@ A directed graph $$G = (N,A)$$ consists of a finite set $$N$$ of nodes and a set
 
 ^ [^CogniCrypt]: Krüger, S., Nadi, S., Reif, M., Ali, K., Mezini, M., Bodden, E., et al.; CogniCrypt: supporting developers in using cryptography; IEEE Press., 2017
 
-^ [^Soundiness]: Livshits, B., Sridharan, M., Smaragdakis, Y., Amaral, J. N., Møller, A., Lhoták, O., et al.; In Defense of Soundiness: A Manifesto; Communications of the ACM, 2015 , 58(2). 
+^ [^Soundiness]: Livshits, B., Sridharan, M., Smaragdakis, Y., Amaral, J. N., Møller, A., Lhoták, O., et al.; In Defense of Soundiness: A Manifesto; Communications of the ACM, 2015 , 58(2).
+
+^ [^NewFoundationForControlDependenceAndSlicing]: Ranganath, V. P., Amtoft, T., Banerjee, A., Hatcliff, J., & Dwyer, M. B.; A new foundation for control dependence and slicing for modern program structures. ACM Trans. Program. Lang. Syst., 29(5), 2007, [doi](http://doi.org/10.1145/1275497.1275502)
+
+^ [^DragonBook]: A. Aho, R. Sethi and J. D. Ullman; Comnpilers - Principles, Techniques and Tools; Addison Wesley 1988
