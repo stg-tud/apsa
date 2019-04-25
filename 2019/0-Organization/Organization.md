@@ -36,7 +36,7 @@ Hence, if you have suggestions for improvement or if you find typos or more sign
 
 # Exam
 
-- We will have a closed-book exam after the semester.  
+- We will have a closed-book exam on Monday, 22nd Jul. 2019 at 11:00 in S101/A1
 - The exam will be 60 minutes.
 - (There will be no bonus.)
 
