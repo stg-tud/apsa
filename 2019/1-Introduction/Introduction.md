@@ -708,6 +708,13 @@ public static int abs(int i) {
 
 ^ Please note, that the basic blocks are rather small. This is a typical property of real world code. Furthermore, the call of the constructor may throw an arbitrary exception and therefore also lead to an abnormal return.
 
+^ The following code snippet – which can be executed using the sbt console – demonstrates how to get the CFG  for a specific method/class using the OPAL framework:
+^ ```scala
+^ val p = org.opalj.br.analyses.Project(new java.io.File("APSA/Lecture/2019/2-Java-Bytecode/ControlFlow.class"))
+^ val tacKey = p.get(org.opalj.tac.ComputeTACAIKey)
+^ val taCode = tacKey(p.classFile(org.opalj.br.ObjectType("ControlFlow")).get.findMethod("abs").head)
+^ println(org.opalj.tac.tacToDot(taCode.stmts,taCode.cfg))
+^ ```
 
 ^ <!----------------------------------------------------------------------------------------------->
 ^ <!---------------------------------------- REFERENCES ------------------------------------------->
