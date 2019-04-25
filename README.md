@@ -15,7 +15,7 @@ This repository contains the lecture slides related to the lecture **Applied Sta
 
 ### Complementary Material
 
- - [OPAL - Basics](2019/OPAL/Basics) _Work in Progress_
+ - [OPAL - Basics](2019/OPAL/Basics.pdf) _Work in Progress_
  - [DoNotInvokeThreadRun.scala](2019/OPAL/Code/src/main/scala/de/tud/stg/br/DoNotInvokeThreadRun.scala)
 
 ## Exercise
