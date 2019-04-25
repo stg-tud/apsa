@@ -627,7 +627,11 @@ A path is _maximal_ if it is infinite or terminates in an end node.
 
 # Dominance
 
-A Node $$n$$ dominates node $$m$$ in $$G$$ (dom(n,m)) if _every_ path from the start node $$n_0$$ to $$m$$ passes through $$n$$ (hence, dom is reflexive).
+A node $$n$$ dominates node $$m$$ in $$G$$ (dom(n,m)) if _every_ path from the start node $$n_0$$ to $$m$$ passes through $$n$$ (hence, dom is reflexive).
+
+Analogously, a node $$n$$ postdominates $$m$$ in $$G$$ (pdom(n,m)) if _every_ path to the graph's exit node starting at $$m$$ passes through $$n$$.
+
+Analogous to the definition of dominance above, a node z is said to post-dominate a node n if all paths to the exit node of the graph starting at n must go through z
 
 ^ Please recall that the classical definitions of post-dominance can often not reliably used to Java bytecode.
 
