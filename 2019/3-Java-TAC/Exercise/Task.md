@@ -12,9 +12,11 @@ You should use `MyOPALProject` as a template. That project is preconfigured to u
 
 For further details regarding the development of static analysis using OPAL see the OPAL tutorial.
 
+You should develop both of the following analyses on top of the 3-address code representation (TACAI) offered by OPAL. Use the `l1.DefaultDomainWithCFGAndDefUse` domain and the `ProjectInformationKey` `ComputeTACAIKey` as the foundation for your analysis.
+
 ## Use Arrays.equals
 
-Develop an analysis which finds violations of the following rule taken from The CERT Oracle Secure Coding Standard for Java:
+Develop an analysis which finds violations of the following rule taken from [The CERT Oracle Secure Coding Standard for Java](https://wiki.sei.cmu.edu/confluence/display/java):
 
 > EXP02-J: Use the two-argument Arrays.equals() method to compare the contents of arrays.
 
@@ -37,10 +39,11 @@ Recall that arrays are objects and that it is therefore possible to call those m
 ***Tasks***
 
  1. Test your analysis using the class `ArraysEquals`.
+ 1. Run your analysis against the JDK
 
 ## BigDecimal and Floating Point Literals
 
-Develop an analysis which finds violations of the following rule taken from The CERT Oracle Secure Coding Standard for Java:
+Develop an analysis which finds violations of the following rule taken from [The CERT Oracle Secure Coding Standard for Java](https://wiki.sei.cmu.edu/confluence/display/java):
 
 > NUM10-J: Do not construct BigDecimal objects from floating-point literals.
 
@@ -53,3 +56,9 @@ Compliant example:
 ```java
 new BigDecimal("1.0");
 ```
+
+***Tasks***
+
+ 1. How does the bytecode change, when you exchange the floating-point literal `1.0f` (a float literal) against the floating-point literal `1.0d` $$(a double literal).
+ 1. Test your analysis using the class `BigDecimalAndStringLiteral`.
+ 1. Run your analysis against the JDK.
