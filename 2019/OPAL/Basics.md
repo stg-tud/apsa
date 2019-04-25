@@ -150,30 +150,82 @@ val publicMethods = for {
 
 ```scala
 val r = new java.util.concurrent.ConcurrentLinkedQueue[<ResultType>]()
-	p.parForeachMethod
-val publicMethods =
-      for {
-        classFile ← p.allClassFiles.par
-        method ← classFile.methods
-        if method.isPublic
-      } yield {
-        method.toJava
-      }
+p.parForeachMethodWithBody(isInterrupted) { mi ⇒
+	val m = mi.method
+}
+import scala.collection.JavaConverters._
+r.asScala.mkString("\n")
 ```
 
 ^ In general, the parallelization provided by OPAL is more efficient because it uses domain specific
-information to optimize the processing of the project. E.g., OPAL's `parForeachMethodBody` processes all methods in parallel starting with the longest method(s). This way the parallelization level can be increased; e.g., a random processing order could lead to the situation that the longest (most complex) method os scheduled to be analyzed last. In this case the overall analysis time is then heavily influenced by the time required to analyze that method.
+information to optimize the parallel execution. E.g., OPAL's `parForeachMethodBody` processes all methods in parallel starting with the longest method(s). This way the parallelization level can be increased; e.g., a random processing order could lead to the situation that the longest (most complex) method os scheduled to be analyzed last. In this case the overall analysis time is then heavily influenced by the time required to analyze that method.
 
 ---
 
 # Iterating over the instructions of a method
 
+The most efficient way to iterate over the body of a method is to use on of the respective methods provided by `Code`:
+
+```scala
+m.body.get.collect {
+	case i @ INVOKEVIRTUAL(
+			ObjectType.Object, 
+			"toString", 
+			MethodDescriptor.JustReturnsString
+		) ⇒ i
+}
+```
+
+^ Code provides a variety of methods that should suite most needs. 
+
+^ It is also possible to iterate over the underlying instructions array. However, in most cases it is more efficient to use the `iterator` method provided by the `Code` object if you really want to use a for-comprehension. `for {i <- code.iterator}{...}`.
+
+^ None of the methods is parallelized because in the very vast majority of cases the effort to parallelize the execution far outweighs the performance gains. 
 
 ---
 
 # CFG for Java Bytecode
 
+^ Getting the CFG is trivial:
 
+[.code-highlight: 2]
+```scala
+iomport org.opalj.br.cfg.CFGFactory
+val cfg = CFGFactory(m : Method, classHierarchy : ClassHierarchy)
+
+// A rudimentary class hierarchy is always available:
+ClassHierarchy.PreInitializedClassHierarchy
+```
+
+^ The class hierarchy is required to correctly resolve exceptions. If the class hierarchy is not complete, it may happen that a control-flow edge is created to an exception handler that will never handle the respective exception at runtime. 
+
+^ __Use the `PreInitializedClassHierarchy` only for testing purposes__!
+
+
+^ Given the cfg it is then possible to, e.g., iterate over all blocks or to traverse the cfg:
+
+```scala
+val cfg = CFGFactory(m : Method, classHierarchy : ClassHierarchy)
+cfg.allBBs // to iterate over all blocks in lexical order
+
+cfg.startBlock // ... the initial start block
+```
+
+--- 
+
+# CFG for Java Bytecode
+
+In OPAL the CFG has four types of nodes:
+
+ - (standard) basic block
+ - exit nodes:
+   - normal return node
+   - abnormal return node
+ - catch node  
+
+^ The first block may contain predecessors!
+
+^ A catch node does not have any instructions.
 
 ---
 
