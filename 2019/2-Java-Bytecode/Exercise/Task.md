@@ -108,5 +108,5 @@ The goal of this exercise is to get a better understanding of the shape of real-
     - Average length of basic blocks in terms of the number of instructions 
     - The average in-degree of basic blocks; i.e., how many predecessors – in average – a basic block has
 
- 1. Test your analysis using the `IrreducibleCF` class found in folder `2-Java-Bytecode` in the lecture's GitHub repository
- 1. Run the analysis against the JDK
+ 1. Test your analysis using the `IrreducibleCF` class found in folder `2-Java-Bytecode` in the lecture's GitHub repository.
+ 1. Run the analysis against the JDK.
