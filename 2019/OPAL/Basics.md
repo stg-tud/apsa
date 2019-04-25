@@ -171,6 +171,16 @@ information to optimize the processing of the project. E.g., OPAL's `parForeachM
 
 ---
 
+# CFG for Java Bytecode
+
+
+
+---
+
+# Performance Measurements
+
+---
+
 # Using ProjectInformationKeys
 
 `ProjectInformationKey` objects are used to get/associate some (immutable) information with a project that should be computed on demand.
@@ -211,14 +221,10 @@ information to optimize the processing of the project. E.g., OPAL's `parForeachM
 
 ---
 
-# Performance Measurements
-
----
-
 # Getting the 3-Address Code (TAC(AI))
 
 ---
 
-# CFG
+# CFG for Three Address Code
 
 

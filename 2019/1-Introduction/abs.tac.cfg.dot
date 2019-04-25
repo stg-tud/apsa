@@ -1,0 +1,24 @@
+digraph G {
+        dir=forward;
+        ranksep=0.22;
+        rankdir=TB;
+
+        node [fontname="Helvetica Neue",fontsize=10, shape=rectangle, labelloc=l];
+        131115212["label"="5:  if({param1} >= 0) goto 7", width=1.799, height=0.25];
+        131115212 -> -233834793 [dir=forward];
+        131115212 -> 1026072380 [dir=forward];
+        -934396624["labelloc"="l","fillcolor"="green","style"="filled","label"="return", height=0.25];
+        1026072380["label"="6: lv6 = - {param1}", width=1.51, height=0.25, height=0.25];
+        1026072380 -> -233834793 [dir=forward];
+        1819764736["fillcolor"="green","style"="filled","label"="0: lv0 = -2147483648\l1: if({param1} != {lv0}) goto 5", width=1.99];
+        1819764736 -> 131115212 [dir=forward];
+        1819764736 -> 604039735 [dir=forward];
+        -233834793["label"="7: return {lv6, param1}", width=1.51, height=0.25];
+        -233834793 -> -934396624 [dir=forward];
+        209541128["style"="filled","label"="abnormal return","fillcolor"="red","labelloc"="l","shape"="octagon", height=0.25];
+        604039735["label"="2: lv2 = new ArithmeticException\l3: {lv2}/*(non-virtual) java.lang.ArithmeticException*/.<init>()", width=3.899];
+        604039735 -> 1935942048 [dir=forward];
+        604039735 -> 209541128 [dir=forward];
+        1935942048["label"="4:  throw {lv2}", width=1.0, height=0.25];
+        1935942048 -> 209541128 [dir=forward];
+}

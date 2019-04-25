@@ -24,8 +24,8 @@
 <!-- n0&#45;&gt;n1 -->
 <g id="edge1" class="edge">
 <title>n0&#45;&gt;n1</title>
-<path fill="none" stroke="black" d="M71.25,-75.58C64.03,-66.49 55.04,-55.18 47.06,-45.13"/>
-<polygon fill="black" stroke="black" points="49.61,-42.71 40.65,-37.06 44.13,-47.06 49.61,-42.71"/>
+<path fill="none" stroke="blue" d="M71.25,-75.58C64.03,-66.49 55.04,-55.18 47.06,-45.13"/>
+<polygon fill="blue" stroke="blue" points="49.61,-42.71 40.65,-37.06 44.13,-47.06 49.61,-42.71"/>
 <text text-anchor="middle" x="65" y="-52.68" font-family="Times,serif" font-size="14.00">F</text>
 </g>
 <!-- n2 -->
@@ -37,22 +37,22 @@
 <!-- n0&#45;&gt;n2 -->
 <g id="edge2" class="edge">
 <title>n0&#45;&gt;n2</title>
-<path fill="none" stroke="black" d="M98.75,-75.58C105.97,-66.49 114.96,-55.18 122.94,-45.13"/>
-<polygon fill="black" stroke="black" points="125.87,-47.06 129.35,-37.06 120.39,-42.71 125.87,-47.06"/>
+<path fill="none" stroke="blue" d="M98.75,-75.58C105.97,-66.49 114.96,-55.18 122.94,-45.13"/>
+<polygon fill="blue" stroke="blue" points="125.87,-47.06 129.35,-37.06 120.39,-42.71 125.87,-47.06"/>
 <text text-anchor="middle" x="122" y="-52.68" font-family="Times,serif" font-size="14.00">F</text>
 </g>
 <!-- n1&#45;&gt;n2 -->
 <g id="edge3" class="edge">
 <title>n1&#45;&gt;n2</title>
-<path fill="none" stroke="red" stroke-dasharray="1,5" d="M54.2,-18.88C69.61,-18.88 89.12,-18.88 105.92,-18.88"/>
-<polygon fill="red" stroke="red" points="105.97,-22.38 115.97,-18.88 105.97,-15.38 105.97,-22.38"/>
+<path fill="none" stroke="red" stroke-width="2" d="M54.2,-18.88C69.61,-18.88 89.12,-18.88 105.92,-18.88"/>
+<polygon fill="red" stroke="red" stroke-width="2" points="105.97,-22.38 115.97,-18.88 105.97,-15.38 105.97,-22.38"/>
 <text text-anchor="middle" x="85" y="-25.68" font-family="Times,serif" font-size="14.00">?</text>
 </g>
 <!-- n2&#45;&gt;n1 -->
 <g id="edge4" class="edge">
 <title>n2&#45;&gt;n1</title>
-<path fill="none" stroke="red" stroke-dasharray="1,5" d="M115.95,-5.39C105.62,-1.69 93.65,0.88 82.5,-0.88 76.47,-1.83 70.21,-3.33 64.16,-5.07"/>
-<polygon fill="red" stroke="red" points="62.75,-1.85 54.25,-8.17 64.84,-8.53 62.75,-1.85"/>
+<path fill="none" stroke="red" stroke-width="2" d="M115.95,-5.39C105.62,-1.69 93.65,0.88 82.5,-0.88 76.47,-1.83 70.21,-3.33 64.16,-5.07"/>
+<polygon fill="red" stroke="red" stroke-width="2" points="62.75,-1.85 54.25,-8.17 64.84,-8.53 62.75,-1.85"/>
 <text text-anchor="middle" x="85" y="-4.68" font-family="Times,serif" font-size="14.00">?</text>
 </g>
 </g>

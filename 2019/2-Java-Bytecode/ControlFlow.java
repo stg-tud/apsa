@@ -28,6 +28,13 @@ class ControlFlow {
         }
     }
 
+    public static int abs(int i) {
+        if(i == Integer.MIN_VALUE)
+            throw new ArithmeticException();
+        if(i < 0) i = -i;
+        return i;	
+    }
+
     // HELPER METHODS
     private static void doIt() {
         // EMPTY

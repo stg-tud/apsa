@@ -559,44 +559,97 @@ AssignmentStatement(
 
 # (Classical) Compiler Optimizations
 
- - partial evaluation
- - global scheduling
+ - common subexpression elimination
+ - constant folding and propagation
  - loop fusion
- - code motion
- - ... ()
+ - loop invariant code motion
+ - code-block reordering
+ - dead-code elimination
+ - … 
 
-often rely on the identification of the so-called control dependencies which are computed using (control-flow) graphs. The underlying techniques, such as, loop identification or live variable analyses are also relevant for static analyses.
+often rely on the identification of the so-called _control dependencies_ which are computed using control-flow graphs (CFGs). Though the optimizations as such are already relevant (e.g., to help deobfuscate code), the underlying techniques, such as, loop identification or live variable analyses are also relevant for static analyses on their own.
 
 ^ Traditional analyses[^DragonBook] often rely on a program's control-flow graphs to compute the control dependencies, but make unrealistic assumptions about the structure of the code. Exception handling and infinite loops which lead to methods with multiple exit points or no exit points are often neglected[^NewFoundationForControlDependenceAndSlicing]. Standard techniques to handle such methods (like __picking__ an arbitrary instruction and making it the exit-instruction in case of an infinite loop) potentially lead to incorrect control-dependencies.
 
 ---
 
-# Graphs
+# (Control-)Flow Graph (CFG)
+
+[.build-lists: true]
 
 ^ Next, we repeat the basics of control-flow graphs and how to compute control-dependencies. Both are needed by static analysis.
 
-A control-flow graph $$G = (N,A)$$ consists of a finite set $$N$$ of nodes and a set $$A \subseteq N \times N$$ of edges. An edge $$(n_1,n_2)$$ has a source $$n_1$$ and a target $$n_2$$. If $$n1 == n2$$ it is a self-loop.
+Given a labeled, directed control-flow graph $$G = (N,E,n_o)$$ which consists of the finite set $$N$$ of the statements of the program and the set of edges $$E$$  which represent the control flow between statements.
 
-^ In the scope of this lecture, when we talk about graphs, we generally mean directed graphs.
+ - $$N$$ is partitioned into two subsets:
+   - $$ N^{S} $$ – _statement nodes_ with at most one successor and 
+   - $$ N^{P} $$ – _branch nodes_ with at least two _distinct_ successors
+
+ - $$N^{E} \subseteq N^{S}$$ denotes the nodes in $$N^{S}$$ that have no successors (the exit nodes)
+ - the start node $$n_0$$ has no incoming edges and all nodes in $$N$$ are reachable.
+ - if $$N^{E}$$ contains only one element and this element is reachable from all other nodes of G then G satisfies the _unique end node property_
+
+---
+
+# CFG - Nodes
+
+[.code-highlight: 2-8]
+[.code-highlight: 2]
+[.code-highlight: 3]
+[.code-highlight: 4,7]
+[.code-highlight: 5]
+[.code-highlight: 6]
+[.code-highlight: 8]
+
+```java
+public static long sumOfInts(int upTo) {
+    long s = 1l;        // stmt node (assign)
+    int i = 2;          // stmt node (assign)
+    while (i < upTo) {  // branch node (if)
+        s += i;         // stmt node (add followed by assign)
+        i++;            // stmt node (inc)
+    } // goto loop start - stmt node; control-transfer instruction 
+    return s;           // stmt node
+}
+```
+
+---
+
+# CFGs - Paths
+
+A CFG path $$\pi$$ from $$n_i$$ to $$n_k$$ is a sequence of nodes $$n_i,n_{i+1},\dots,n_k$$ such that for each consecutive pair $$(n_i,n_j)$$ in the path an edge from $$n_i$$ to $$n_j$$ exists.
+
+A path is _nontrivial_ if it contains at least two nodes.
+
+A path is _maximal_ if it is infinite or terminates in an end node.
 
 ---
 
 # Dominance
 
-A Node... dom
+A Node $$n$$ dominates node $$m$$ in $$G$$ (dom(n,m)) if _every_ path from the start node $$n_0$$ to $$m$$ passes through $$n$$ (hence, dom is reflexive).
+
+^ Please recall that the classical definitions of post-dominance can often not reliably used to Java bytecode.
 
 ---
 
-# (Control-)Flow Graph
+# Dominance - Example
 
- - The control-flow graph (CFG) represents the control flow of a single method.
+```java
+public static int abs(int i) {
+	if(i == Integer.MIN_VALUE)
+		throw new ArithmeticException();
+	if(i < 0) 
+		i = -i;
+	return i;	
+}
+```
 
- - Each node represents a basic block. A basic block is a maximal-length sequence of statements without jumps in and out (and no exceptions are thrown by intermediate instructions).
-The arcs represent the inter-node control flow.
+^ Here, e.g., the `if` statements dominate the return instruction, but `i = -i` or `throw new ...` doesn't. Additionally, the `throw new ...` statement is also dominated by the first `if` (line 2).
 
 ---
 
-# Irreducible ((Control-)Flow) Graphs
+# (Ir)Reducible CFGs
 
 A CFG $$G=(N,E,n0)$$ is __reducible__ if ...
 
@@ -606,7 +659,7 @@ A CFG $$G=(N,E,n0)$$ is __reducible__ if ...
 
 ---
 
-# Reducible ((Control-)Flow) Graphs - Example
+# Reducible CFGs - Example
 
 B = Backward Edge; F = Forward Edge
 
@@ -617,7 +670,7 @@ B = Backward Edge; F = Forward Edge
 
  ---
 
-# Irreducible ((Control-)Flow) Graphs - Example
+# Irreducible CFGs - Example
 
 B = Backward Edge; F = Forward Edge
 
@@ -627,9 +680,33 @@ B = Backward Edge; F = Forward Edge
 
 ---
 
+# CFGs based on _Basic Blocks_
 
+In real-word CFGs the nodes are typically based on using basic blocks.
 
+ - A basic block is a maximal-length sequence of statements without jumps in and out (and no exceptions are thrown by intermediate instructions).
+ 
+ - A basic blocks based CFG (still) represents the control flow of a single method. 
 
+---
+
+# CFGs based on _Basic Blocks_ - Example
+
+^ In the following, we'll see the control-flow graph for the given method based on the three-address code representation of the method.
+
+```java
+public static int abs(int i) {
+	if(i == Integer.MIN_VALUE)
+		throw new ArithmeticException();
+	if(i < 0) 
+		i = -i;
+	return i;	
+}
+```
+
+![inline](abs.tac.cfg.svg)
+
+^ Please note, that the basic blocks are rather small. This is a typical property of real world code. Furthermore, the call of the constructor may throw an arbitrary exception and therefore also lead to an abnormal return.
 
 
 ^ <!----------------------------------------------------------------------------------------------->
@@ -652,4 +729,4 @@ B = Backward Edge; F = Forward Edge
 
 ^ [^NewFoundationForControlDependenceAndSlicing]: Ranganath, V. P., Amtoft, T., Banerjee, A., Hatcliff, J., & Dwyer, M. B.; A new foundation for control dependence and slicing for modern program structures. ACM Trans. Program. Lang. Syst., 29(5), 2007, [doi](http://doi.org/10.1145/1275497.1275502)
 
-^ [^DragonBook]: A. Aho, R. Sethi and J. D. Ullman; Comnpilers - Principles, Techniques and Tools; Addison Wesley 1988
+^ [^DragonBook]: A. Aho, R. Sethi and J. D. Ullman; Compilers - Principles, Techniques and Tools; Addison Wesley 1988

@@ -94,3 +94,19 @@ if(!f.delete()) {System.out.println("File could not be deleted")};
 
  1. Test your analysis by running it against the entire JDK. What do you think about the result?
 
+## Exercise: Comprehending CFGs
+
+The goal of this exercise is to get a better understanding of the shape of real-world CFGs.
+
+***Tasks***
+
+ 1. Develop an analysis to help you understand why a basic block ends? Does it end due to a potentially thrown exception, a return instruction, a control transfer instruction or because the next instruction is a regular instruction to which some branch instruction jumps to? If a basic block ends due to multiple reasons, count all of them.
+ 1. Develop a small analysis which computes the following metrics for some set of methods (__always w.r.t. the number of instructions__; i.e., _not in terms of the length of the underlying bytecode array_):
+    - The number of basic blocks in the code base
+    - Most frequent basic-block length
+    - Maximum length of a basic block 
+    - Average length of basic blocks in terms of the number of instructions 
+    - The average in-degree of basic blocks; i.e., how many predecessors – in average – a basic block has
+
+ 1. Test your analysis using the `IrreducibleCF` class found in folder `2-Java-Bytecode` in the lecture's GitHub repository
+ 1. Run the analysis against the JDK

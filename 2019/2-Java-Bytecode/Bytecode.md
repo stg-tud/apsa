@@ -108,6 +108,29 @@ The Java Virtual Machine is a stack machine; i.e., all (except one) operations a
 
 ---
 
+# Java Bytecode - Object Creation
+
+In Java Bytecode, the creation of a new object:
+
+```java
+Object o = new Object();
+```
+is a two step process:
+
+[.code-highlight: 1,4]
+```java 
+new java/lang/Object;
+dup; // <= typically 
+... // push constructor parameters on the stack (if any)
+invokespecial java/lang/Object.<init>();
+... // do something with the initialized object		
+```
+
+^ Usages of an uninitialized object are strictly limited. It is, e.g., not possible to store it in fields of other objects or to pass it around.
+
+
+---
+
 # Java Bytecode - Control Flow
 
 [.autoscale: false]
@@ -134,6 +157,8 @@ static int max(int i, int j) {
 
 ^ Notice the compilation of the if statement. It is common that in the bytecode the if operator is the inverse one, because if the condition evaluates to true, we then perform the jump (to the else branch) while in the source code, we simply fall through in case the condition evaluates to true.
 
+^ ... TPODODO Stacklayout has to be compatible/heap has to be compatible...
+
 ---
 
 # Java Bytecode - Infinite Loops
@@ -157,32 +182,11 @@ public void run() {
 | 11 |	goto 0 |
 
 
----
-
-# Java Bytecode - Object Creation
-
-In Java Bytecode, the creation of a new object:
-
-```java
-Object o = new Object();
-```
-is a two step process:
-
-[.code-highlight: 1,4]
-```java 
-new java/lang/Object;
-dup; // <= typically 
-... // push constructor parameters on the stack (if any)
-invokespecial java/lang/Object.<init>();
-... // do something with the initialized object		
-```
-
-^ Usages of an uninitialized object are strictly limited. It is, e.g., not possible to store it in fields of other objects or to pass it around.
 
 
 ---
 
-# Java Bytecode - Exception Handling
+# Exception Handling
 
 ```java
 public delete(String s) {
@@ -211,11 +215,20 @@ Exception handler table:
 
 ^ Note that __this method has at least two exit points__: (5) - if some exception is thrown or if the execution returns normally.
 
+---
+
+# Irreducible CFGs
+
+
+
+????
+
+^ Irreducible CFGs are not common in Java bytecode; in particular not in bytecode generated  compilers. However, code obfuscators may make use of it to make decompilation (much) harder. Furthermore, explicitly engineered bytecode may also have irreducible CFGs.  
 
 
 ---
 
-# Java Bytecode - Lambda Expressions
+# Lambda Expressions
 
 [.code-highlight: 3]
 ```java
