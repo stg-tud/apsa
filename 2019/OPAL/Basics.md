@@ -94,7 +94,7 @@ object Main extends DefaultOneStepAnalysis {
 ```
 
 ^ You can get the template project using GIT:  
-`git clone --depth 1 git@bitbucket.org:OPAL-Project/myopalproject.git Project`
+`git clone --depth 1 https://bitbucket.org/OPAL-Project/myopalproject Project`
 
 
 ^ The default template predefines several parameters which affect the instantiation of the `Project`. Most notably, `-cp=<Folder or Jar File which contains the class files you want to analyze>`.
