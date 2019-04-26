@@ -553,7 +553,7 @@ AssignmentStatement(
 					 right = Const(1)))
 ```
 
-^ In the (later) intermediate representations, nested Control-flow and complex expressions are unraveled. Intermediate values are given explicit names. The instruction set is usually limited. All of that facilitates static analysis (but renders syntax oriented code analyses impossible).
+^ In the (later) intermediate representations, nested control-flow and complex expressions are unraveled. Intermediate values are given explicit names. The instruction set is usually limited. All of that facilitates static analysis (but renders syntax oriented code analyses impossible).
 
 ---
 
@@ -567,9 +567,9 @@ AssignmentStatement(
  - dead-code elimination
  - … 
 
-often rely on the identification of the so-called _control dependencies_ which are computed using control-flow graphs (CFGs). Though the optimizations as such are already relevant (e.g., to help deobfuscate code), the underlying techniques, such as, loop identification or live variable analyses are also relevant for static analyses on their own.
+often rely on the identification of the so-called _control dependencies_ which are computed using control-flow graphs (CFGs). Though the optimizations as such are already relevant (e.g., to help deobfuscate code), the underlying techniques, such as, loop identification or live-variable analyses are also relevant for static analyses on their own.
 
-^ Traditional analyses[^DragonBook] often rely on a program's control-flow graphs to compute the control dependencies, but make unrealistic assumptions about the structure of the code. Exception handling and infinite loops which lead to methods with multiple exit points or no exit points are often neglected[^NewFoundationForControlDependenceAndSlicing]. Standard techniques to handle such methods (like __picking__ an arbitrary instruction and making it the exit-instruction in case of an infinite loop) potentially lead to incorrect control-dependencies.
+^ Traditional analyses[^DragonBook] often rely on a program's control-flow graphs to compute the control dependencies, but make unrealistic assumptions about the structure of the code. Exception handling and infinite loops which lead to methods with multiple exit points or no exit points are often neglected[^NewFoundationForControlDependenceAndSlicing]. Standard techniques to handle such methods (like __picking__ an arbitrary instruction and making it the exit instruction in case of an infinite loop) potentially lead to incorrect control dependencies.
 
 ---
 
@@ -577,9 +577,9 @@ often rely on the identification of the so-called _control dependencies_ which a
 
 [.build-lists: true]
 
-^ Next, we repeat the basics of control-flow graphs and how to compute control-dependencies. Both are needed by static analysis.
+^ Next, we repeat the basics of control-flow graphs and how to compute control dependencies. Both are needed by static analysis.
 
-Given a labeled, directed control-flow graph $$G = (N,E,n_o)$$ which consists of the finite set $$N$$ of the statements of the program and the set of edges $$E$$  which represent the control flow between statements.
+Given a labeled, directed control-flow graph $$G = (N,E,n_o)$$ consiting of the finite set $$N$$ of the statements of the program and the set of edges $$E$$  which represent the control flow between statements.
 
  - $$N$$ is partitioned into two subsets:
    - $$ N^{S} $$ – _statement nodes_ with at most one successor and 
@@ -587,7 +587,7 @@ Given a labeled, directed control-flow graph $$G = (N,E,n_o)$$ which consists of
 
  - $$N^{E} \subseteq N^{S}$$ denotes the nodes in $$N^{S}$$ that have no successors (the exit nodes)
  - the start node $$n_0$$ has no incoming edges and all nodes in $$N$$ are reachable.
- - if $$N^{E}$$ contains only one element and this element is reachable from all other nodes of G then G satisfies the _unique end node property_
+ - if $$N^{E}$$ contains only one element and this element is reachable from all other nodes of $$G$$ then $$G$$ satisfies the _unique end node property_
 
 ---
 
