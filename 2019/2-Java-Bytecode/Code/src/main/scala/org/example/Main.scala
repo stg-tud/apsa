@@ -4,7 +4,7 @@ import java.net.URL
 import java.io.File
 import java.nio.file.Files
 
-import org.opalj.br.analyses.DefaultOneStepAnalysis
+import org.opalj.br.analyses.ProjectAnalysisApplication
 import org.opalj.br.analyses.BasicReport
 import org.opalj.br.analyses.Project
 import org.opalj.ba.{CLASS, CODE, METHOD, METHODS, PUBLIC}

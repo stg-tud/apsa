@@ -11,7 +11,7 @@ import org.opalj.br._
 import org.opalj.br.analyses._
 import org.opalj.br.instructions._
 
-object DoNotInvokeThreadRun extends DefaultOneStepAnalysis {
+object DoNotInvokeThreadRun extends ProjectAnalysisApplication {
 
   override def description: String = {
     "Finds Thread.run calls (See The CERT Oracle Secure Coding Standard for Java - Rule TH100-J - for details.)."

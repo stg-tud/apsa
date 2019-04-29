@@ -77,7 +77,7 @@ platform written in Scala.
 [.code-highlight: 4]
 
 ```scala
-object Main extends DefaultOneStepAnalysis {
+object Main extends ProjectAnalysisApplication {
 
   def doAnalyze(
   	p: Project[URL], // The main entry point
