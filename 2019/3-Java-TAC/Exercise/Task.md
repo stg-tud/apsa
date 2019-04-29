@@ -8,7 +8,7 @@ Technische Universität Darmstadt
 # Simple Data-flow Analysis
 
 You should use `MyOPALProject` as a template. That project is preconfigured to use the latest snapshot version of OPAL. You can clone the project using:  
-`git clone --depth 1 git@bitbucket.org:OPAL-Project/myopalproject.git Project`
+`git clone --depth 1 https://bitbucket.org/OPAL-Project/myopalproject Project`
 
 An integrated JavaDoc of the latest snapshot version of OPAL that spans all subprojects can be found at:
 [www.opal-project.de](http://www.opal-project.de/library/api/SNAPSHOT)
