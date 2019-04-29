@@ -14,6 +14,9 @@ You can prototype the analyses using the console or develop small stand-alone an
 If you want to develop it as a real application, you should use `MyOPALProject` as a template.  That project is preconfigured to use the latest snapshot version of OPAL. You can clone the project using:  
 `git clone --depth 1 git@bitbucket.org:OPAL-Project/myopalproject.git Project`
 
+An integrated JavaDoc of the latest snapshot version of OPAL that spans all subprojects can be found at:
+[www.opal-project.de](http://www.opal-project.de/library/api/SNAPSHOT)
+
 For further details regarding the development of static analysis using OPAL see the OPAL tutorial.
 
 ## Exercise: Security Checks in Private or Final Methods

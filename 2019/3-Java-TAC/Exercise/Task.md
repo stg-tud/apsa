@@ -10,6 +10,9 @@ Technische Universität Darmstadt
 You should use `MyOPALProject` as a template. That project is preconfigured to use the latest snapshot version of OPAL. You can clone the project using:  
 `git clone --depth 1 git@bitbucket.org:OPAL-Project/myopalproject.git Project`
 
+An integrated JavaDoc of the latest snapshot version of OPAL that spans all subprojects can be found at:
+[www.opal-project.de](http://www.opal-project.de/library/api/SNAPSHOT)
+
 For further details regarding the development of static analysis using OPAL see the OPAL tutorial.
 
 You should develop both of the following analyses on top of the 3-address code representation (TACAI) offered by OPAL. Use the `l1.DefaultDomainWithCFGAndDefUse` domain and the `ProjectInformationKey` `ComputeTACAIKey` as the foundation for your analysis.
@@ -61,4 +64,62 @@ new BigDecimal("1.0");
 
  1. How does the bytecode change, when you exchange the floating-point literal `1.0f` (a float literal) against the floating-point literal `1.0d` $$(a double literal).
  1. Test your analysis using the class `BigDecimalAndStringLiteral`.
+ 1. Run your analysis against the JDK.
+
+
+ ## Closeables
+
+Develop an __interprocedural__ analysis which finds violations of the following rule taken from [The CERT Oracle Secure Coding Standard for Java](https://wiki.sei.cmu.edu/confluence/display/java):
+
+> FIO04-J: Close resources when they are not longer needed.
+
+Here, we consider as a resource every instance of the class `java.lang.AutoCloseable`.
+
+Non-compliant example:
+```java
+public int processFile(String fileName) throws Exception {
+  FileInputStream stream = new FileInputStream(fileName);
+  BufferedReader bufRead = new BufferedReader(new InputStreamReader(stream));
+  String line;
+  while ((line = bufRead.readLine()) != null) {
+    sendLine(line);
+  }
+  return 1;
+}
+```
+
+Compliant example:
+```java
+try (FileInputStream stream = new FileInputStream(fileName);
+     InputStreamReader reader = new InputStreamReader(stream);
+     BufferedReader bufRead = new BufferedReader(reader)) {
+  String line;
+  while ((line = bufRead.readLine()) != null) {
+    sendLine(line);
+  }
+} catch (IOException e) {
+    log(e);
+}
+```
+
+To reduce the number of false positives only apply this check if the resource object is created inside the same method and ...:
+ - not passed to some other method and not stored in a field (i.e., the resource object may be garbage collected at the end of the method), or
+ - the method is closed at least on one path.
+
+For example, ignore the following cases where the stream is passed in as a parameter:
+```java
+public int processFile(FileInputStream stream) throws Exception {
+  BufferedReader bufRead = new BufferedReader(new InputStreamReader(stream));
+  String line;
+  while ((line = bufRead.readLine()) != null) {
+    sendLine(line);
+  }
+  return 1;
+}
+```
+
+
+**Tasks**
+
+ 1. Test your analysis using the class `Closeables`. It should not produce any false positives.
  1. Run your analysis against the JDK.
