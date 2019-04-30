@@ -10,12 +10,14 @@ Technische Universität Darmstadt
 You should use `MyOPALProject` as a template. That project is preconfigured to use the latest snapshot version of OPAL. You can clone the project using:  
 `git clone --depth 1 https://bitbucket.org/OPAL-Project/myopalproject Project`
 
+> ️⚠️ Always ensure that you use the latest snapshot version. You can clean the latest (snapshot) version that you have downloaded using the command `sbt cleanCache cleanLocal` in your project's root folder.
+
 An integrated JavaDoc of the latest snapshot version of OPAL that spans all subprojects can be found at:
 [www.opal-project.de](http://www.opal-project.de/library/api/SNAPSHOT)
 
 For further details regarding the development of static analysis using OPAL see the OPAL tutorial.
 
-You should develop both of the following analyses on top of the 3-address code representation (TACAI) offered by OPAL. Use the `l1.DefaultDomainWithCFGAndDefUse` domain and the `ProjectInformationKey` `ComputeTACAIKey` as the foundation for your analysis.
+You should develop the following analyses on top of the 3-address code representation (TACAI) offered by OPAL. Use the `l1.DefaultDomainWithCFGAndDefUse` domain and the `ProjectInformationKey` `ComputeTACAIKey` as the foundation for your analysis.
 
 ## Use Arrays.equals
 
@@ -62,14 +64,14 @@ new BigDecimal("1.0");
 
 ***Tasks***
 
- 1. How does the bytecode change, when you exchange the floating-point literal `1.0f` (a float literal) against the floating-point literal `1.0d` $$(a double literal).
+ 1. How does the bytecode change, when you exchange the floating-point literal `1.0f` (a float literal) against the floating-point literal `1.0d` (a double literal).
  1. Test your analysis using the class `BigDecimalAndStringLiteral`.
  1. Run your analysis against the JDK.
 
 
- ## Closeables
+## Closeables
 
-Develop an __interprocedural__ analysis which finds violations of the following rule taken from [The CERT Oracle Secure Coding Standard for Java](https://wiki.sei.cmu.edu/confluence/display/java):
+Develop an __interprocedural__ analysis using the monotone framework which finds violations of the following rule taken from [The CERT Oracle Secure Coding Standard for Java](https://wiki.sei.cmu.edu/confluence/display/java):
 
 > FIO04-J: Close resources when they are not longer needed.
 
@@ -102,9 +104,10 @@ try (FileInputStream stream = new FileInputStream(fileName);
 }
 ```
 
-To reduce the number of false positives only apply this check if the resource object is created inside the same method and ...:
- - not passed to some other method and not stored in a field (i.e., the resource object may be garbage collected at the end of the method), or
- - the method is closed at least on one path.
+To reduce the number of false positives, only apply this check if the resource object is created inside the same method and ...:
+
+- not passed to some other method and not stored in a field (i.e., the resource object may be garbage collected at the end of the method), or
+- the method is closed at least on one path.
 
 For example, ignore the following cases where the stream is passed in as a parameter:
 ```java
