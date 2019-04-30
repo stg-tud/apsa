@@ -9,12 +9,12 @@ This repository contains the lecture slides related to the lecture **Applied Sta
 ### Slides
 
  1. Week 
-  - [Organization.pdf](2019/0-Organization/Organization.pdf)
-  - [Introduction.pdf](2019/1-Introduction/Introduction.pdf)
+    - [Organization.pdf](2019/0-Organization/Organization.pdf)
+    - [Introduction.pdf](2019/1-Introduction/Introduction.pdf)
  1. Week  
-  - [Java-Bytecode.pdf](2019/2-Java-Bytecode/Bytecode.pdf)
+    - [Java-Bytecode.pdf](2019/2-Java-Bytecode/Bytecode.pdf)
  1. Week 
-  - [TAC.pdf](2019/3-Java-TAC/TAC.pdf) _Work in Progress_
+    - [TAC.pdf](2019/3-Java-TAC/TAC.pdf) _Work in Progress_
 
 ### Complementary Material
 
