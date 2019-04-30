@@ -20,4 +20,5 @@ This repository contains the lecture slides related to the lecture **Applied Sta
 
 ## Exercise
  - [Java Bytecode.pdf](2019/2-Java-Bytecode/Exercise/Task.pdf)
+ - [Java Three Address Code.pdf](2019/3-Java-Tac/Exercise/Task.pdf)
 
