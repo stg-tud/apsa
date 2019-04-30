@@ -6,6 +6,10 @@ import java.io.ObjectOutputStream;
 
 class Closeables {
 
+    //
+    // TRUE POSITIVES
+    //
+
     static void tp0() throws Exception {
         Closeable c = new FileInputStream("Test.txt");
         print(c);
@@ -24,7 +28,9 @@ class Closeables {
             c.close();
     }
 
+    //
     // TRY TO PROVOKE FALSE POSITIVES
+    //
 
     static void fp0() throws Exception {
         try (Closeable c = new FileInputStream("Test.txt")) {
