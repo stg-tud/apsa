@@ -1,0 +1,25 @@
+digraph G {
+	dir=forward;
+    graph [ranksep="0.325", nodesep="0.425"];
+	0["style"="filled","label"="[0,6]","fillcolor"="green","labelloc"="l","shape"="box"];
+	0 -> 22 [dir=forward];
+	0 -> 9 [dir=forward];
+	-281333241020414["style"="filled","label"="try[2,27) ⇒ 33{Any}","fillcolor"="orange","labelloc"="l","shape"="rectangle"];
+	-281333241020414 -> 33 [dir=forward];
+	22["shape"="box","labelloc"="l","label"="[22,23]"];
+	22 -> 24 [dir=forward];
+	9["shape"="box","labelloc"="l","label"="[9,10]"];
+	9 -> -281333241020414 [dir=forward];
+	9 -> 13 [dir=forward];
+	33["shape"="box","labelloc"="l","label"="[33,38]"];
+	33 -> -9223372036854775807 [dir=forward];
+	24["shape"="box","labelloc"="l","label"="[24,32]"];
+	24 -> -9223372036854775808 [dir=forward];
+	13["shape"="box","labelloc"="l","label"="[13,13]"];
+	13 -> -281333241020414 [dir=forward];
+	13 -> 18 [dir=forward];
+	-9223372036854775807["style"="filled","label"="Abnormal Return","fillcolor"="red","labelloc"="l","shape"="octagon"];
+	-9223372036854775808["labelloc"="l","fillcolor"="green","style"="filled","label"="Normal Return"];
+	18["shape"="box","labelloc"="l","label"="[18,19]"];
+	18 -> 24 [dir=forward];
+}
