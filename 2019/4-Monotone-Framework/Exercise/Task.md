@@ -60,7 +60,7 @@ try (FileInputStream stream = new FileInputStream(fileName);
 To reduce the number of false positives, only apply this check if the resource object is created inside the same method and ...:
 
 - not passed to some other method, not returned and not stored in a field (i.e., only apply this check if the resource object is subject to garbage collection at the end of the method), or
-- the method is closed at least on one path.
+- the resource is closed at least on one path.
 
 For example, ignore the following cases where the stream is passed in as a parameter:
 ```java
