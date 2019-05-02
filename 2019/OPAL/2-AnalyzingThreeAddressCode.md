@@ -76,7 +76,7 @@ Alternative domains:
  - `l1.DefaultDomainWithCFGAndDefUse` - type information is computed more precisely. 
  - `l2.DefaultPerformInvocationsDomainWithCFGAndDefUse` - monomorphic calls are inlined (depth:1).
 
-^ The l0 domain is the fast domain that can be used. Depending on the use-case it may be sufficient and it provides SAA-like three-address code that is widely comparable to SSA code used by other frameworks.
+^ The l0 domain is the fast domain that can be used. Depending on the use-case it may be sufficient and it provides SSA-like three-address code that is widely comparable to SSA code used by other frameworks.
  
 ^ The l1 domain additionally tracks `Class` and `String` objects (intra-procedurally) and tries to compute the ranges of integer variables.
 
@@ -117,7 +117,7 @@ class TACode[P <: AnyRef, V <: Var[V]](
 # OPAL's three-address code 
 ## On the origin of values
 
-When we analyze a method it may happen that a single expression/statement gives rives to different values: the value that is computed if the expression completes successfully and the value that is computed if the evaluation throws an exception!
+When we analyze a method it may happen that a single expression/statement gives rise to different values: the value that is computed if the expression completes successfully and the value that is computed if the evaluation throws an exception!
 
 In general, a def site can be a value in the ranges:
 
