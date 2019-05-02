@@ -61,7 +61,7 @@ platform written in Scala.
 
 ^ - The Bytecode Representation framework provides a high-level object-oriented representation of  Java Bytecode which is well suited for simple analyses which do not require the tracking of data-flow information. 
 ^   - The constant-pool is resolved to facilitate pattern matching
-^   - Standard Java and Scala Invokedynamic instructions are rewritten
+^   - Standard Java and Scala `invokedynamic` instructions are rewritten
 ^   - Control-flows are normalized
 
 ^ - Abstract Interpretation Framework is a very lightweight framework for the abstract interpretation; currently it is primarily useful for intra-procedural analyses.
@@ -69,6 +69,22 @@ platform written in Scala.
 ^ - The three-address code framework provides a high level register-based intermediate representation. It provides two basic representations:
 ^   - TACNaive which is an untyped three-address code like representation of Java bytecode 
 ^   - TACAI which is typed, SSA-like three-address code representation. This is the primary representation used by analysis.
+
+
+---
+
+# General design decisions
+
+ - All major classes are (effectively) immutable.  
+ - Extensive support for pattern matching.  
+ - There are no “null” values unless explicitly noted.  
+   (E.g., the instructions array typically contains `null` values.)
+ 
+^ The decision to make basically all major data-structures immutable was made to facilitate parallelization. 
+ 
+^ If available, always use the accessor methods offered by the class that manages the collection and not the collection itself.  
+^ E.g., to find a method with a specific name, use the respective method defined by `Method` and do not use the (underlying) collection’s find method; to iterate over the instructions of a method use `Code`’s respective methods. The explicitly defined methods generally offer additional functionality or are more efficient due to domain knowledge.
+
 
 
 ---
