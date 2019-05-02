@@ -117,12 +117,15 @@ class TACode[P <: AnyRef, V <: Var[V]](
 # OPAL's three-address code 
 ## On the origin of values
 
-When we analyze a method the source of a value can be outside of the current method.
+When we analyze a method it may happen that a single expression/statement gives rives to different values: the value that is computed if the expression completes successfully and the value that is computed if the evaluation throws an exception!
 
+In general, a def site can be a value in the ranges:
 
-
-
-
+| Range | Semantics |
+| ----- | ----- | 
+| [0...`stmts.length`] | The `Assignment` statement at the given index (def-site) initialized the variable. |
+| [-256...-1] | Identifies the respective parameter. |
+| [-165535...-100,000] | Identifies an exception that was created by the JVM because the evaluation of the instruction failed. |
 
 ---
 
@@ -158,8 +161,8 @@ case class Goto(pc: PC, target: Int)
 ^ The target is the absolute address of the jump target in the statements array. 
 
 ^ If you analyze pre Java-6 code, you may encounter the following statements which are used by old compilers when compiling try-finally statements:
-^ JSR(pc: PC, target: Int)
-^ Ret(pc: PC, returnAddresses: PCs) 
+^ `case class JSR(pc: PC, target: Int)`
+^ `case class Ret(pc: PC, returnAddresses: PCs)`
 
 ---
 
@@ -192,15 +195,6 @@ case class Switch[+V <: Var[V]](
 
 case class ReturnValue[+V <: Var[V]](pc: Int, expr: Expr[V])
 case class Return(pc: PC)
-
-```scala
-case class ArrayStore[+V <: Var[V]](
-        pc:       PC,
-        arrayRef: Expr[V],
-        index:    Expr[V],
-        value:    Expr[V]
-)
-```
 
 ---
 
@@ -256,7 +250,7 @@ case class StaticMethodCall[+V <: Var[V]](
 
 ---
 
-# OPAL's three-address code - Statements
+# OPAL's three-address code - Writing fields
 
 ```scala
 case class PutField[+V <: Var[V]](
@@ -290,7 +284,7 @@ case class InvokedynamicMethodCall[+V <: Var[V]](
 )
 ```
 
-^ In general, it is recommended to let OPAL resolve `invokedynamic` based calls to avoid that analyses have to handle them explicitly. However, OPAL only provides resolution of Java/Scala invokedynamic calls at the moment. Therefore, it is always required to also be able to handle this statement.
+^ In general, it is recommended to let OPAL resolve `invokedynamic` based calls to avoid that analyses have to handle them explicitly. However, OPAL only provides resolution of Java/Scala `invokedynamic` calls at the moment. Therefore, it is always required to also be able to handle this statement.
 
 ---
 
@@ -307,6 +301,14 @@ case class ExprStmt[+V <: Var[V]](pc: Int, expr: Expr[V])
 case class Checkcast[+V <: Var[V]](pc: PC, value: Expr[V], cmpTpe: ReferenceType)
 
 
+```scala
+case class ArrayStore[+V <: Var[V]](
+        pc:       PC,
+        arrayRef: Expr[V],
+        index:    Expr[V],
+        value:    Expr[V]
+)
+```
 
 case class MonitorEnter[+V <: Var[V]](pc: PC, objRef: Expr[V])
 case class MonitorExit[+V <: Var[V]](pc: PC, objRef: Expr[V])
