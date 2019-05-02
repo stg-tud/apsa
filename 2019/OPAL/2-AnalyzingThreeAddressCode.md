@@ -127,6 +127,12 @@ In general, a def site can be a value in the ranges:
 | [-256...-1] | Identifies the respective parameter. |
 | [-165535...-100,000] | Identifies an exception that was created by the JVM because the evaluation of the instruction failed. |
 
+
+---
+
+`DVar's and `UVar`s
+
+
 ---
 
 # OPAL's three-address code - Assignments
@@ -147,6 +153,8 @@ case class Assignment[+V <: Var[V]](
 
 ^ After generation, OPAL's three-address code is flat. That is, all expressions referred to by expressions are either `Var`s or `Consts`, but not further nested expressions. For example, if the right hand side is a binary expression then the operands are guaranteed to be either `Const`s or `Var`s.
 
+
+case class ExprStmt[+V <: Var[V]](pc: Int, expr: Expr[V])
 
 ---
 
@@ -296,7 +304,7 @@ To facilitate an efficient conversion, OPAL sometimes inserts `NOP`s in the gene
 Nop(pc: PC) 
 ```
 
-case class ExprStmt[+V <: Var[V]](pc: Int, expr: Expr[V])
+
 
 case class Checkcast[+V <: Var[V]](pc: PC, value: Expr[V], cmpTpe: ReferenceType)
 
