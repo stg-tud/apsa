@@ -89,7 +89,7 @@ object Main extends ProjectAnalysisApplication {
 	isInterrupted: () ⇒ Boolean // Should be called to test if the analysis should be aborted
   ): BasicReport = {
 	// Here goes the analysis...    
-	"Done"
+	BasicReport("Done") // Here goes the analysis' result 
   }
 
 }
