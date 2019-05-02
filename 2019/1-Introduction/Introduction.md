@@ -9,7 +9,7 @@ theme: APSA Lecture
 Software Technology Group
 Department of Computer Science
 Technische Universität Darmstadt
-[Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
+[Dr. Michael Eichberg](mailto:m.eichberg@me.com)
 
 ^ > Some of the following material is taken from the script "Static Program Analysis" from Anders Møller and Michael I. Schwartzbach and from the Slides "Mechanics of Static Analysis" from David Schmitt.
 
