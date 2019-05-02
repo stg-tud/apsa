@@ -43,7 +43,15 @@ Three-address code is a sequence of statements (linearized representation of a s
 
 where x,y and z are (local variable) names, constants (in case of y and z) or compiler-generated temporaries.
 
-^ The name was chosen, because “most” statements use three addresses: two for the operators and one to store the result
+^ The name was chosen, because *most* statements use three addresses: two for the operators and one to store the result.
+
+^ Two fundamental implementation techniques can be distinguished:
+
+^ - quadruples: in this case result is made explicit.
+^ - triplets: in this representation temporary names are avoided by directly referring to the definition sites in expression.
+
+^ In static analysis frameworks quadruples based representations are more common and the result  variable is also used to bind def-use information.
+
 
 ---
 
@@ -111,18 +119,81 @@ static int numberOfDigits(int i) {
 
 # Optimizations to get "reasonable" three-address code
 
- - Peephole optimizations use a “sliding window” over the cfg’s basic blocks to perform, e.g., the following optimizations:
-   - copy propagation
-   - elimination of redundant loads and stores
-   - constant folding
-   - constant propagation
-   - common subexpression elimination
-   - strength reduction (`x * 2` ⇒ `x + x`; `x / 2` ⇒ `x >> 1`)
-   - elimination of useless instructions (`y = x * 0` ⇒ `y = 0`)
- - Intra-procedural analyses:
-   - to type the reference variables  
+ 1. Peephole optimizations which use a *sliding window* over the cfg’s basic blocks to perform, e.g., the following optimizations:
+    - copy propagation
+    - elimination of redundant loads and stores
+    - constant folding
+    - constant propagation
+    - common subexpression elimination
+    - strength reduction (`x * 2` ⇒ `x + x`; `x / 2` ⇒ `x >> 1`)
+    - elimination of useless instructions (`y = x * 0` ⇒ `y = 0`)
+ 1. Intra-procedural analyses:
+    - to type the reference variables
+    - *standard optimizations to further minimize the code*
 
 ^ E.g., in Soot many of the steps described above are performed sequentially. OPAL, however, uses a different approach inspired by graph-free data-flow analysis[^GraphFreeDataFlowAnalysis] to compute the three-address code representation in two steps: (1) performing the data-flow analysis, (2) generation of the final three address code. This enables OPAL to be faster and more precise.
+
+
+---
+
+# Static Single Assignment Form
+
+^ Many analyses require def-use information. I.e., the information where a used local variable is defined or vice versa.
+
+When an intermediate (three-address code based) representation is in SSA (Form) then:
+
+ - each variable is assigned exactly once (i.e., it has only one static definition-site in the program text), and 
+ - every variable is defined before it is used. 
+ 
+When two control-flow paths merge, a selector function 𝜙 is used that initializes the variable based on the control flow that was taken.
+
+
+---
+
+# Example plain(naive) three-address code
+
+```java
+static int max(int i, int j) {
+  int max;
+  if (i > j) max = i; else  max = j;
+  return max;
+}
+```
+
+```java
+0: if(i <= j) goto 3;
+1: r_0 = i;
+2: goto 4;
+3: r_0 = j;
+4: return r_0;
+```
+
+^ In the naive three-address code the def-use/use-def chain is not explicit. To get the respective information a *reaching-definitions* analysis needs to be performed. For example, to determine that `r_0` contains either `i` or `j` a data-flow analysis of the entire method is required.
+
+---
+
+# Example SSA three-address code
+
+```java
+static int max(int i, int j) {
+  int max;
+  if (i > j) max = i; else  max = j;
+  return max;
+}
+```
+
+```java
+0: if(i <= j) goto 3;
+1: t_1 = i;
+2: goto 4;
+3: t_2 = j;
+4: t_3 = 𝛷(t_1,t_2); // <= Control-flow join
+   return t_3;
+```
+
+^ In the above code every local variable has a single definition site and it is only initialized at that site. The 𝛷 function is required since the returned value is either (exclusively) `t_1` or `t_2` and this depends on the past control-flow. The information that `t_3` is either `i` or `j` can be deduced by following the use-def chain. 
+
+^ Soot's SSA representation is called Shimple. OPAL offers an SSA-like representation which is called TACAI.
 
 
 ^ <!----------------------------------------------------------------------------------------------->
@@ -133,4 +204,4 @@ static int numberOfDigits(int i) {
 
 ^ [^DragonBook]: A. Aho, R. Sethi and J. D. Ullman; Compilers - Principles, Techniques and Tools; Addison Wesley 1988
 
-^ [^GraphFreeDataFlowAnalysis]: Mohnen, M.; A Graph—Free Approach to Data—Flow Analysis. In Compiler Construction (Vol. 2304, pp. 46–61). 2002; http://doi.org/10.1007/3-540-45937-5_6
+^ [^GraphFreeDataFlowAnalysis]: Mohnen, M.; A Graph—Free Approach to Data—Flow Analysis. In Compiler Construction (Vol. 2304, pp. 46–61). 2002; [DOI](http://doi.org/10.1007/3-540-45937-5_6)
