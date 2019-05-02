@@ -3,7 +3,7 @@
 Software Technology Group  
 Department of Computer Science  
 Technische Universität Darmstadt  
-[Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
+[Dr. Michael Eichberg](mailto:m.eichberg@me.com)
 
 # Simple Data-flow Analysis
 
@@ -44,7 +44,7 @@ Recall that arrays are objects and that it is therefore possible to call those m
 ***Tasks***
 
  1. Test your analysis using the class `ArraysEquals`.
- 1. Run your analysis against the JDK
+ 1. Run your analysis against the JDK.
 
 ## BigDecimal and Floating Point Literals
 
@@ -67,3 +67,4 @@ new BigDecimal("1.0");
  1. How does the bytecode change, when you exchange the floating-point literal `1.0f` (a float literal) against the floating-point literal `1.0d` (a double literal).
  1. Test your analysis using the class `BigDecimalAndStringLiteral`.
  1. Run your analysis against the JDK.
+ 

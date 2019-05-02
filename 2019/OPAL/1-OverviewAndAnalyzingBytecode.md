@@ -9,7 +9,11 @@ slidenumbers: true
 Software Technology Group  
 Department of Computer Science  
 Technische Universität Darmstadt  
-[Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
+[Dr. Michael Eichberg](mailto:m.eichberg@me.com)
+
+> If you have questions don't hesitate to join our public chat:   [Gitter](https://gitter.im/OPAL-Project/Lobby)
+> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/OPAL/1-OverviewAndAnalyzingBytecode.md)
+
 
 ---
 

@@ -3,7 +3,7 @@
 Software Technology Group  
 Department of Computer Science  
 Technische Universität Darmstadt  
-[Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
+[Dr. Michael Eichberg](mailto:m.eichberg@me.com)
 
 # Simple Static Analyses
 
@@ -19,7 +19,7 @@ An integrated JavaDoc of the latest snapshot version of OPAL that spans all subp
 
 For further details regarding the development of static analysis using OPAL see the OPAL tutorial.
 
-## Exercise: Security Checks in Private or Final Methods
+## Security Checks in Private or Final Methods
 
 Develop an analysis that finds violations of the following rule taken from The CERT Oracle Secure Coding Standard for Java:
 
@@ -71,7 +71,7 @@ public final void processSensitiveFile(){
  1. Ask yourself which classes, beyond those that are explicitly declared final, are also effectively final and should also be exempt.
 
 
-## Exercise: Ignored Return Value
+## Ignored Return Value
 
 Develop an analysis that finds violations of the following rule taken from The CERT Oracle Secure Coding Standard for Java:
 
@@ -97,7 +97,7 @@ if(!f.delete()) {System.out.println("File could not be deleted")};
 
  1. Test your analysis by running it against the entire JDK. What do you think about the result?
 
-## Exercise: Comprehending CFGs
+## Comprehending CFGs
 
 The goal of this exercise is to get a better understanding of the shape of real-world CFGs.
 
@@ -113,3 +113,14 @@ The goal of this exercise is to get a better understanding of the shape of real-
 
  1. Test your analysis using the `IrreducibleCF` class found in folder `2-Java-Bytecode` in the lecture's GitHub repository.
  1. Run the analysis against the JDK.
+ 
+ 
+## Do not use Thread.stop
+
+Develop an analysis which finds violations of the following rule taken from [The CERT Oracle Secure Coding Standard for Java](https://wiki.sei.cmu.edu/confluence/display/java):
+
+> THI05-J: Do not use Thread.stop to terminate threads.
+
+**Tasks**
+  1. Test your analysis using the class `ThreadStop`
+  1. Test your analysis against the JDK.

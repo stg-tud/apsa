@@ -5,11 +5,17 @@ slidenumbers: true
 # The Static Analysis Framework OPAL  
 
 ## The 3-Address Code Representation
+**Introduction**
 
 Software Technology Group  
 Department of Computer Science  
 Technische Universität Darmstadt  
-[Dr. Michael Eichberg](mailto:eichberg@informatik.tu-darmstadt.de)
+[Dr. Michael Eichberg](mailto:m.eichberg@me.com)
+
+
+> If you have questions don't hesitate to join our public chat:   [Gitter](https://gitter.im/OPAL-Project/Lobby)
+> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/OPAL/2-AnalyzingThreeAddressCode.md)
+
 
 ---
 
@@ -33,7 +39,7 @@ object TACNaive {
 
 # Getting the SSA-Like three-address code (TAC(AI))
 
-^ This requires the execution of a data-flow analysis because the SAA-like address code is parameterized over the result of the data-flow analysis (`AIResult`).
+^ This requires the execution of a data-flow analysis because the SAA-like address code is parameterized over the result of the data-flow analysis (`AIResult`). The three-address code is `SSA-like` because it makes the `def-use` and `use-def` directly available, but does not use ɸ-statements.
 
 ```scala
 object TACAI{
@@ -130,200 +136,23 @@ In general, a def site can be a value in the ranges:
 
 ---
 
-`DVar's and `UVar`s
+# OPAL's three-address code - Variables
 
-
----
-
-# OPAL's three-address code - Assignments
-
-The most frequent statement is the `Assignment` statement:
+^ The left-hand side of an assignment is always a unique `DVar`. A `DVar` provides information about the value, the origin of the value (the statement index) as well as the useSites. The kind of information provided about the value depends on the underlying data-flow analysis:
 
 ```scala
-case class Assignment[+V <: Var[V]](
-  pc:        PC,
-  targetVar: V,
-  expr:      Expr[V]
-)
-```
+class DVar[+Value <: ValueInformation] (
+  origin:   ValueOrigin,
+  value:    Value,
+  useSites: IntTrieSet
+) extends DUVar[Value]
+````
 
-^ `pc` is the pc of the underlying original bytecode instruction!
-
-^ `targetVar` identifies the var which stores the result of the evaluation of the right-hand side's expression. In case of the TACAI based representation it is always a so-called `DVar`.
-
-^ After generation, OPAL's three-address code is flat. That is, all expressions referred to by expressions are either `Var`s or `Consts`, but not further nested expressions. For example, if the right hand side is a binary expression then the operands are guaranteed to be either `Const`s or `Var`s.
-
-
-case class ExprStmt[+V <: Var[V]](pc: Int, expr: Expr[V])
-
----
-
-# OPAL's three-address code - Unconditional jumps
-
-Unconditional jumps:
+^ Expressions always use a `UVar` which makes the def-sites explicit and which provides (additional) information about the value. E.g., due to a type check.
 
 ```scala
-case class Goto(pc: PC, target: Int) 
+class UVar[+Value <: ValueInformation] (
+  value:    Value,
+  defSites: IntTrieSet
+) extends DUVar[Value]
 ```
-
-^ The target is the absolute address of the jump target in the statements array. 
-
-^ If you analyze pre Java-6 code, you may encounter the following statements which are used by old compilers when compiling try-finally statements:
-^ `case class JSR(pc: PC, target: Int)`
-^ `case class Ret(pc: PC, returnAddresses: PCs)`
-
----
-
-# OPAL's three-address code - Conditional jumps
-  
-```scala  
-case class If[+V <: Var[V]](
-  pc:            PC,
-  left:          Expr[V],
-  condition:     RelationalOperator,
-  right:         Expr[V],
-  target:        Int)
-```
-
-```scala
-case class Switch[+V <: Var[V]](
-  pc:            PC,
-  defaultTarget: Int,
-  index:         Expr[V],
-  npairs:        RefArray[IntIntPair])
-```
-
-^ The target is always given as an absolute address.
-
-^ In case of switches the `IntIntPair`'s first value is the case value; the second value is the absolute jump target.
-
----
-
-# OPAL's three-address code - Normal return from method
-
-case class ReturnValue[+V <: Var[V]](pc: Int, expr: Expr[V])
-case class Return(pc: PC)
-
----
-
-# OPAL's three-address code - Handling exceptions
-
-```scala
-case class Throw[+V <: Var[V]](pc: PC, exception: Expr[V])
-
-case class CaughtException[+V <: Var[V]](
-  pc:            PC,
-  exceptionType: Option[ObjectType],
-  throwingStmts: IntTrieSet
-) 
-```
-
-^ If the `exception` is `null` a new instance of a `NullPointerException` is generated and thrown, in general, however, the `exception` expression is a variable.
-
-^ In case of the TACAI based representation OPAL makes it explicit if an exception is caught by adding a `CaughtException` statement before the handler statement. 
-
-
----
-
-# OPAL's three-address code - Method invocations
-
-```scala
-case class (Non)VirtualMethodCall[+V <: Var[V]](
-        pc:             Int,
-        declaringClass: ReferenceType,
-        isInterface:    Boolean,
-        name:           String,
-        descriptor:     MethodDescriptor,
-        receiver:       Expr[V],
-        params:         Seq[Expr[V]])
-```	
-
-```scala
-case class StaticMethodCall[+V <: Var[V]](
-        pc:             Int,
-        declaringClass: ObjectType,
-        isInterface:    Boolean,
-        name:           String,
-        descriptor:     MethodDescriptor,
-        params:         Seq[Expr[V]])
-```
-
-^ The parameters are specified in... in case of a virtual parameter the first parameter is always the self-reference `this`.
-
-^ Given that it is possible to also call all methods defined by `java.lang.Object` on arrays the declaring class of virtual method calls can either be a class type or an array type.
-
-^ A non-virtual instance method call is a call where the call target is statically resolved. Such a call is either the call of a private method, a super call or a constructor call.
-
-^ Note that Java interfaces can now also define static and/or private methods.
-
----
-
-# OPAL's three-address code - Writing fields
-
-```scala
-case class PutField[+V <: Var[V]](
-        pc:                Int,
-        declaringClass:    ObjectType,
-        name:              String,
-        declaredFieldType: FieldType,
-        objRef:            Expr[V],
-        value:             Expr[V]) 
-```
-
-```scala
-case class PutStatic[+V <: Var[V]](
-        pc:                PC,
-        declaringClass:    ObjectType,
-        name:              String,
-        declaredFieldType: FieldType,
-        value:             Expr[V])
-```
-
-
----
-
-```scala
-case class InvokedynamicMethodCall[+V <: Var[V]](
-        pc:              PC,
-        bootstrapMethod: BootstrapMethod,
-        name:            String,
-        descriptor:      MethodDescriptor,
-        params:          Seq[Expr[V]]
-)
-```
-
-^ In general, it is recommended to let OPAL resolve `invokedynamic` based calls to avoid that analyses have to handle them explicitly. However, OPAL only provides resolution of Java/Scala `invokedynamic` calls at the moment. Therefore, it is always required to also be able to handle this statement.
-
----
-
-# OPAL's three-address code - Statements
-
-To facilitate an efficient conversion, OPAL sometimes inserts `NOP`s in the generated code.
-
-```scala
-Nop(pc: PC) 
-```
-
-
-
-case class Checkcast[+V <: Var[V]](pc: PC, value: Expr[V], cmpTpe: ReferenceType)
-
-
-```scala
-case class ArrayStore[+V <: Var[V]](
-        pc:       PC,
-        arrayRef: Expr[V],
-        index:    Expr[V],
-        value:    Expr[V]
-)
-```
-
-case class MonitorEnter[+V <: Var[V]](pc: PC, objRef: Expr[V])
-case class MonitorExit[+V <: Var[V]](pc: PC, objRef: Expr[V])
-
-
-
-
-
-
-

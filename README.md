@@ -27,14 +27,18 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     - [DoNotInvokeThreadRun.scala](2019/OPAL/Code/src/main/scala/de/tud/stg/br/DoNotInvokeThreadRun.scala)
     
  1. Week
-    - [OPAL - OverviewAndAnalyzingBytecode](2019/OPAL/1-OverviewAndAnalyzingBytecode.pdf)    
-    - [OPAL - AnalyzingThreeAddressCode](2019/OPAL/2-AnalyzingThreeAddressCode.pdf)
+    - [OPAL - Overview and Analyzing Bytecode](2019/OPAL/1-OverviewAndAnalyzingBytecode.pdf)    
+    - [OPAL - Analyzing Three Address Code](2019/OPAL/2-AnalyzingThreeAddressCode.pdf)
+    
+ 1. Week
+    - [OPAL - StatementsAndExpressions](2019/OPAL/3-ThreeAddressCodeStatementsAndExpressions.pdf)    
+
 
 ## Exercise
 
- 1. Analyzing Bytecode: [Task.pdf](2019/2-Java-Bytecode/Exercise/Task.pdf) ⇒  [Solution](2019/2-Java-Bytecode/Exercise/Solution)
+ 1. Analyzing Bytecode: [Task.pdf](2019/2-Java-Bytecode/Exercise/Task.pdf) ⇒  [Solution](2019/2-Java-Bytecode/Exercise/Solution) (Updated: May 2nd)
  
- 1. Analyzing Three Address Code: [Task.pdf](2019/3-Java-Tac/Exercise/Task.pdf)
+ 1. Analyzing Three Address Code: [Task.pdf](2019/3-Java-Tac/Exercise/Task.pdf) (Updated: May 2nd)
  
- 1. Monotone Framework: [Task.pdf](2019/4-Monotone-Framework/Exercise/Task.pdf)
+ 1. Monotone Framework: [Task.pdf](2019/4-Monotone-Framework/Exercise/Task.pdf) (Updated: May 2nd)
 
