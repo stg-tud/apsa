@@ -76,7 +76,7 @@ Alternative domains:
  - `l1.DefaultDomainWithCFGAndDefUse` - type information is computed more precisely. 
  - `l2.DefaultPerformInvocationsDomainWithCFGAndDefUse` - monomorphic calls are inlined (depth:1).
 
-^ The l0 domain is the fast domain that can be used. Depending on the use-case it may be sufficient and it provides SAA-like three-address code that is widely comparable to SSA code used by other frameworks.
+^ The l0 domain is the fast domain that can be used. Depending on the use-case it may be sufficient and it provides SSA-like three-address code that is widely comparable to SSA code used by other frameworks.
  
 ^ The l1 domain additionally tracks `Class` and `String` objects (intra-procedurally) and tries to compute the ranges of integer variables.
 
