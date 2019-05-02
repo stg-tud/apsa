@@ -117,7 +117,7 @@ class TACode[P <: AnyRef, V <: Var[V]](
 # OPAL's three-address code 
 ## On the origin of values
 
-When we analyze a method it may happen that a single expression/statement gives rives to different values: the value that is computed if the expression completes successfully and the value that is computed if the evaluation throws an exception!
+When we analyze a method it may happen that a single expression/statement gives rise to different values: the value that is computed if the expression completes successfully and the value that is computed if the evaluation throws an exception!
 
 In general, a def site can be a value in the ranges:
 
