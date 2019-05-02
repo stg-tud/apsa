@@ -25,13 +25,13 @@ Technische Universität Darmstadt
  
 platform written in Scala.
 
-^ This first tutorial is primarily concerned with analyzing Bytecode.
+^ This first tutorial is primarily concerned with analyzing Java bytecode.
 
 --- 
 
 # Requirements
 
- - Java 8
+ - Java 8 (JavaFX if the OpenJDK is used)
 
  - [Scala 2.12.8](http://scala-lang.org)
  
