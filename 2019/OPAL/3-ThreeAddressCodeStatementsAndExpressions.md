@@ -19,7 +19,7 @@ Technische Universität Darmstadt
 
 ---
 
-# OPAL's three-address code - Assignments
+# Statements - Assignments
 
 The most frequent statement is the `Assignment` statement:
 
@@ -27,8 +27,7 @@ The most frequent statement is the `Assignment` statement:
 case class Assignment[+V <: Var[V]](
   pc:        PC,
   targetVar: V,
-  expr:      Expr[V]
-)
+  expr:      Expr[V])
 ```
 
 ^ `pc` is the pc of the underlying original bytecode instruction!
@@ -37,12 +36,19 @@ case class Assignment[+V <: Var[V]](
 
 ^ After generation, OPAL's three-address code is flat. That is, all expressions referred to by expressions are either `Var`s or `Consts`, but not further nested expressions. For example, if the right hand side is a binary expression then the operands are guaranteed to be either `Const`s or `Var`s.
 
+If the result of an expression - which potentially has a side-effect – is ignored, an `ExprStmt` is used:
 
-case class ExprStmt[+V <: Var[V]](pc: Int, expr: Expr[V])
+```scala
+case class ExprStmt[+V <: Var[V]](
+  pc: Int, 
+  expr: Expr[V])
+```
+
+^ Pattern matching is facilitate by the common super class: `AssignmentLikeStmt`.
 
 ---
 
-# OPAL's three-address code - Unconditional jumps
+# Statements - Unconditional jumps
 
 Unconditional jumps:
 
@@ -58,7 +64,7 @@ case class Goto(pc: PC, target: Int)
 
 ---
 
-# OPAL's three-address code - Conditional jumps
+# Statements - Conditional jumps
   
 ```scala  
 case class If[+V <: Var[V]](
@@ -83,10 +89,15 @@ case class Switch[+V <: Var[V]](
 
 ---
 
-# OPAL's three-address code - Normal return from method
+# Statements - Normal return from method
 
 ```scala
-case class ReturnValue[+V <: Var[V]](pc: Int, expr: Expr[V])
+case class ReturnValue[+V <: Var[V]](
+  pc: Int, 
+  expr: Expr[V])
+```
+
+```scala
 case class Return(pc: PC)
 ```
 
@@ -94,26 +105,31 @@ case class Return(pc: PC)
 
 ---
 
-# OPAL's three-address code - Handling exceptions
-
-```scala
-case class Throw[+V <: Var[V]](pc: PC, exception: Expr[V])
-
-case class CaughtException[+V <: Var[V]](
-  pc:            PC,
-  exceptionType: Option[ObjectType],
-  throwingStmts: IntTrieSet
-) 
-```
+# Statements - Handling exceptions
 
 ^ If the `exception` is `null` a new instance of a `NullPointerException` is generated and thrown, in general, however, the `exception` expression is a variable.
 
+```scala
+case class Throw[+V <: Var[V]](
+  pc: PC, 
+  exception: Expr[V])
+```
+
 ^ In case of the TACAI based representation OPAL makes it explicit if an exception is caught by adding a `CaughtException` statement before the handler statement. 
+
+^ CaughtException is the only three-address code specific statement which is not based on a Java bytecode statement. It is basically the (always necessary) use site of a thrown exception that is otherwise swallowed.
+
+```scala
+case class CaughtException[+V <: Var[V]](
+  pc:            PC,
+  exceptionType: Option[ObjectType],
+  throwingStmts: IntTrieSet) 
+```
 
 
 ---
 
-# OPAL's three-address code - Method invocations
+# Statements - Method invocations
 
 ```scala
 case class (Non)VirtualMethodCall[+V <: Var[V]](
@@ -136,7 +152,7 @@ case class StaticMethodCall[+V <: Var[V]](
   params:         Seq[Expr[V]])
 ```
 
-^ The parameters are specified in... in case of a virtual parameter the first parameter is always the self-reference `this`.
+^ `params` are the explicitly declared parameters..
 
 ^ Given that it is possible to also call all methods defined by `java.lang.Object` on arrays the declaring class of virtual method calls can either be a class type or an array type.
 
@@ -146,7 +162,7 @@ case class StaticMethodCall[+V <: Var[V]](
 
 ---
 
-# OPAL's three-address code - Writing fields
+# Statements - Writing fields
 
 ```scala
 case class PutField[+V <: Var[V]](
@@ -170,7 +186,7 @@ case class PutStatic[+V <: Var[V]](
 
 ---
 
-# OPAL's three-address code - Invokedynamic
+# Statements - Invokedynamic
 
 ```scala
 case class InvokedynamicMethodCall[+V <: Var[V]](
@@ -187,7 +203,12 @@ case class InvokedynamicMethodCall[+V <: Var[V]](
 
 ---
 
-# OPAL's three-address code - Checkcast
+# Statements - Checkcast
+
+
+A `Checkcast` as, e.g., in `Object o = ...; ((List<?>)o).size()` typically serves two purposes: (1) checking if a specific object has the respective type and (2) performing the cast. W.r.t. (2) a `Checkcast` is basically an expression. However, the underlying data-flow analysis propagates def-use information and a check cast statement does not change the identity of an object and therefore the information about the original def-site is propagated. 
+
+^ A check cast merely refines the available type information. Hence, if we would assign the result of the check cast to a new `DVar`, we would have not uses of it. But it is important to realize that the type information is of course appropriately refined after a check cast statement.
 
 ```scala
 case class Checkcast[+V <: Var[V]](
@@ -200,7 +221,7 @@ case class Checkcast[+V <: Var[V]](
 
 ---
 
-# OPAL's three-address code - Array writes
+# Statements - Array writes
 
 ```scala
 case class ArrayStore[+V <: Var[V]](
@@ -211,21 +232,23 @@ case class ArrayStore[+V <: Var[V]](
 )
 ```
 
+^ Writes the value in the referenced array at the given index.
+
 
 ---
 
-# OPAL's three-address code - Synchronization
+# Statements - Synchronization
 
 ```scala
 case class MonitorEnter[+V <: Var[V]](pc: PC, objRef: Expr[V])
 case class MonitorExit[+V <: Var[V]](pc: PC, objRef: Expr[V])
 ```
 
-^ `MonitorEnter` and `MonitorExit` statements w.r.t. a specific object always need to occur inside one method and need to be balanced.
+^ `MonitorEnter` and `MonitorExit` statements always need to occur inside one method and need to be balanced w.r.t. a specific object.
 
 ---
 
-# OPAL's three-address code - Nops
+# Statements - Nops
 
 To facilitate an efficient conversion, OPAL sometimes inserts `NOP`s in the generated code.
 
@@ -233,6 +256,201 @@ To facilitate an efficient conversion, OPAL sometimes inserts `NOP`s in the gene
 case class Nop(pc: PC) 
 ```
 
+---
+
+# Expressions - Arrays
+
+```scala
+case class NewArray[+V <: Var[V]](
+  pc: PC, 
+  counts: Seq[Expr[V]], 
+  tpe: ArrayType) 
+```
+
+```scala
+case class ArrayLength[+V <: Var[V]](
+  pc: PC, 
+  arrayRef: Expr[V])
+```
+
+```scala
+case class ArrayLoad[+V <: Var[V]](
+  pc: PC,
+  index: Expr[V],
+  arrayRef: Expr[V])
+```
+
+
+
+---
+
+# Expressions - Arithmetic Binary Expressions
+
+```scala
+case class BinaryExpr[+V <: Var[V]](
+        pc:   PC,
+        cTpe: ComputationalType,
+        op:   BinaryArithmeticOperator,
+        left: Expr[V], right: Expr[V]) 
+```
+
+---
+
+# Expressions - Constants 
+
+The following types of constants have their own representations:
+
+ - Null
+ - *Class*
+ - *String*
+ - *Double* 
+ - *Float*
+ - *Long* 
+ - *Integer*
+ - *MethodHandle*
+ - *MethodType*
+ 
+ 
+^ In all cases the class follows the following pattern `case class <TypeOfConstant>Const(pc,value)`
+
+---
+
+# Expressions - Comparisons
+
+```scala
+case class Compare[+V <: Var[V]](
+  pc:        PC,
+  left:      Expr[V],
+  condition: RelationalOperator,
+  right:     Expr[V]) 
+```
+
+Please note, that the potential relational operators are the typical ones (`<`, `>` ,`<=` ,`>=` , `==`, `!=`) and `cmp(g|l)` to compare long, float and double values. 
+
+
+---
+
+# Expressions - Accessing Fields 
+
+```scala
+case class GetField[+V <: Var[V]](
+  pc:                PC,
+  declaringClass:    ObjectType,
+  name:              String,
+  declaredFieldType: FieldType,
+  objRef:            Expr[V]) 
+```
+
+```scala
+case class GetStatic(
+  pc:                PC,
+  declaringClass:    ObjectType,
+  name:              String,
+  declaredFieldType: FieldType)
+```
+
+
+---
+
+# Expressions - Invokedynamic
+
+```scala
+case class InvokedynamicFunctionCall[+V <: Var[V]](
+  pc:              PC,
+  bootstrapMethod: BootstrapMethod,
+  name:            String,
+  descriptor:      MethodDescriptor,
+  params:          Seq[Expr[V]])
+```
+
+
+---
+
+# Expressions - Method Calls
+
+```scala
+case class (Non)VirtualFunctionCall[+V <: Var[V]](
+  pc:             PC,
+  declaringClass: ObjectType,
+  isInterface:    Boolean,
+  name:           String,
+  descriptor:     MethodDescriptor,
+  receiver:       Expr[V],
+  params:         Seq[Expr[V]]) 
+```
+
+```scala
+case class StaticFunctionCall[+V <: Var[V]](
+  pc:             PC,
+  declaringClass: ObjectType,
+  isInterface:    Boolean,
+  name:           String,
+  descriptor:     MethodDescriptor,
+  params:         Seq[Expr[V]]) 
+```
+
+^ The semantics of the method call expressions reflect the semantics of the method call statements w.r.t. the type of called methods.
+
+---
+
+# Expressions - Creating Objects
+
+```scala
+case class New(pc: PC, tpe: ObjectType)
+```
+
+---
+
+# Expressions - Primitive Type Casts
+
+```scala
+case class PrimitiveTypecastExpr[+V <: Var[V]](
+  pc:        PC,
+  targetTpe: BaseType,
+  operand:   Expr[V]) 
+```
+
+^ Casts between the primitive values: `int`, `long`, `float`, and `double`.
+
+
+---
+
+# Expressions - Prefix Expressions 
+
+```scala
+case class PrefixExpr[+V <: Var[V]](
+  pc:      PC,
+  cTpe:    ComputationalType,
+  op:      UnaryArithmeticOperator,
+  operand: Expr[V]) 
+```
+
+^ At the three-address code level – due to optimizations – it may be possible to identify effective boolean negations.
+
+---
+
+# Expressions - Type checks
+
+```scala
+case class InstanceOf[+V <: Var[V]](
+  pc: PC,
+  value: Expr[V],
+  cmpTpe: ReferenceType)
+```
+
+
+---
+
+# Expressions - Accessing a Parameter
+
+The `Param` expression is exclusive to the `TACNaive` representation and represents the access of a parameter.
+
+
+```scala
+case class Param(
+  cTpe: ComputationalType,
+  name: String)
+```
 
 
 

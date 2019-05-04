@@ -134,7 +134,8 @@ In general, a def site can be a value in the ranges:
 
 ---
 
-# OPAL's three-address code - Variables
+# OPAL's three-address code
+## Variables
 
 ^ The left-hand side of an assignment is always a unique `DVar`. A `DVar` provides information about the value, the origin of the value (the statement index) as well as the useSites. The kind of information provided about the value depends on the underlying data-flow analysis:
 

@@ -51,28 +51,28 @@ platform written in Scala.
 
 ![inline OPAL](OPAL-Components.pdf)
 
-^ - Common contains general algorithms and data-structures that are not specific to (Java (Bytecode)) analyses. E.g., logging functionality, parallelization related functionality, specialized data-structures.
+^ - Common contains general algorithms and data structures that are not specific to (Java (bytecode)) analyses. E.g., logging functionality, parallelization related functionality, specialized data structures.
 
-^ - Static Analysis Infrastructure is a framework to facilitate the development of modular, parallelized static analyses. It is also not specific to  (Java (Bytecode)) analysis.
+^ - Static Analysis Infrastructure is a framework to facilitate the development of modular, parallelized static analyses. It is also not specific to Java (bytecode) analysis.
 
-^ - Bytecode Infrastructure is a generic framework to efficiently parse Java Bytecode.
+^ - Bytecode Infrastructure is a generic framework to efficiently parse Java bytecode.
 
 ^ - Bytecode Disassembler provides a 1:1 object-oriented representation of a Java `.class` file. It is primarily useful when a precise understanding of every single byte of a class file is required. 
 
 ^ - The Bytecode Creator framework provides the functionality to serialize a class file in the representation provided by the Bytecode Disassembler to a byte array; the bytecode creator framework is used to create/manipulate class files.
 
-^ - The Bytecode Assembler framework provides a small eDSL to generate Java Bytecode. The target of the assembler is the representation provided by the Bytecode Disassembler which is then serialized using the Bytecode Creator framework.
+^ - The Bytecode Assembler framework provides a small eDSL to generate Java bytecode. The target of the assembler is the representation provided by the Bytecode Disassembler which is then serialized using the Bytecode Creator framework.
 
-^ - The Bytecode Representation framework provides a high-level object-oriented representation of  Java Bytecode which is well suited for simple analyses which do not require the tracking of data-flow information. 
-^   - The constant-pool is resolved to facilitate pattern matching
+^ - The Bytecode Representation framework provides a high-level object-oriented representation of Java Bytecode which is well suited for simple analyses which do not require the tracking of data-flow information. 
+^   - The constant pool is resolved to facilitate pattern matching
 ^   - Standard Java and Scala `invokedynamic` instructions are rewritten
 ^   - Control-flows are normalized
 
 ^ - Abstract Interpretation Framework is a very lightweight framework for the abstract interpretation; currently it is primarily useful for intra-procedural analyses.
 
 ^ - The three-address code framework provides a high level register-based intermediate representation. It provides two basic representations:
-^   - TACNaive which is an untyped three-address code like representation of Java bytecode 
-^   - TACAI which is typed, SSA-like three-address code representation. This is the primary representation used by analysis.
+^   - TACNaive which is an untyped three-address code like representation of Java bytecode. 
+^   - TACAI which is a typed, SSA-like three-address code representation. This is the primary representation used by analysis.
 
 
 ---
@@ -84,7 +84,7 @@ platform written in Scala.
  - There are no “null” values unless explicitly noted.  
    (E.g., the instructions array typically contains `null` values.)
  
-^ The decision to make basically all major data-structures immutable was made to facilitate parallelization. 
+^ The decision to make basically all major data structures immutable was made to facilitate parallelization. 
  
 ^ If available, always use the accessor methods offered by the class that manages the collection and not the collection itself.  
 ^ E.g., to find a method with a specific name, use the respective method defined by `Method` and do not use the (underlying) collection’s find method; to iterate over the instructions of a method use `Code`’s respective methods. The explicitly defined methods generally offer additional functionality or are more efficient due to domain knowledge.
@@ -185,9 +185,9 @@ org.opalj.br.reader.Java9Framework.processClassFiles(
 
 ^ A `Project` is required for most advanced analyses.  	
 	
-^ An instance of a `org.opalj.br.analyses.Project` represents the concrete project that will be analyzed. OPAL distinguishes between the code that belongs to the project and the project's libraries. Depending on the requirements of the analysis libraries can completely be loaded or just the public interface. In the later case, the method bodies are omitted which safe some memory and speeds up the time required to load the classes. 
+^ An instance of a `org.opalj.br.analyses.Project` represents the concrete project that will be analyzed. OPAL distinguishes between the code that belongs to the project and the project's libraries. Depending on the requirements of the analysis libraries can completely be loaded or just the public interface. In the later case, the method bodies are omitted which safes some memory and speeds up the time required to load the classes. 
 
-^ In real projects – in particular when libraries are analyzed - it is often practically unavoidable that the class hierarchy is not complete (e.g., the JDK references classes belonging to `org.eclipse` which are not part of the JDK). OPAL provides extensive support to handle such situations, but it is nevertheless highly recommended to analyze projects which are complete.
+^ In real projects – in particular when libraries are analyzed - it is often practically unavoidable that the class hierarchy is not complete (e.g., the JDK references classes belonging to `org.eclipse` which are not part of the JDK). OPAL provides extensive support to handle such situations, but it is nevertheless highly recommended to analyze complete projects.
 
 ^ OPAL contains growing support for deliberately broken projects to enable the analysis of heavily obfuscated projects. 
 
@@ -230,14 +230,14 @@ import scala.collection.JavaConverters._
 r.asScala.mkString("\n")
 ```
 
-^ In general, the parallelization provided by OPAL is more efficient because it uses domain specific
+^ In general, the parallelization provided by OPAL is more efficient because it uses domain-specific
 knowledge to optimize the parallel execution. E.g., OPAL's `parForeachMethodBody` processes all methods in parallel starting with the longest method(s). This way the parallelization level can be increased; e.g., a random processing order could lead to the situation that the longest (most complex) method is scheduled to be analyzed last. In this case the overall analysis time is then heavily influenced by the time required to analyze that single very complex method.
 
 ---
 
 # Iterating over the instructions of a method
 
-The most efficient way to iterate over the body of a method is to use on of the respective methods provided by `Code`:
+The most efficient way to iterate over the body of a method is to use one of the respective methods provided by `Code`:
 
 ```scala
 m.body.get.collect {
@@ -257,7 +257,7 @@ m.body.get.collect {
 
 ---
 
-# CFG for Java Bytecode
+# CFG for Java Bytecode - Computing
 
 ^ To get the `CFG` for a `Method` use the `CFGFactory`:
 
@@ -275,7 +275,7 @@ ClassHierarchy.PreInitializedClassHierarchy
 ^ __Use the `PreInitializedClassHierarchy` only for testing purposes__!
 
 
-^ Given the cfg it is then possible to, e.g., iterate over all blocks or to traverse the cfg:
+^ Given the `CFG` it is then possible to, e.g., iterate over all blocks or to traverse the cfg:
 
 ```scala
 val cfg = CFGFactory(m : Method, classHierarchy : ClassHierarchy)
@@ -286,7 +286,7 @@ cfg.startBlock // ... the initial start block
 
 --- 
 
-# CFG for Java Bytecode
+# CFG for Java Bytecode - Data Structures
 
 In OPAL the CFG has four types of nodes:
 
@@ -296,7 +296,7 @@ In OPAL the CFG has four types of nodes:
    - abnormal return node 
  - catch node (contains the information about the handled exception type) 
 
-^ A basic block has a start and end pc and may have predecessors. A standard basic block always has at least one successor node.
+^ A basic block has a start and end pc and may has predecessors. A standard basic block always has at least one successor node. If the last instruction is a `return` instruction, then the successor node is an exit node.
 
 ^ In case of Java bytecode, the first block may have predecessors!
 
@@ -309,7 +309,7 @@ that block, however, may have multiple predecessors; though this is very unlikel
 
 [.slidenumbers: false]
 
-^ OPAL provides extensive support for getting human readable representation of all core data-structures (e.g., the CFG).
+^ OPAL provides extensive support for getting human readable representation of all core data structures (e.g., the CFG).
 
 ![inline](AnalyzingBytecode-tryfinally.bytecode.pdf) ![inline](AnalyzingBytecode-tryfinally.cfg.svg)
 
@@ -406,7 +406,7 @@ org.opalj.br.reader {
  - Each project has its own configuration
  - The configuration can be adapted when a project is created
 
-^ OPAL uses [Lightbend](https://lightbend.github.io/config/) Config for managing its configuration. That is, the default configuration is stored in the `reference.conf` files which are part of OPAL. To adapt the configuration to specific needs it is possible to specify an application.conf file. That file will overwrite the defaults. Alternatively, when a project is created it is possible to adapt the configuration to specific needs.
+^ OPAL uses [Lightbend](https://lightbend.github.io/config/) Config for managing its configuration. That is, the default configuration is stored in the `reference.conf` files which are part of OPAL. To adapt the configuration to specific needs it is possible to specify an `application.conf` file. That file will overwrite the defaults. Alternatively, when a project is created it is possible to adapt the configuration to specific needs.
 
 
 
