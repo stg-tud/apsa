@@ -101,8 +101,7 @@ class TACode[P <: AnyRef, V <: Var[V]](
   val stmts:             Array[Stmt[V]],
   val pcToIndex:         Array[Int],
   val cfg:               CFG[Stmt[V], TACStmts[V]],
-  val exceptionHandlers: ExceptionHandlers,
-  val lineNumberTable:   Option[LineNumberTable]
+  val exceptionHandlers: ExceptionHandlers
 )
 ```
 
@@ -116,8 +115,7 @@ class TACode[P <: AnyRef, V <: Var[V]](
 
 ^ - `exceptionHandlers` specifies the try-catch blocks and handlers in terms of TAC statements.
 
-^ - `lineNumberTable` a mapping of TAC statements to source line numbers.
-
+^ - to get the line number of a statement the TACode object provides respective helper methods.
 
 --- 
 # OPAL's three-address code 
