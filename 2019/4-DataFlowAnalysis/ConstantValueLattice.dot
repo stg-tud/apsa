@@ -1,0 +1,24 @@
+graph G {
+    nodesep=1;
+    margin=0;
+    rankdir="BT"
+
+    ldots -- t;
+    b -- ldots;
+    "-1" -- t;
+    0 -- t;
+    "1" -- t;
+    b -- "-1";
+    b -- 0;
+    b -- "1";
+    rdots -- t;
+    b -- rdots;
+
+    ldots [label="..."];
+    rdots [label="..."];
+    b [label="⏊",rank=0];
+    0 [rank=1];
+    "-1" [rank=1];
+    "1" [rank=1];
+    t [label="⏉",rank=2];
+}

@@ -15,6 +15,8 @@ graph G {
     et -- t;
     tp -- t;
     tdots -- t;
+    mdots -- tdots [style=dotted];
+    bdots -- mdots [style=dotted];
     b -- bdots;
     b;
     b [label="(⏊,⏊)"];
@@ -26,12 +28,14 @@ graph G {
        et [label="(even,⏉)"];
        tdots [label="...",rank=3];
        bdots [label="..."];
+       mdots [label="..."];
    {rank = same; tdots; tp;}    
    {rank = same; bdots; eb;}    
    }
+eb -- mdots [style=dotted];
+em -- tdots [style=dotted];
 
-ep -- tdots [style=dotted];
-bdots -- tdots [style=dotted];
+
        
    
 }

@@ -73,7 +73,40 @@ def select(c : Boolean): Int = {
 }
 ```
 
-^ A possible result of the analysis could be that `a` and `b` are always positive; x is either positive or negative ($$\bot$$).
+^ A possible result of the analysis could be that `a` and `b` are always positive; x is either positive or negative (or zero) ($$\top$$).
+
+---
+
+# Example: Constant Propagation - the lattice
+
+^ The lattice would be:
+
+![inline](ConstantValueLattice.pdf)
+
+^ The ordering reflects that $$\top$$ reflects that the value is any.
+
+^ Note that this lattice is not finite, but has finite height
+
+^ Again $$\bot$$ denotes uninitialized (most precise) values and $$\top$$ denotes that the value is not constant.
+
+---
+
+# Example: Constant Propagation - example program
+
+```scala
+val z = 3
+var x = 1
+while(x > 0) {
+  if(x == 1) {
+    y = 7
+  } else {
+    y = z + 4
+  }
+  x = 3
+}
+```
+
+^ A possible result of the analysis could be that `y` is always 7 (and `z` 3.)
 
 ---
 
@@ -144,11 +177,10 @@ A subset $$Y$$ of a partially ordered set $$L$$ need not have least upper or gre
 
 ^ A lattice must have a unique largest element $$\top$$ and a unique smallest element $$\bot$$.
 
-^ The least upper bound (the greatest lower bound) of a set $$Y \subseteq L$$ can contain the least (the greatest) element $$l \in L$$
+^ The least upper bound (the greatest lower bound) of a set $$Y \subseteq L$$ is always an element of $$L$$ but not necessarily an element of $$Y$$.
 
 ---
 
-[.hide-footer]
 [.slidenumbers: false]
 
 **Valid lattices**:
@@ -174,7 +206,7 @@ Example $$(\mathcal{P}(S),\subseteq)$$, $$S=\{1,2,3\}$$
 
 ^ Every finite set S defines a lattice $$(\mathcal{P}{S},\subseteq)$$ where $$\bot = \emptyset$$ and $$\top = S$$, $$x ⨆ y = x \cup y$$, and $$x ⨅ y = x \cap y$$
 
-^ A Hasse diagram is a graphical representation of the relation of elements of a partially ordered set (poset).
+^ A Hasse diagram is a graphical representation of the relation of elements of a partially ordered set.
 
 ---
 
@@ -229,7 +261,7 @@ $$
 \forall l,l' \in L_1: l \sqsubseteq_1 l' \Rightarrow f(l) \sqsubseteq_2 f(l')  
 $$
 
-^ The composition of monotone functions is monotone. However, being monotone does not imply being extensive ($$ \forall l \in L: l \sqsubseteq f(x) $$). A function that maps all values to $$\bot$$ is clearly monotone, but not extensive.
+^ The composition of monotone functions is monotone. However, being monotone does not imply being extensive ($$ \forall l \in L: l \sqsubseteq f(l) $$). A function that maps all values to $$\bot$$ is clearly monotone, but not extensive.
 
 The function $$f$$ is **distributiv** if:
 
@@ -251,7 +283,7 @@ $$
 
 The chain is finite if $$Y$$ is a finite subset of $$L$$.
 
-A sequence $$(l_n)_{n \in N}$$ of elements in $$L$$ is an ascending chain if 
+A sequence  $$(l_n)_n = (l_n)_{n \in N}$$ of elements in $$L$$ is an ascending chain if 
 $$
 n \leq m \Rightarrow l_n \sqsubseteq l_m
 $$
@@ -259,7 +291,24 @@ $$
 ^ A descending chain is defined accordingly.
 
 A sequence $$(l_n)_{n}$$  eventually stabilizes iff $$\exists n_0 \in N: \forall n \in N: n \geq n_0 \Rightarrow l_n = l_{n_0}$$
- 
+
+---
+
+# Interval analysis - example
+
+^ Let's compute the range of values that an integer variable can assume at runtime.
+
+```scala
+var x = 0
+while (true) {
+  x = x + 1
+  println(x)
+}
+```
+^ Ask yourself how the lattice would look like?
+
+^ 
+
 
 ---
 
