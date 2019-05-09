@@ -34,6 +34,7 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     
  1. Week
     - [OPAL - StatementsAndExpressions](2019/OPAL/3-ThreeAddressCodeStatementsAndExpressions.pdf)    
+    - [OPAL - DataFlowAnalysis](2019/OPAL/4-DataFlowAnalysis.pdf)    
 
 
 ## Exercise
