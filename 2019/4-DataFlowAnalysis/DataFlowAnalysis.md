@@ -4,7 +4,7 @@ slidenumbers: true
 
 # Applied Static Analysis
 
-## Three Address Code
+## Data Flow Analysis
 
 Software Technology Group  
 Department of Computer Science  
@@ -20,7 +20,7 @@ Many static analyses are based on the mathematical theory of lattices.
 
 The lattice put the facts (often, but not always, sets) computed by an analysis in a well-defined partial order. 
 
-Analysis are often **well-defined** functions over lattices and can then be combined a and reasoned about.
+Analysis are often **well-defined** functions over lattices and can then be combined and reasoned about.
 
 
 
@@ -279,20 +279,22 @@ A sequence $$(l_n)_{n}$$  eventually stabilizes iff $$\exists n_0 \in N: \forall
  - $$ l \in L$$ is a fixed point for $$f$$ if $$f(l) = l$$
 
  - A least fixed point $$l_1 \in L$$ for $$f$$ is a fixed point for $$f$$ where $$l_1 \sqsubseteq l_2$$ for every fixed point $$l_2 \in L$$ for $$f$$. 
-
- - In a lattice $$L$$ with finite height, every monotone function $$f$$ has a unique least fixed point.
  
 ---
 
 # Equation system
 
-$$ x_1 = F(x_1,\dots,x_n) $$
+ $$ x_1 = F_1(x_1,\dots,x_n) $$
 
-$$ \vdots $$
+ $$ \vdots $$ 
 
-$$ x_n = F(x_1,\dots,x_n) $$
+ $$ x_n = F_2(x_1,\dots,x_n) $$
 
-where $$ x_i $$ are variables and $$ F_i: L^{n} \rightarrow L $$ is a collection of functions: 
+where $$ x_i $$ are variables and $$ F_i: L^{n} \rightarrow L $$ is a collection of functions. If all functions are monotone then  the system has a unique least solution which is obtained as the least-fixed point of the function $$F: L^{n} \rightarrow L^{n} $$ defined by:
+
+ $$F(x_1,\dots,x_n) = (F_1(x_1,\dots,x_n),\dots,F_n(x_1,\dots,x_n))$$
+
+In a lattice $$L$$ with finite height, every monotone function $$f$$ has a unique least fixed point given by: $$fix(f) = \bigcup_{i \geq 0}f^{i}(\bot)$$.
 
 ---
 
@@ -309,7 +311,7 @@ _Determine for each program point, which expressions must have already been comp
 [.code-highlight: 3-8 ]
 ```scala
          def m(initialA: Int, b: Int): Int = {
-/*pc 0*/  var a = initialA // a has to be 
+/*pc 0*/  var a = initialA 
 
 /*pc 1*/  var x = a + b;
 
@@ -360,7 +362,7 @@ $$
 $$
 
 $$
-AE_{exit}(pc_{i}) =  (AE_{entry}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i})))
+AE_{exit}(pc_{i}) =  (AE_{entry}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i}))) 
 $$
 
 ---
@@ -388,42 +390,41 @@ The kill/gen functions:
 
 We get the following equations:
 
-$$
-AE_{entry}(pc_{1}) = \emptyset 
-$$
-$$
-AE_{entry}(pc_2) = AE_{exit}(pc_1) 
-$$
-$$
-AE_{entry}(pc_3) = AE_{exit}(pc_2) \cap AE_{exit}(pc_5)
-$$
-$$
-AE_{entry}(pc_4) = AE_{exit}(pc_3)  
-$$
-$$
-AE_{entry}(pc_5) = AE_{exit}(pc_4) 
-$$
+ $$AE_{entry}(pc_{1}) = \emptyset $$ <br>
+ $$AE_{entry}(pc_2) = AE_{exit}(pc_1) $$ <br> 
+ $$AE_{entry}(pc_3) = AE_{exit}(pc_2) \cap AE_{exit}(pc_5)$$ <br> 
+ $$AE_{entry}(pc_4) = AE_{exit}(pc_3) $$ <br> 
+ $$AE_{entry}(pc_5) = AE_{exit}(pc_4) $$ <br> 
+ $$AE_{exit}(pc_{1}) = AE_{entry}(pc_1) \cup \{a + b\} $$ <br> 
+ $$AE_{exit}(pc_{2}) = AE_{entry}(pc_{2}) \cup \{a * b\} $$ <br> 
+ $$AE_{exit}(pc_{3}) = AE_{entry}(pc_{3}) \cup \{a+b\} $$ <br> 
+ $$AE_{exit}(pc_{4}) = AE_{entry}(pc_{4}) \backslash \{a+b, a*b, a+1\}$$ <br> 
+ $$AE_{exit}(pc_{5}) = AE_{entry}(pc_{5}) \cup \{a+b\} $$ <br> 
 
-$$
-AE_{exit}(pc_1) = AE_{entry}(pc_1) \cup \{a+b\} 
-$$
-$$
-AE_{exit}(pc_2) = AE_{entry}(pc_2) \cup \{a*b\} 
-$$
-$$
-AE_{exit}(pc_3) = AE_{entry}(pc_3) \cup \{a+b\} 
-$$
-$$
-AE_{exit}(pc_4) = AE_{entry}(pc_4) \backslash \{a+b,a*b,a+1\}
-$$
-$$
-AE_{exit}(pc_5) = AE_{entry}(pc_5) \cup \{a+b\} 
-$$
+---
+
+# Data-flow analysis: Naive algorithm 
+
+> to solve the combined function: $$F(x_1,\dots,x_n) = (F_1(x_1,\dots,x_n),\dots,F_n(x_1,\dots,x_n))$$:
+
+^ This is just a conceptual algorithm which is not to be implemented:
+
+ $$ x = (\bot,\dots,\bot); $$ 
+ $$ do \{ $$ 
+ $$ t = x; $$ 
+ $$ x = F(x); $$ 
+ $$ \} while (x \neq t); $$ 
 
 ---
 
 # Data-flow analysis: Chaotic Iteration
 
+> We exploit the fact that our lattice has the structure $$L^{n}$$ to compute the solution $$(x_1,\dots,x_n)$$:
+
+ $$ x_1=\bot;\dots,;x_n = \bot; $$ 
+ $$ while (\exists i : x_i \neq F_i(x_1,\dots,x_n)) \{ $$ 
+ $$ x_i = F_i(x_1,\dots,x_n); $$ 
+ $$ \} $$ 
 
 
 ---
