@@ -1,0 +1,38 @@
+graph G {
+    node [shape=point];
+    nodesep=1;
+    margin=0;
+    rankdir="BT"
+
+subgraph cluster1 {
+    color=white;
+    s [rank = 1];
+}
+
+subgraph cluster2 {
+    color=white;
+    a1 -- a2;
+    a1 [rank = 2];
+    a1 [rank = 0];
+}
+
+subgraph cluster0 {
+    color=white;
+    "+" -- t;
+    0 -- t;
+    "-" -- t;
+    b -- "+";
+    b -- 0;
+    b -- "-";
+}
+
+subgraph cluster3 {
+    color=white;
+    y -- z;
+    x -- y;
+    w -- y;
+    v -- x;
+    v -- w;
+}
+
+}

@@ -59,8 +59,8 @@ try (FileInputStream stream = new FileInputStream(fileName);
 
 To reduce the number of false positives, only apply this check if the resource object is created inside the same method and ...:
 
-- not passed to some other method, not returned and not stored in a field (i.e., only apply this check if the resource object is subject to garbage collection at the end of the method), or
-- the resource is closed at least on one path.
+- neither passed to some other method, nor returned and also not stored in a field (i.e., only apply this check if the resource object is subject to garbage collection at the end of the method), **unless**
+- the resource is never returned.
 
 For example, ignore the following cases where the stream is passed in as a parameter:
 ```java
@@ -73,6 +73,18 @@ public int processFile(FileInputStream stream) throws Exception {
   return 1;
 }
 ```
+
+**Hints**
+
+ - To get the definition site(s) of the receiver of the method call to `close`, you can use the following pattern match:  
+`case VirtualMethodCall(_, _, _, "close", NoArgsAndReturnVoid, receiver, _) ⇒ receiver.asVar.definedBy...`  
+ _If you have multiple definition sites you can consider all resources as being closed. Hence, you should lean towards a precise analysis in this case; i.e., we may have false negatives. Getting a more sound and precise solution would require a more elaborate control- and data-flow analysis which is beyond the scope of this exercise!_
+
+ - If calling the constructor throws an exception the resource is not to be considered as being initialized; no need to close it. That is, only after the `<init>` call the newly created resource should be considered initialized. Note that you have the guarantee that a newly created object is initialized at most once.
+
+ - If you are analyzing an object that is `AutoCloseable` you should ignore the call of the super constructor. That is, it is correct that the constructor of an `AutoCloseable` object does not `close` itself.
+
+ - As a first step design the lattice of your analysis. Recall that you should also identify the case, closed on some path
 
 
 **Tasks**

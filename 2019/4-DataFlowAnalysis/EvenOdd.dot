@@ -1,0 +1,13 @@
+graph G {
+    nodesep=1;
+    margin=0;
+    rankdir="BT"
+
+    "even" -- t;
+       "odd" -- t;
+    b -- "even";
+       b -- "odd";
+
+    b [label="⏊",rank=0];
+    t [label="⏉",rank=2];
+}

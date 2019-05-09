@@ -27,7 +27,7 @@ The lecture slides can be found at: [https://github.com/stg-tud/apsa](https://gi
 
 ^ The lecture slides are basically markdown files that are presented using [Deckset](https://www.deckset.com). The final PDF is rendered using [Marked 2](https://marked2app.com) after preprocessing them using the following [sed](https://en.wikipedia.org/wiki/Sed) program:
 ```bash
-/usr/bin/sed -E -e 's/^\[\..+\:.+\]//' -e 's/^\^[[:space:]]//' -e 's/#[[:space:]]\[fit\]/#/' -e 's/[$][$]/$/g'
+/usr/bin/sed -E -e 's/^\[\..+\:.+\]//' -e 's/^\^[[:space:]]//' -e 's/#[[:space:]]\[fit\]/#/' -e 's/[$][$]/$/g' -e 's/[\\]([\{]|[\}])/\\\\\1/g'
 ```
 The program basically removes all non-standard markdown commands which are only used/required by Deckset.
 Hence, if you have suggestions for improvement or if you find typos or more significant issues don't hesitate to create [issues](https://github.com/stg-tud/apsa/issues). Pull requests can easily be created using the Website and are very welcome. 

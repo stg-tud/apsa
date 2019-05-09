@@ -1,0 +1,16 @@
+graph G {
+node [shape=point];
+nodesep=1;
+margin=0;
+
+	E -- F;
+	D -- F;
+
+A -- B;
+A -- C;
+C -- D;
+B -- D;
+C -- E;
+B -- E;
+
+}

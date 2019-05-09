@@ -1,0 +1,18 @@
+graph G {
+    nodesep=1;
+    margin=0;
+    rankdir="BT"
+
+    "+" -- t;
+    0 -- t;
+    "-" -- t;
+    b -- "+";
+    b -- 0;
+    b -- "-";
+
+    b [label="⏊",rank=0];
+    0 [rank=1];
+    "+" [rank=1];
+    "-" [rank=1];
+    t [label="⏉",rank=2];
+}

@@ -75,7 +75,6 @@ class Closeables implements AutoCloseable{
             if (c != null)
                 c.close();
         }
-
     }
 
     static void fp4() throws Exception {
