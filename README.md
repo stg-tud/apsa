@@ -27,14 +27,16 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
  
  1. Week 
     - [DoNotInvokeThreadRun.scala](2019/OPAL/Code/src/main/scala/de/tud/stg/br/DoNotInvokeThreadRun.scala)
-    
- 1. Week
-    - [OPAL - Overview and Analyzing Bytecode](2019/OPAL/1-OverviewAndAnalyzingBytecode.pdf)    
-    - [OPAL - Analyzing Three Address Code](2019/OPAL/2-AnalyzingThreeAddressCode.pdf)
-    
- 1. Week
-    - [OPAL - StatementsAndExpressions](2019/OPAL/3-ThreeAddressCodeStatementsAndExpressions.pdf)    
 
+ 1. Week
+    - [OPAL - Overview and Analyzing Bytecode.pdf](2019/OPAL/1-OverviewAndAnalyzingBytecode.pdf)    
+    - [OPAL - Analyzing Three Address Code.pdf](2019/OPAL/2-AnalyzingThreeAddressCode.pdf)
+
+ 1. Week
+    - [OPAL - Statements and Expressions.pdf](2019/OPAL/3-ThreeAddressCodeStatementsAndExpressions.pdf)
+
+ 1. Week
+    - [OPAL - Data Flow Analysis.pdf](2019/OPAL/4-SimpleDataFlowAnalyses.pdf)   
 
 ## Exercise
 
