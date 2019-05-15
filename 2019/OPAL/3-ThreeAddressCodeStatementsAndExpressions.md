@@ -14,7 +14,7 @@ Technische Universität Darmstadt
 
 
 > If you have questions don't hesitate to join our public chat:   [Gitter](https://gitter.im/OPAL-Project/Lobby)
-> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/OPAL/2-AnalyzingThreeAddressCode.md)
+> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/OPAL/3-ThreeAddressCodeStatementsAndExpressions.md)
 
 
 ---
