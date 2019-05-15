@@ -11,6 +11,11 @@ Department of Computer Science
 Technische Universität Darmstadt  
 [Dr. Michael Eichberg](mailto:m.eichberg@me.com)
 
+For background information see:
+
+ - Principles of Program Analysis; Flemming Nielson, Hanne Riis Nielson, and Chris Hankin; Springer, 2005
+ - [Static Program Analysis](https://cs.au.dk/~amoeller/spa/spa.pdf); Anders Møller, and Michael I. Schwartzbach; May 27, 2015
+
 
 ---
 
@@ -499,9 +504,8 @@ Solution:
 | 4 | $$\{a+b\}$$   | $$\emptyset$$ |
 | 5 | $$ \emptyset $$    | $$\{a+b\}$$ | 
 
-^ <!----------------------------------------------------------------------------------------------->
-^ <!---------------------------------------- REFERENCES ------------------------------------------->
-^ ---
 
-^ # References
+---
+
+# Data-flow analysis: Available Expressions
 
