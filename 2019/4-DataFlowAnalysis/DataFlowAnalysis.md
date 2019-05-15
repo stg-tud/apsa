@@ -352,7 +352,7 @@ In a lattice $$L$$ with finite height, every monotone function $$f$$ has a uniqu
 
 ---
 
-# Data-flow analysis: Available Expressions
+# Data Flow analysis: Available Expressions
 
 _Determine for each program point, which expressions must have already been computed and not later modified on all paths to the program point._
 
@@ -362,7 +362,7 @@ _Determine for each program point, which expressions must have already been comp
 
 ## Available Expressions - Example
 
-[.code-highlight: 3-8 ]
+[.code-highlight: 3-14 ]
 ```scala
          def m(initialA: Int, b: Int): Int = {
 /*pc 0*/  var a = initialA 
@@ -378,6 +378,7 @@ _Determine for each program point, which expressions must have already been comp
 /*pc 5*/    x = a + b
 
           }
+	  
 /*pc 6*/  a + x 
          }
 ```
@@ -457,7 +458,7 @@ We get the following equations:
 
 ---
 
-# Data-flow analysis: Naive algorithm 
+# Data Flow analysis: Naive algorithm 
 
 > to solve the combined function: $$F(x_1,\dots,x_n) = (F_1(x_1,\dots,x_n),\dots,F_n(x_1,\dots,x_n))$$:
 
@@ -471,7 +472,7 @@ We get the following equations:
 
 ---
 
-# Data-flow analysis: Chaotic Iteration
+# Data Flow analysis: Chaotic Iteration
 
 > We exploit the fact that our lattice has the structure $$L^{n}$$ to compute the solution $$(x_1,\dots,x_n)$$:
 
@@ -507,5 +508,73 @@ Solution:
 
 ---
 
-# Data-flow analysis: Available Expressions
+# Data Flow Analysis: Reaching Definitions
 
+> For each program point, which assignments _may_ have been made and not overwritten, when program execution reaches this point along some path.
+
+^ Reaching definitions is (also) a forward analysis.
+
+^ Reaching definitions analysis doesn't make sense, if your code representation is in SSA form! 
+
+^ (Reaching definitions analysis is typically used to construct so called _du_ (definition → use) and _ud_ (use → definition) chains.
+
+---
+
+# Reaching Definitions - Example
+
+[.code-highlight: 3-14 ]
+```scala
+         def m(): Int = {
+
+/*pc 1*/  var x = 5;
+
+/*pc 2*/  val y = 1;
+
+/*pc 3*/  while (X > 1) {
+
+/*pc 4*/    y = x * y
+
+/*pc 5*/    x = x - 1
+
+          }
+	  
+/*pc 6*/  x + y 
+         } 
+```
+
+^ **All** assignments reach `pc 4`; only the assignments at pc 1, 4 and 5 reach pc 5.
+
+^ The underlying lattice is defined over the powerset of all variables and definition sites.
+
+---
+
+## Reaching Definitions - gen/kill functions
+
+- An assignment is destroyed if the block assigns a new value to the variable (the left-hand side of an assignment.)
+
+- An assignment generates definitions.
+
+^ If the code that you analyze may contain uninitialized variables then you have to extend your lattice to cover uninitialized values.
+
+
+---
+
+## Reaching Definitions - data flow equations
+
+Let $$S$$ be our program and $$flow$$ be a forward flow in the program between two statements $$(pc_i,pc_j)$$.
+	
+$$
+\begin{equation}
+  RD_{entry}(pc_{i}) =
+  \begin{cases}
+    \emptyset & \text{if } i=0 \\
+    \bigcup \{ RD_{exit}(pc_h)|(pc_h,pc_i) \in \mathit{flow}(S) \} & otherwise 
+  \end{cases}
+\end{equation}
+$$
+
+$$
+RD_{exit}(pc_{i}) =  (RD_{entry}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i}))) 
+$$
+
+^ If the code that you analyze may contain uninitialized variables then the case that handles `i == 0` should initialize the location where the variables are initialized to some special place!
