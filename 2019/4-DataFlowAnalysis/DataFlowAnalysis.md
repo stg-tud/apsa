@@ -23,7 +23,7 @@ For background information see:
 
 Many static analyses are based on the mathematical theory of lattices.
 
-The lattice put the facts (often, but not always, sets) computed by an analysis in a well-defined partial order. 
+The lattices put the facts (often, but not always, sets) computed by an analysis in a well-defined partial order. 
 
 Analysis are often **well-defined** functions over lattices and can then be combined and reasoned about.
 
@@ -120,13 +120,13 @@ while(x > 0) {
 [.build-lists: true]
 
  - a partial ordering is a relation $$ \sqsubseteq: L \times L \rightarrow \{\mathit{true},\mathit{false}\}$$, which
-	- is reflexiv: $$\forall l: l \sqsubseteq l$$
+	- is reflexive: $$\forall l: l \sqsubseteq l$$
   	- is transitive: $$\forall l_1,l_2,l_3: l_1 \sqsubseteq l_2 \land l_2 \sqsubseteq l_3 \Rightarrow l_1 \sqsubseteq l_3$$
   	- is anti-symmetric: $$\forall l_1,l_2: l_1 \sqsubseteq l_2 \land l_2 \sqsubseteq l_1 \Rightarrow l_1 = l_2$$
   	
  - a partially ordered set $$(L,\sqsubseteq)$$ is a set $$L$$ equipped with a partial ordering $$\sqsubseteq$$
 
-^ When $$x \sqsubseteq y$$ we say $$x$$ is at least as precise as $$y$$ or $$y$$ over-approximates $$x$$/$$y$$ is an over-approximation of $$y$$.
+^ When $$x \sqsubseteq y$$ we say $$x$$ is at least as precise as $$y$$ or $$y$$ over-approximates $$x$$ / $$y$$ is an over-approximation of $$y$$.
 
 
 ---
@@ -268,7 +268,7 @@ $$
 
 ^ The composition of monotone functions is monotone. However, being monotone does not imply being extensive ($$ \forall l \in L: l \sqsubseteq f(l) $$). A function that maps all values to $$\bot$$ is clearly monotone, but not extensive.
 
-The function $$f$$ is **distributiv** if:
+The function $$f$$ is **distributive** if:
 
 $$
 \forall l_1,l_2 \in L_1 : f (l_1 \sqcup l_2) = f(l_1) \sqcup f(l_2)
@@ -342,7 +342,7 @@ while (true) {
 
  $$ \vdots $$ 
 
- $$ x_n = F_2(x_1,\dots,x_n) $$
+ $$ x_n = F_n(x_1,\dots,x_n) $$
 
 where $$ x_i $$ are variables and $$ F_i: L^{n} \rightarrow L $$ is a collection of functions. If all functions are monotone then  the system has a unique least solution which is obtained as the least-fixed point of the function $$F: L^{n} \rightarrow L^{n} $$ defined by:
 
