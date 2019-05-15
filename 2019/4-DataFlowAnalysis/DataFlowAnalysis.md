@@ -23,7 +23,7 @@ For background information see:
 
 Many static analyses are based on the mathematical theory of lattices.
 
-The lattices put the facts (often, but not always, sets) computed by an analysis in a well-defined partial order. 
+The lattice put the facts (often, but not always, sets) computed by an analysis in a well-defined partial order. 
 
 Analysis are often **well-defined** functions over lattices and can then be combined and reasoned about.
 
@@ -120,13 +120,13 @@ while(x > 0) {
 [.build-lists: true]
 
  - a partial ordering is a relation $$ \sqsubseteq: L \times L \rightarrow \{\mathit{true},\mathit{false}\}$$, which
-	- is reflexive: $$\forall l: l \sqsubseteq l$$
+	- is reflexiv: $$\forall l: l \sqsubseteq l$$
   	- is transitive: $$\forall l_1,l_2,l_3: l_1 \sqsubseteq l_2 \land l_2 \sqsubseteq l_3 \Rightarrow l_1 \sqsubseteq l_3$$
   	- is anti-symmetric: $$\forall l_1,l_2: l_1 \sqsubseteq l_2 \land l_2 \sqsubseteq l_1 \Rightarrow l_1 = l_2$$
   	
  - a partially ordered set $$(L,\sqsubseteq)$$ is a set $$L$$ equipped with a partial ordering $$\sqsubseteq$$
 
-^ When $$x \sqsubseteq y$$ we say $$x$$ is at least as precise as $$y$$ or $$y$$ over-approximates $$x$$ / $$y$$ is an over-approximation of $$y$$.
+^ When $$x \sqsubseteq y$$ we say $$x$$ is at least as precise as $$y$$ or $$y$$ over-approximates $$x$$/$$y$$ is an over-approximation of $$y$$.
 
 
 ---
@@ -268,7 +268,7 @@ $$
 
 ^ The composition of monotone functions is monotone. However, being monotone does not imply being extensive ($$ \forall l \in L: l \sqsubseteq f(l) $$). A function that maps all values to $$\bot$$ is clearly monotone, but not extensive.
 
-The function $$f$$ is **distributive** if:
+The function $$f$$ is **distributiv** if:
 
 $$
 \forall l_1,l_2 \in L_1 : f (l_1 \sqcup l_2) = f(l_1) \sqcup f(l_2)
@@ -342,7 +342,7 @@ while (true) {
 
  $$ \vdots $$ 
 
- $$ x_n = F_n(x_1,\dots,x_n) $$
+ $$ x_n = F_2(x_1,\dots,x_n) $$
 
 where $$ x_i $$ are variables and $$ F_i: L^{n} \rightarrow L $$ is a collection of functions. If all functions are monotone then  the system has a unique least solution which is obtained as the least-fixed point of the function $$F: L^{n} \rightarrow L^{n} $$ defined by:
 
@@ -497,7 +497,7 @@ We get the following equations:
 
 Solution:
 
-| pc | kill | gen |
+| pc | $$AE_{entry}$$ | $$AE_{exit}$$ |
 | --- | --- | --- |
 | 1 | $$ \emptyset $$   | $$\{a+b\}$$ |
 | 2 | $$\{a+b\}$$   | $$\{a+b, a*b\}$$ |
@@ -544,7 +544,7 @@ Solution:
 
 ^ **All** assignments reach `pc 4`; only the assignments at pc 1, 4 and 5 reach pc 5.
 
-^ The underlying lattice is defined over the powerset of all variables and definition sites.
+^ The underlying lattice is defined over the powerset of all variables cross definition sites (`DefSite`) ($$\mathcal{P}(Var,DefSite)$$; a `DefSite` is identified by the program counter of the assignment statement.
 
 ---
 
@@ -577,4 +577,62 @@ $$
 RD_{exit}(pc_{i}) =  (RD_{entry}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i}))) 
 $$
 
-^ If the code that you analyze may contain uninitialized variables then the case that handles `i == 0` should initialize the location where the variables are initialized to some special place!
+^ If the analyzed code may contain uninitialized variables then the case that handles `i == 0` should initialize the location where the variables are initialized to some special place!
+
+
+---
+
+## Reaching Definitions - Example continued I
+
+^ ```scala
+^          def m(): Int = {
+^ /*pc 1*/  var x = 5;
+^ /*pc 2*/  val y = 1;
+^ /*pc 3*/  while (X > 1) {
+^ /*pc 4*/    y = x * y
+^ /*pc 5*/    x = x - 1
+^           }
+^ /*pc 6*/  x + y 
+^          } 
+^ ```
+
+The kill/gen functions:
+
+| pc | kill | gen |
+| --- | --- | --- |
+| 1 | $$ \{(x,1), (x,5)\} $$   | $$\{(x,1)\}$$ |
+| 2 | $$ \{(y,2), (y,4)\} $$   | $$\{(y,2)\}$$ |
+| 3 | $$ \emptyset $$   | $$ \emptyset $$ |
+| 4 | $$ \{(y,2), (y,4)\} $$   | $$\{(y,4)\}$$ |
+| 5 | $$ \{(x,1), (x,5)\} $$    | $$\{(x,5)\}$$ | 
+
+We get the following equations:
+
+ $$RD_{entry}(pc_{1}) = \emptyset $$ <br>
+ $$RD_{entry}(pc_2) = RD_{exit}(pc_1) $$ <br> 
+ $$RD_{entry}(pc_3) = RD_{exit}(pc_2) \cup RD_{exit}(pc_5)$$ <br> 
+ $$RD_{entry}(pc_4) = RD_{exit}(pc_3) $$ <br> 
+ $$RD_{entry}(pc_5) = RD_{exit}(pc_4) $$ <br> 
+ $$RD_{exit}(pc_{1}) = (RD_{entry}(pc_1)\backslash\{(x,1),(x,5)\}) \cup \{(x,1)\} $$ <br> 
+ $$RD_{exit}(pc_{2}) = (RD_{entry}(pc_{2})\backslash\{(y,2),(y,4)\}) \cup \{(y,2)\} $$ <br> 
+ $$RD_{exit}(pc_{3}) = RD_{entry}(pc_{3}) $$ <br> 
+ $$RD_{exit}(pc_{4}) = (RD_{entry}(pc_{4})\backslash\{(y,2),(y,4)\}) \cup \{(y,4)\}$$ <br> 
+ $$RD_{exit}(pc_{5}) = (RD_{entry}(pc_{5})\backslash\{(x,1),(x,5)\}) \cup \{(x,5)\} $$ <br> 
+
+
+---
+
+## Reaching Definitions - Example continued II
+
+Solution:
+
+| pc | $$RD_{entry}$$ | $$RD_{exit}$$ |
+| --- | --- | --- |
+| 1 | $$ \emptyset $$   | $$\{(x,1)\}$$ |
+| 2 | $$ \{(x,1)\} $$   | $$\{(x,1), (y,2)\}$$ |
+| 3 | $$ \{(x,1), (y,2), (y,4), (x,5)\} $$   | $$ \{(x,1), (y,2), (y,4), (x,5)\} $$ |
+| 4 | $$ \{(x,1), (y,2), (y,4), (x,5)\} $$   | $$\{\{(x,1), (y,4), (x,5)\}\}$$ |
+| 5 | $$ \{(x,1), (y,4), (x,5)\} $$    | $$\{(x,5)\}$$ | 
+
+
+
