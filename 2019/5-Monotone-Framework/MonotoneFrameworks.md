@@ -14,6 +14,8 @@ Technische Universität Darmstadt
 For background information see:
 
  - Principles of Program Analysis; Flemming Nielson, Hanne Riis Nielson, and Chris Hankin; Springer, 2005
+ 
+Acknowledgements: I would like Dominik Helm for his support in creating the slides!
 
 
 ---
@@ -22,7 +24,7 @@ For background information see:
 
 ^ Compare the data flow equations for the four analyses seen so far:
   
-^ Available expressions:
+Available expressions:
 $$
 \begin{equation}
   AE_{entry}(pc_{i}) =
@@ -37,7 +39,7 @@ $$
 AE_{exit}(pc_{i}) =  (AE_{entry}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i}))) 
 $$
 
-^ Reaching definitions:
+Reaching definitions:
 $$
 \begin{equation}
   RD_{entry}(pc_{i}) =
@@ -52,7 +54,7 @@ $$
 RD_{exit}(pc_{i}) =  (RD_{entry}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i}))) 
 $$
 
-^ They are very similar in their general structure.
+^ Also if we additionally consider the live variables and very busy expressions analyses, they are very similar in their general structure.
 
 
 ---
@@ -74,21 +76,22 @@ $$
 Analysis_{\bullet}(pc_{i}) =  f_{pc_i}(Analysis_{\circ}(pc_{i})) 
 $$
 ^ with
-$$\bigsqcup$$ being $$\bigcap$$ or $$\bigcup$$
-$$F$$ either $$flow(S)$$ or $$flow^R(S)$$
-$$E$$ either $$\{init(S)\}$$ or $$final(S)$$
-$$\iota$$ being the initial or final analysis information
-$$f_{pc_i}$$ the transfer function for $$pc_i$$
+^ $$\bigsqcup$$ being $$\bigcap$$ or $$\bigcup$$ <br>
+^ $$F$$ either $$flow(S)$$ or $$flow^{R}(S)$$ <br>
+^ $$E$$ either $$\{init(S)\}$$ or $$final(S)$$ <br>
+^ $$\iota$$ being the initial or final analysis information <br>
+^ $$f_{pc_i}$$ the transfer function for $$pc_i$$ <br>
 
 ---
 
 # Characterization of analyses
 
-^ *Forward analyses* use $$F=flow(S)$$, $$\circ=entry$$, $$\bullet=exit$$ and $$E=\{init(S)\}$$, while
-^ *Backward analyses* use $$F=flow^R(S)$$, $$\circ=exit$$, $$\bullet=entry$$ and $$E=final(S)$$
+*Forward analyses* use $$F=flow(S)$$, $$\circ=entry$$, $$\bullet=exit$$ and $$E=\{init(S)\}$$, while
+*Backward analyses* use $$F=flow^{R}(S)$$, $$\circ=exit$$, $$\bullet=entry$$ and $$E=final(S)$$
 
-^ Analyses that require that all paths fulfill a property use $$\bigsqcup=\bigcap$$ and are called *must analyses*
-^ Analyses that require at least one path to fulfill a property use $$\bigsqcup=\bigcup$$ and are called *may analyses*
+Analyses that require that all paths fulfill a property use $$\bigsqcup=\bigcap$$ and are called *must analyses*
+
+Analyses that require at least one path to fulfill a property use $$\bigsqcup=\bigcup$$ and are called *may analyses*
 
 
 ---
@@ -111,7 +114,7 @@ $$f_{pc_i}$$ the transfer function for $$pc_i$$
 
 - Analyses are **instances** of a monotone framework with
     - the lattice $$L$$ and transfer functions $$\mathcal{F}$$ from the framework
-    - a flow graph $$flow$$ that is usually $$flow(S)$$ or $$flow^R(S)$$
+    - a flow graph $$flow$$ that is usually $$flow(S)$$ or $$flow^{R}(S)$$
     - a set of *extremal labels* $$E$$, typically $$\{init(S)\}$$ or $$final(S)$$
     - an *extremal value* $$\iota \in L$$ for the extremal labels and
     - a mapping $f$ from statements to transfer functions in $$\mathcal{F}$$
@@ -121,7 +124,8 @@ $$f_{pc_i}$$ the transfer function for $$pc_i$$
 # Transfer Functions from Gen/Kill Functions
 
 The four examples additionally all had their *transfer functions* based on *gen* and *kill* functions:
-$$\mathcal{F}=\{f : L \rightarrow L | f(Analysis(pc_i))=(Analysis(pc_i) \setminus kill(block(pc_i))) \cup gen(block(pc_i))\}$$
+
+ $$\mathcal{F}=\{f : L \rightarrow L | f(Analysis(pc_i))=(Analysis(pc_i) \setminus kill(block(pc_i))) \cup gen(block(pc_i))\}$$
 
 ---
 
@@ -139,8 +143,8 @@ $$\mathcal{F}=\{f : L \rightarrow L | f(Analysis(pc_i))=(Analysis(pc_i) \setminu
 
 - Very busy expressions
     - $$L=\mathcal{P}(ArithExpr)$$ with $$\bigsqcup=\bigcap$$
-    - $$flow=flow^R(S)$$, $$E=final(S)$$ and $$\iota=\emptyset$$
+    - $$flow=flow^{R}(S)$$, $$E=final(S)$$ and $$\iota=\emptyset$$
 
 - Live variables
     - $$L=\mathcal{P}(Var)$$ with $$\bigsqcup=\bigcup$$
-    - $$flow=flow^R(S)$$, $$E=final(S)$$ and $$\iota=\emptyset$$
+    - $$flow=flow^{R}(S)$$, $$E=final(S)$$ and $$\iota=\emptyset$$
