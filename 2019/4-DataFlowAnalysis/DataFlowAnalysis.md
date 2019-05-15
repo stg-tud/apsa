@@ -458,7 +458,7 @@ We get the following equations:
 
 ---
 
-# Data Flow analysis: Naive algorithm 
+# Data Flow Analysis: Naive algorithm 
 
 > to solve the combined function: $$F(x_1,\dots,x_n) = (F_1(x_1,\dots,x_n),\dots,F_n(x_1,\dots,x_n))$$:
 
@@ -472,7 +472,7 @@ We get the following equations:
 
 ---
 
-# Data Flow analysis: Chaotic Iteration
+# Data Flow Analysis: Chaotic Iteration
 
 > We exploit the fact that our lattice has the structure $$L^{n}$$ to compute the solution $$(x_1,\dots,x_n)$$:
 
@@ -544,7 +544,7 @@ Solution:
 
 ^ **All** assignments reach `pc 4`; only the assignments at pc 1, 4 and 5 reach pc 5.
 
-^ The underlying lattice is defined over the powerset of all variables cross definition sites (`DefSite`) ($$\mathcal{P}(Var,DefSite)$$; a `DefSite` is identified by the program counter of the assignment statement.
+^ The underlying lattice is defined over the powerset of all variables cross definition sites (`DefSite`) ($$\mathcal{P}(\text{Var} \times \text{DefSite})$$; a `DefSite` is identified by the program counter of the assignment statement.
 
 ---
 
@@ -578,6 +578,34 @@ RD_{exit}(pc_{i}) =  (RD_{entry}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen
 $$
 
 ^ If the analyzed code may contain uninitialized variables then the case that handles `i == 0` should initialize the location where the variables are initialized to some special place!
+
+
+
+---
+
+##Data Flow Analysis - Worklist Algorithm
+
+^ Data flow problems can efficiently be solved using a worklist algorithm that, when a node is updated, we only consider those other nodes which depend on it.
+
+^ Let's define a helper function which determines for a node $$v \in V$$ the set of nodes on which the node depends.
+
+$$
+dep : V \rightarrow \mathcal{P}(V)
+$$
+
+Let $$W$$ be a worklist:
+
+ $$ x_1=\bot;\dots,;x_n = \bot; $$<br> 
+ $$ W=\{v_1,\dots,v_n\}; $$<br>
+ $$ while (w \neq \emptyset) \{ $$<br>
+ $$ \quad i = W.removedNext();$$<br>
+ $$ \quad y = F_i(x_1,\dots,x_n);$$<br>
+ $$ \quad if(x_i = y) \{$$<br>
+ $$ \qquad for(v_j \in dep(v_i)) W.add(v_j);$$<br>
+ $$ \qquad x_i = y; $$<br> 
+ $$ \quad \}$$<br>
+ $$ \} $$ 
+
 
 
 ---
@@ -635,4 +663,131 @@ Solution:
 | 5 | $$ \{(x,1), (y,4), (x,5)\} $$    | $$\{(x,5)\}$$ | 
 
 
+---
+
+# Data Flow Analysis: Very Busy Expressions Analysis
+
+> For each program point, which expressions must be very busy at the exit from the point.
+> An expression is very busy at the exit of a block if – independent of the taken path – the expression must always be used before any of the variables occurring in it are redefined.
+
+^ Very Busy Expressions Analysis is a backward analysis.
+
+
+---
+
+# Very Busy Expressions Analysis - Example
+
+[.code-highlight: 3-15 ]
+```scala
+         def m(a: Int, b: Int): Int = {
+/*pc 0*/  var x, y = 0	
+
+/*pc 1*/  if(a > b) {
+
+/*pc 2*/    x = b - a
+
+/*pc 3*/    y = a - b
+
+          else {
+
+/*pc 4*/    y = b - a 
+
+/*pc 5*/    x = a - b
+
+          }
+	  
+/*pc 6*/  x + y 
+         } 
+```
+
+^ The expression `b-a` and `a-b` are both very busy at $$pc 1$$.
+
+---
+
+## Very Busy Expressions Analysis - gen/kill functions
+
+- An assignment is destroyed if the block assigns a new value to the variable (the left-hand side  - An **expression is killed** in a block if any of the variables used in the (arithmetic) expression are modified in the block. The function $$kill: Block \rightarrow \mathcal{P}(ArithExp) $$ produces the set of killed arithmetic expressions.
+
+
+ - A **generated expression** is a non-trivial (arithmetic) expression that is evaluated in the block. The function $$gen: Block \rightarrow \mathcal{P}(ArithExp)$$ produces the set of generated expressions. 
+
+---
+
+## Very Busy Expressions Analysis - data flow equations
+
+Let $$S$$ be our program, $$flow^R$$ be a backward flow in the program between two statements $$(pc_i,pc_j)$$ and $$final$$ be a function that returns the set of nodes of the program which terminate the program.
+
+	
+$$
+\begin{equation}
+  VB_{exit}(pc_{i}) =
+  \begin{cases}
+    \emptyset & \text{if } i \in final(S) \\
+    \bigcap \{ VB_{entry}(pc_h)|(pc_h,pc_i) \in \mathit{flow}^R(S) \} & otherwise 
+  \end{cases}
+\end{equation}
+$$
+
+$$
+VB_{entry}(pc_{i}) =  (VB_{exit}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i}))) 
+$$
+
+^ The result of the analysis depends on the set of nodes which are considered to terminate the method. E.g., an expression such as `a/b` may lead to an abnormal return of a method.
+
+
+---
+
+## Very Busy Expressions Analysis - Example continued I
+
+^ ```scala
+^          def m(a: Int, b: Int): Int = {
+^ /*pc 0*/  var x, y = 0	
+^ /*pc 1*/  if(a > b) {
+^ /*pc 2*/    x = b - a
+^ /*pc 3*/    y = a - b
+^           else {
+^ /*pc 4*/    y = b - a 
+^ /*pc 5*/    x = a - b
+^           }	  
+^ /*pc 6*/  x + y 
+^          } 
+^ ```
+
+The kill/gen functions:
+
+| pc | kill | gen |
+| --- | --- | --- |
+| 1 | $$ \emptyset $$   | $$ \emptyset $$ |
+| 2 | $$ \emptyset $$   | $$\{b-a\}$$ |
+| 3 | $$ \emptyset $$   | $$\{a-b\}$$ |
+| 4 | $$ \emptyset $$   | $$\{b-a\}$$ |
+| 5 | $$ \emptyset $$   | $$\{a-b\}$$ | 
+
+We get the following equations:
+
+ $$VB_{entry}(pc_{1}) = VB_{exit}(pc_1) $$ <br>
+ $$VB_{entry}(pc_2) = VB_{exit}(pc_2) \cup \{b-a\} $$ <br> 
+ $$VB_{entry}(pc_3) = \{a-b\}$$ <br> 
+ $$VB_{entry}(pc_4) = VB_{exit}(pc_4) \cup \{b-a\}  $$ <br> 
+ $$VB_{entry}(pc_5) = \{a-b\} $$ <br> 
+ $$VB_{exit}(pc_{1}) = VB_{entry}(pc_2) \cap VB_{entry}(pc_{4}) $$ <br> 
+ $$VB_{exit}(pc_{2}) = VB_{entry}(pc_{3})$$ <br> 
+ $$VB_{exit}(pc_{3}) = \emptyset $$ <br> 
+ $$VB_{exit}(pc_{4}) = VB_{entry}(pc_{5})$$ <br> 
+ $$VB_{exit}(pc_{5}) = \emptyset $$ <br> 
+
+
+---
+
+## Very Busy Expressions Analysis - Example continued II
+
+Solution:
+
+| pc | $$VB_{entry}$$ | $$VB_{exit}$$ |
+| --- | --- | --- |
+| 1 | $$\{a-b, b-a\} $$ | $$\{a-b,b-a\}$$ |
+| 2 | $$ \{a-b, b-a\} $$ | $$\{a-b\}$$ |
+| 3 | $$ \{a-b\} $$ | $$ \emptyset $$ |
+| 4 | $$ \{a-b,b-a\} $$   | $$ \{a-b\} $$ |
+| 5 | $$ \{a-b\} $$    | $$ \emptyset $$ | 
 
