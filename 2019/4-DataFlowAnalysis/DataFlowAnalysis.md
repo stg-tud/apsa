@@ -914,7 +914,7 @@ We get the following equations:
 
  $$LV_{entry}(pc_{1}) = LV_{exit}(pc_1)\backslash\{x\} $$ <br>
  $$LV_{entry}(pc_2) = LV_{exit}(pc_2)\backslash\{y\} $$ <br> 
- $$LV_{entry}(pc_3) = LV_{exit}(pc_3)\backslash\{x\} <br> 
+ $$LV_{entry}(pc_3) = LV_{exit}(pc_3)\backslash\{x\} $$ <br> 
  $$LV_{entry}(pc_4) = LV_{exit}(pc_4) \cup \{x, y\}  $$ <br> 
  $$LV_{entry}(pc_5) = (LV_{exit}(pc_5)\backslash\{z\}) \cup \{ y\}  $$ <br>
  $$LV_{entry}(pc_6) = (LV_{exit}(pc_6)\backslash\{z\}) \cup \{ y\}  $$ <br> 
