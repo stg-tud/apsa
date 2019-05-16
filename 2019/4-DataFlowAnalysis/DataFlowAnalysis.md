@@ -544,7 +544,7 @@ Solution:
 
 ^ **All** assignments reach `pc 4`; only the assignments at pc 1, 4 and 5 reach pc 5.
 
-^ The underlying lattice is defined over the powerset of all variables cross definition sites (`DefSite`) ($$\mathcal{P}(\text{Var} \times \text{DefSite})$$; a `DefSite` is identified by the program counter of the assignment statement.
+^ The underlying lattice is defined over the powerset of all variables cross definition sites (`DefSite`) ($$\mathcal{P}(\text{Var} \times \text{DefSite})$$; a `DefSite` is typically identified by the program counter of the assignment statement. For parameters to a method multiple solutions are possible: either explicit initialization statements are added which make the parameters explicitly available in the method body or special values which cannot be confused with program counters are used.
 
 ---
 
@@ -583,7 +583,7 @@ $$
 
 ---
 
-##Data Flow Analysis - Worklist Algorithm
+##Data Flow Analysis: Worklist Algorithm
 
 ^ Data flow problems can more efficiently be solved using a worklist algorithm that, when a node is updated, we only consider those other nodes which depend on it.
 
@@ -605,7 +605,7 @@ Let $$W$$ be a worklist:
 
 ---
 
-## Reaching Definitions - Example continued I
+## Reaching Definitions - example continued I
 
 ^ ```scala
 ^          def m(): Int = {
@@ -645,7 +645,7 @@ We get the following equations:
 
 ---
 
-## Reaching Definitions - Example continued II
+## Reaching Definitions - example continued II
 
 Solution:
 
