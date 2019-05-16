@@ -718,7 +718,7 @@ $$
   VB_{exit}(pc_{i}) =
   \begin{cases}
     \emptyset & \text{if } i \in final(S) \\
-    \bigcap \{ VB_{entry}(pc_h)|(pc_h,pc_i) \in \mathit{flow}^R(S) \} & otherwise 
+    \bigcap \{ VB_{entry}(pc_j)|(pc_j,pc_i) \in \mathit{flow}^R(S) \} & otherwise 
   \end{cases}
 \end{equation}
 $$
@@ -867,7 +867,7 @@ $$
   LV_{exit}(pc_{i}) =
   \begin{cases}
     \emptyset & \text{if } i \in final(S) \\
-    \bigcup \{ LV_{entry}(pc_h)|(pc_h,pc_i) \in \mathit{flow}^R(S) \} & otherwise 
+    \bigcup \{ LV_{entry}(pc_j)|(pc_j,pc_i) \in \mathit{flow}^R(S) \} & otherwise 
   \end{cases}
 \end{equation}
 $$
