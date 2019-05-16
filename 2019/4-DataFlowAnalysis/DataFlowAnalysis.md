@@ -25,7 +25,7 @@ Many static analyses are based on the mathematical theory of lattices.
 
 The lattice put the facts (often, but not always, sets) computed by an analysis in a well-defined partial order. 
 
-Analysis are often **well-defined** functions over lattices and can then be combined and reasoned about.
+Analyses are often **well-defined** functions over lattices and can then be combined and reasoned about.
 
 
 
@@ -528,7 +528,7 @@ Solution:
 
 /*pc 1*/  var x = 5;
 
-/*pc 2*/  val y = 1;
+/*pc 2*/  var y = 1;
 
 /*pc 3*/  while (x > 1) {
 
@@ -610,7 +610,7 @@ Let $$W$$ be a worklist:
 ^ ```scala
 ^          def m(): Int = {
 ^ /*pc 1*/  var x = 5;
-^ /*pc 2*/  val y = 1;
+^ /*pc 2*/  var y = 1;
 ^ /*pc 3*/  while (x > 1) {
 ^ /*pc 4*/    y = x * y
 ^ /*pc 5*/    x = x - 1
@@ -914,7 +914,7 @@ We get the following equations:
 
  $$LV_{entry}(pc_{1}) = LV_{exit}(pc_1)\backslash\{x\} $$ <br>
  $$LV_{entry}(pc_2) = LV_{exit}(pc_2)\backslash\{y\} $$ <br> 
- $$LV_{entry}(pc_3) = LV_{exit}(pc_3)\backslash\{x\} <br> 
+ $$LV_{entry}(pc_3) = LV_{exit}(pc_3)\backslash\{x\} $$ <br> 
  $$LV_{entry}(pc_4) = LV_{exit}(pc_4) \cup \{x, y\}  $$ <br> 
  $$LV_{entry}(pc_5) = (LV_{exit}(pc_5)\backslash\{z\}) \cup \{ y\}  $$ <br>
  $$LV_{entry}(pc_6) = (LV_{exit}(pc_6)\backslash\{z\}) \cup \{ y\}  $$ <br> 
