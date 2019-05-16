@@ -530,7 +530,7 @@ Solution:
 
 /*pc 2*/  val y = 1;
 
-/*pc 3*/  while (X > 1) {
+/*pc 3*/  while (x > 1) {
 
 /*pc 4*/    y = x * y
 
@@ -585,23 +585,18 @@ $$
 
 ##Data Flow Analysis - Worklist Algorithm
 
-^ Data flow problems can efficiently be solved using a worklist algorithm that, when a node is updated, we only consider those other nodes which depend on it.
+^ Data flow problems can more efficiently be solved using a worklist algorithm that, when a node is updated, we only consider those other nodes which depend on it.
 
-^ Let's define a helper function which determines for a node $$v \in V$$ the set of nodes on which the node depends.
-
-$$
-dep : V \rightarrow \mathcal{P}(V)
-$$
+Let's define a helper function which determines for a node $$v \in V$$ the set of nodes on which the node depends. $$dep : V \rightarrow \mathcal{P}(V)$$
 
 Let $$W$$ be a worklist:
-
  $$ x_1=\bot;\dots,;x_n = \bot; $$<br> 
  $$ W=\{v_1,\dots,v_n\}; $$<br>
  $$ while (w \neq \emptyset) \{ $$<br>
- $$ \quad i = W.removedNext();$$<br>
+ $$ \quad i = W.removeNext();$$<br>
  $$ \quad y = F_i(x_1,\dots,x_n);$$<br>
  $$ \quad if(x_i = y) \{$$<br>
- $$ \qquad for(v_j \in dep(v_i)) W.add(v_j);$$<br>
+ $$ \qquad for(v_j \in dep(v_i)) \; W.add(v_j);$$<br>
  $$ \qquad x_i = y; $$<br> 
  $$ \quad \}$$<br>
  $$ \} $$ 
@@ -616,7 +611,7 @@ Let $$W$$ be a worklist:
 ^          def m(): Int = {
 ^ /*pc 1*/  var x = 5;
 ^ /*pc 2*/  val y = 1;
-^ /*pc 3*/  while (X > 1) {
+^ /*pc 3*/  while (x > 1) {
 ^ /*pc 4*/    y = x * y
 ^ /*pc 5*/    x = x - 1
 ^           }
@@ -677,7 +672,7 @@ Solution:
 
 # Very Busy Expressions Analysis - Example
 
-[.code-highlight: 3-15 ]
+[.code-highlight: 3-16 ]
 ```scala
          def m(a: Int, b: Int): Int = {
 /*pc 0*/  var x, y = 0	
@@ -696,7 +691,7 @@ Solution:
 
           }
 	  
-/*pc 6*/  x + y 
+/*pc 6*/  n(x, y) 
          } 
 ```
 
@@ -715,7 +710,7 @@ Solution:
 
 ## Very Busy Expressions Analysis - data flow equations
 
-Let $$S$$ be our program, $$flow^R$$ be a backward flow in the program between two statements $$(pc_i,pc_j)$$ and $$final$$ be a function that returns the set of nodes of the program which terminate the program.
+Let $$S$$ be our program, $$flow^{R}$$ be a backward flow in the program between two statements $$(pc_i,pc_j)$$ and $$final$$ be a function that returns the set of nodes of the program which terminate the program.
 
 	
 $$
@@ -737,7 +732,7 @@ $$
 
 ---
 
-## Very Busy Expressions Analysis - Example continued I
+## Very Busy Expressions Analysis - example continued I
 
 ^ ```scala
 ^          def m(a: Int, b: Int): Int = {
@@ -749,7 +744,7 @@ $$
 ^ /*pc 4*/    y = b - a 
 ^ /*pc 5*/    x = a - b
 ^           }	  
-^ /*pc 6*/  x + y 
+^ /*pc 6*/  n(x, y) 
 ^          } 
 ^ ```
 
@@ -779,7 +774,7 @@ We get the following equations:
 
 ---
 
-## Very Busy Expressions Analysis - Example continued II
+## Very Busy Expressions Analysis - example continued II
 
 Solution:
 
@@ -791,3 +786,160 @@ Solution:
 | 4 | $$ \{a-b,b-a\} $$   | $$ \{a-b\} $$ |
 | 5 | $$ \{a-b\} $$    | $$ \emptyset $$ | 
 
+
+---
+
+## Very Busy Expressions Analysis - applied
+
+^ Given the following scala program. Which arithmetic expressions are very busy at which program point and what are the challenges?
+
+```scala
+def m(b1 : Boolean,b2 : Boolean, a: Int, b : Int ): Int = {
+ if(b1){
+  m()
+  a/b
+ } else {
+  if(b2) {
+    val c = a + b 	  
+    a/b	* c
+  } else {
+    val c = a * b 	  
+    a/b - c
+  }
+ }
+}
+```
+
+
+---
+
+# Data Flow Analysis: Live Variable Analysis
+
+> For each program point, which variables may be live at the exit from the point.
+> A variable is live at the exit form a block if there exists a path to the use of the variable that does not re-define the variable.
+
+^ Live Variable Analysis is a backward analysis.
+
+
+---
+
+# Live Variable Analysis - example
+
+[.code-highlight: 3-15 ]
+```scala
+         def m(): Int = {
+
+/*pc 1*/  var x = 2
+
+/*pc 2*/  var y = 4
+
+/*pc 3*/  x = 1
+
+/*pc 4*/  val z = if( y > x ) {
+/*pc 5*/            y
+                  } else {
+/*pc 6*/            y * y
+                  }
+/*pc 7*/  x = z + 1
+         } 
+```
+
+^ The variable `x @ pc 1` is not live at exit of `pc 1`; both: `x` and `y` are live at the exit of `pc 3`.
+
+---
+
+## Live Variable Analysis - gen/kill functions
+
+- The variable that appears on the left hand side of an assignment is killed. The function $$kill: Block \rightarrow \mathcal{P}(Var) $$ produces the set of killed variables.
+
+
+ - All variables that appear in a block are **generated variables**. The function $$gen: Block \rightarrow \mathcal{P}(Var)$$ produces the set of generated variavbles. 
+
+---
+
+## Live Variable Analysis - data flow equations
+
+Let $$S$$ be our program, $$flow^{R}$$ be a backward flow in the program between two statements $$(pc_i,pc_j)$$ and $$final$$ be a function that returns the set of nodes of the program which terminate the program.
+
+	
+$$
+\begin{equation}
+  LV_{exit}(pc_{i}) =
+  \begin{cases}
+    \emptyset & \text{if } i \in final(S) \\
+    \bigcup \{ LV_{entry}(pc_h)|(pc_h,pc_i) \in \mathit{flow}^R(S) \} & otherwise 
+  \end{cases}
+\end{equation}
+$$
+
+$$
+LV_{entry}(pc_{i}) =  (LV_{exit}(pc_{i}) \backslash kill(block(pc_{i})) \cup gen(block(pc_{i}))) 
+$$
+
+
+
+---
+
+## Live Variable Analysis - example continued I
+
+^ ```scala
+         def m(): Int = {
+/*pc 1*/  var x = 2
+/*pc 2*/  var y = 4
+/*pc 3*/  x = 1
+/*pc 4*/  val z = if( y > x ) {
+/*pc 5    val z =*/ y
+                  } else {
+/*pc 6    val z =*/ y * y
+                  }
+/*pc 7*/  x = z + 1
+         } 
+^ ```
+
+^ In the following the assignment `val z = if(c) {v1} else {v2}` is considered to be two  assignments which are results of the two branches!
+
+The kill/gen functions:
+
+| pc | kill | gen |
+| --- | --- | --- |
+| 1 | $$ \{\} $$   | $$ \emptyset $$ |
+| 2 | $$ \{\} $$   | $$ \emptyset $$ |
+| 3 | $$ \{\} $$   | $$\emptyset $$ |
+| 4 | $$ \emptyset $$   | $$\{x,y\}$$ |
+| 5 | $$ \{z\} $$   | $$\{y\}$$ | 
+| 6 | $$ \{z\} $$   | $$\{y\}$$ | 
+| 7 | $$ \{x\} $$   | $$\{z\}$$ | 
+
+We get the following equations:
+
+ $$LV_{entry}(pc_{1}) = LV_{exit}(pc_1)\backslash\{x\} $$ <br>
+ $$LV_{entry}(pc_2) = LV_{exit}(pc_2)\backslash\{y\} $$ <br> 
+ $$LV_{entry}(pc_3) = LV_{exit}(pc_3)\backslash\{x\} <br> 
+ $$LV_{entry}(pc_4) = LV_{exit}(pc_4) \cup \{x, y\}  $$ <br> 
+ $$LV_{entry}(pc_5) = (LV_{exit}(pc_5)\backslash\{z\}) \cup \{ y\}  $$ <br>
+ $$LV_{entry}(pc_6) = (LV_{exit}(pc_6)\backslash\{z\}) \cup \{ y\}  $$ <br> 
+ $$LV_{entry}(pc_7) = \{z\} $$ <br> 
+ $$LV_{exit}(pc_{1}) = LV_{entry}(pc_2)   $$ <br> 
+ $$LV_{exit}(pc_{2}) = LV_{entry}(pc_{3}) $$ <br> 
+ $$LV_{exit}(pc_{3}) = LV_{entry}(pc_{4}) $$ <br> 
+ $$LV_{exit}(pc_{4}) = LV_{entry}(pc_{5}) \cup LV_{entry}(pc_{6}) $$ <br> 
+ $$LV_{exit}(pc_{5}) = LV_{entry}(pc_{7}) $$ <br> 
+ $$LV_{exit}(pc_{6}) = LV_{entry}(pc_{7}) $$ <br> 
+ $$LV_{exit}(pc_{7}) = \emptyset $$ <br> 
+
+
+---
+
+## Live Variable Analysis - example continued II
+
+Solution:
+
+| pc | $$LV_{entry}(pc_i)$$ | $$LV_{exit}(pc_i)$$ |
+| --- | --- | --- |
+| 1 | $$ \emptyset $$ | $$\emptyset$$ |
+| 2 | $$ \emptyset $$ | $$\{y\}$$ |
+| 3 | $$ \{y\} $$ | $$ \{x,y\} $$ |
+| 4 | $$ \{x,y\} $$   | $$ \{y\} $$ |
+| 5 | $$ \{y\} $$    | $$ \{z\} $$ | 
+| 6 | $$ \{y\} $$    | $$ \{z\} $$ | 
+| 7 | $$ \{z\} $$    | $$ \emptyset $$ | 
