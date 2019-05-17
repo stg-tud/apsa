@@ -15,7 +15,7 @@ For background information see:
 
  - Principles of Program Analysis; Flemming Nielson, Hanne Riis Nielson, and Chris Hankin; Springer, 2005
  
-Acknowledgements: I would like Dominik Helm for his support in creating the slides!
+Acknowledgements: I would like to thank Dominik Helm for his support in creating the slides!
 
 
 ---
