@@ -1,0 +1,23 @@
+digraph X {
+    rankdir = LR;
+    node [shape=box];
+    node [style=rounded];
+
+    main [label=<<I>Main</I>&nbsp;.main >];
+    makeCollection [label=< <I>Main</I>.makeCollection >];
+    main -> makeCollection;
+
+    add [label=< <b>&lt;c&gt;</b>.add >]
+    main -> add;
+
+    ArrayList [label="c : ArrayList.<init>"];
+    HashSet [label="c : HashSet.<init>"];
+    makeCollection -> ArrayList ;
+    makeCollection -> HashSet; 
+
+    HashSet -> makeCollection [label = c,style=dotted,color=red];
+    ArrayList -> makeCollection [label = c, fontcolor=red,style=dotted,color=red];
+    makeCollection -> add[label = c, fontcolor=red,style=dotted,color=red];
+
+
+}

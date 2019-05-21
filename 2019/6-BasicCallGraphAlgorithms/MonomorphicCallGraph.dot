@@ -1,0 +1,22 @@
+digraph {
+    rankdir = LR;
+    node [shape=box];
+    node [style=rounded];
+
+    main [label=<<I>Main</I>&nbsp;.main >];
+    Main [label="m : Main.<init>"];
+    Subject [label="s : Subject.<init>"];
+    addObserver [label=< <b>&lt;s&gt;</b>.addObserver >];
+    modify [label=< <b>&lt;s&gt;</b>.modify >];
+    setChanged [label=< <b>&lt;this(s)&gt;</b>.setChanged >];
+    update [label=< <b>&lt;m&gt;</b>.update >];
+    notifyObservers [label=< <b>&lt;s&gt;</b>.notifyObservers >];
+
+    main -> Main;
+    main -> Subject;
+    main -> addObserver;
+    main -> modify;
+    modify -> setChanged;
+    modify -> notifyObservers;
+    notifyObservers -> update;
+}
