@@ -11,6 +11,8 @@ Department of Computer Science
 Technische Universität Darmstadt  
 [Dr. Michael Eichberg](mailto:m.eichberg@me.com)
 
+> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/6-BasicCallGraphAlgorithms/BasicCallGraphAlgorithms.md)
+
 
 ---
 
