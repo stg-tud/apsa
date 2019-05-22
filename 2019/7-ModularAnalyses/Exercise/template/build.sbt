@@ -1,4 +1,4 @@
-name                            := "MyOPALProject"
+name                          := "Allocation Freeness"
 
 organization    in ThisBuild 	:= "org.example"
 version         in ThisBuild 	:= "0.1.0-SNAPSHOT"
