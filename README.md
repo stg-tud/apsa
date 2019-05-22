@@ -41,6 +41,9 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
 
  1. Week
     - [OPAL - Data Flow Analysis.pdf](2019/OPAL/4-SimpleDataFlowAnalyses.pdf)   
+    
+ 1. Week
+    - [OPAL - Fixed Point Computations Framework.pdf](2019/OPAL/5-FixedPointComputations.pdf)   
 
 ## Exercise
 
@@ -50,3 +53,4 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
  
  1. Monotone Framework: [Task.pdf](2019/5-Monotone-Framework/Exercise/Task.pdf) (Updated: May 2nd)
 
+ 1. Fixed Point Computations Framework: [Task.pdf](2019/7-ModularAnalyses/Exercise/Task.pdf)

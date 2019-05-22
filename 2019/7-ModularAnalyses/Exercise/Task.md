@@ -5,9 +5,11 @@ Department of Computer Science
 Technische Universität Darmstadt  
 [Dr. Michael Eichberg](mailto:m.eichberg@me.com)
 
-# Fixed Point Computation Framework
+I would like to thank Florian Kübler and Dominik Helm for creating this exercise.
 
-You should use the provided template. That project is preconfigured to use the latest snapshot version of OPAL.
+# Fixed Point Computations Framework
+
+You should use the provided template. That project is preconfigured to use the latest snapshot version of OPAL and already contains the initial configuration. The template for this exercise can be found at: [https://github.com/stg-tud/apsa/tree/master/2019/7-ModularAnalyses/Exercise/template](https://github.com/stg-tud/apsa/tree/master/2019/7-ModularAnalyses/Exercise/template)
 
 > ️⚠️ Always ensure that you use the latest snapshot version. You can clean the latest (snapshot) version that you have downloaded using the command `sbt cleanCache cleanLocal` in your project's root folder.
 
