@@ -21,7 +21,8 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     - [Data-flow Analysis.pdf](2019/4-DataFlowAnalysis/DataFlowAnalysis.pdf)	
  5. Week
     - [Monotone Framework.pdf](2019/5-MonotoneFramework/MonotoneFramework.pdf)
-     
+ 6. Week
+    - [BasicCallGraphAlgorithms.pdf](2019/6-BasicCallGraphAlgorithms/BasicCallGraphAlgorithms.pdf)    
     
 ### Complementary Material
 
