@@ -26,7 +26,8 @@ Additionally, a DeclaredMethod puts the method into the context of a class, i.e.
 
 There is just one type of `Method`, but it may or may not contain code (`body`).
 
-A `DeclaredMethod` may be one of the follwoing:
+A `DeclaredMethod` may be one of the following:
+
 * `DefinedMethod`: Is backed by a `Method` (its `definedMethod`) and a `declaringClass` (either the parent or the child class from the example above).
 * `VirtualDeclaredMethod`: A reference for which no `Method` object exists, i.e. a method from a library not present in the project.
 * `MultipleDefinedMethods`: Represents some corner cases the JVM may choose from several methods on invocations.
