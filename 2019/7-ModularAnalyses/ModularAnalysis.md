@@ -22,8 +22,8 @@ Technische Universität Darmstadt
 - Integrating different analyses is challenging
    - it should be possible to reason about each analysis' correctness individually 
    - it should be possible to determine the impact of individual analyses on the overall performance and precision 
-   - inter-analysis cyclic dependencies need to be identified and handled
-   - running all analyses always may
+   - inter-analysis cyclic dependencies need to be identified and handled in a precise and sound manner
+   - running all analyses always will not scale; analyses should only be executed when required
 
 
 ---
@@ -36,11 +36,12 @@ Technische Universität Darmstadt
 
 ---
 
-# Techniques and approaches to integrate individual analyses
+# Techniques and approaches to modularize and integrate individual analyses
 
 - Attribute grammars
 - (Declarative) (Datalog/Prolog) based approaches
 - OPAL's fixed point computations framework
+- ...
 
 ^ <!----------------------------------------------------------------------------------------------->
 ^ <!---------------------------------------- REFERENCES ------------------------------------------->
