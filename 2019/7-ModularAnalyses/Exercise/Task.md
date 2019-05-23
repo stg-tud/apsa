@@ -18,6 +18,23 @@ An integrated JavaDoc of the latest snapshot version of OPAL that spans all sub-
 
 For further details regarding the development of static analysis using OPAL see the OPAL tutorial.
 
+## Declared Methods
+Note that OPAL distinguishes between `Method`s and `DeclaredMethod`s.
+A `Method` represents an entity existing in the bytecode of the project. It can be either a concrete, abstract or native method.
+In contrast to this, a `DeclaredMethod` represents a reference by the code, including library methods not present in the code.
+Additionally, a DeclaredMethod puts the method into the context of a class, i.e. if a class inherits a method, there are two `DeclaredMethod` objects, one for the parent and one for the child class, but only one `Method` object for the concrete implementation found in the bytecode.
+
+There is just one type of `Method`, but it may or may not contain code (`body`).
+
+A `DeclaredMethod` may be one of the follwoing:
+* `DefinedMethod`: Is backed by a `Method` (its `definedMethod`) and a `declaringClass` (either the parent or the child class from the example above).
+* `VirtualDeclaredMethod`: A reference for which no `Method` object exists, i.e. a method from a library not present in the project.
+* `MultipleDefinedMethods`: Represents some corner cases the JVM may choose from several methods on invocations.
+
+OPAL uses `Method`s whereever the concrete representation is needed (e.g. for the three-address code), whereas it uses `DeclaredMethod`s for the targets of calls.
+
+For this exercise you may ignore `VirtualDeclaredMethod` and `MultipleDefinedMethods`.
+
 ## Allocation Free Methods
 
 Develop an __interprocedural__ analysis using the fixed point computation framework which determines whether a method (`DeclaredMethod`) or its (transitive) callees may allocate any objects or arrays.
