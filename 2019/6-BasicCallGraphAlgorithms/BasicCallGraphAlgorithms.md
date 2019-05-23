@@ -124,7 +124,7 @@ Basic definition:
 
 > All methods which are entry points are reachable.
 
-> For a call site `m` in a reachable method, assume a call edge to any method $$M'$$ that has the same signature as `m`. Add $$M'$$ to the set of reachable methods.
+> For a call site `cs` in a reachable method $$M$$, assume a call edge to any method $$M'$$ that has the same signature as `cs` describes. Add $$M'$$ to the set of reachable methods.
 The signature is defined by the name of the method and the types of the parameters. 
 
 ^ (In Java bytecode and frameworks which analyze Java bytecode, the signature also encompasses the return type.)
@@ -151,7 +151,7 @@ Basic definition:
 
 > All methods which are entry points are reachable.
 
-> Given a reachable method $$M$$, for a polymorphic (virtual) call site `m` on the declared type `T`, assume a call edge to any method $$M'$$ with the signature of `m` that belongs to a subclass of `T`.
+> Given a reachable method $$M$$, for a polymorphic (virtual) call site `cs` on the declared type `T`, assume a call edge to any method $$M'$$ with the signature of `cs` that belongs to a subclass of `T`.
 
 ^ The subclass relation is reflexive.
 
