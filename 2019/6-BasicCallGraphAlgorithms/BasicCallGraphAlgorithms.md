@@ -83,7 +83,7 @@ public class Main {
 
 ^ I.e., the call graph should only contain call edges related to calls that may happen at runtime (precise) and it should contain all call edges that may happen at runtime (sound).
 
-^ In practice, call graphs for real world programming languages are often neither sound nor precise. And even the most precise ones are still rather imprecise. If soundness is required, e.g., to prove that some software satisfies some specific properties, then it is often required that only the soundly handled subset of a specific programming language such as Java, C# or C++ is used.
+^ In practice, call graphs for real-world programming languages are often neither sound nor precise. And even the most precise ones are still rather imprecise. If soundness is required, e.g., to prove that some software satisfies some specific properties, then it is often required that only the soundly handled subset of a specific programming language such as Java, C# or C++ is used.
 
 Basic idea:
 
@@ -141,7 +141,7 @@ The signature is defined by the name of the method and the types of the paramete
 - Issues: 
    - very imprecise
 
-^ Call-by signature resolution is in some cases required to correctly approximate the call graphs of libraries. The latter is in particular required if you want to perform security related analyses.
+^ Call-by signature resolution is in some cases required to correctly approximate the call graphs of libraries. The latter is in particular required if you want to perform security-related analyses.
 
 ---
 
@@ -173,7 +173,7 @@ Basic definition:
 - Issues: 
    - More precise than _Call-by Signature_, but still rather imprecise.
 
-^ When implementing CHA or even more precise algorithms, decisions have to be made regarding the handling of incomplete class hierarchies. which are common place when analyzing real world projects.
+^ When implementing CHA or even more precise algorithms, decisions have to be made regarding the handling of incomplete class hierarchies which are common place when analyzing real-world projects.
 
 ---
 
@@ -354,7 +354,7 @@ A comprehensive discussion of sources of unsoundness and the effect of implement
 
 # Implementation Differences and their Effect
 
-^ Often the same conceptual algorithms are implemented very differently across frameworks (e.g., WALA, OPAL, SOOT) and therefore the call graphs vary widely in the their precision.
+^ Often the same conceptual algorithms are implemented very differently across frameworks (e.g., WALA, OPAL, SOOT) and, therefore, the call graphs vary widely in the their precision.
 
 ^ Given the following example:
 
@@ -369,7 +369,7 @@ if(some_condition){
 c2.add(null);  // CALL SITE
 ```
 
-^ In the above example, the declared receiver type of `c2` is collection and therefore Wala will create an edge to all subtypes of `Collection` which define an `add` method. Soot instead computes the least upper type bound of `ArrayList` and `Vector` (which is `List`) and will only add an edge to `add` methods defined by subtypes of `List`. OPAL supports union (and intersection) types and is able to determine that the call will either go to `ArrayList.add` or `Vector.add`.
+^ In the above example, the declared receiver type of `c2` is collection and, therefore, Wala will create an edge to all subtypes of `Collection` which define an `add` method. Soot instead computes the least upper type bound of `ArrayList` and `Vector` (which is `List`) and will only add an edge to `add` methods defined by subtypes of `List`. OPAL supports union (and intersection) types and is able to determine that the call will either go to `ArrayList.add` or `Vector.add`.
 
 ---
 
@@ -384,7 +384,7 @@ c2.add(null);  // CALL SITE
 | $$OPAL^{RTA}$$ | 3195 | 4222 | 15705 | 7771 | 4932 | 
 
 
-^ Basically, call graphs computed by different frameworks are incomparable and therefore also the results of all analyses build on top of them.
+^ Basically, call graphs computed by different frameworks are incomparable and, therefore, also the results of all analyses build on top of them.
 
 ---
 # Call Graph Construction for Libraries (LibCG)
