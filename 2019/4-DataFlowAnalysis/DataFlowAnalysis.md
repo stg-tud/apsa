@@ -342,7 +342,7 @@ while (true) {
 
  $$ \vdots $$ 
 
- $$ x_n = F_2(x_1,\dots,x_n) $$
+ $$ x_n = F_n(x_1,\dots,x_n) $$
 
 where $$ x_i $$ are variables and $$ F_i: L^{n} \rightarrow L $$ is a collection of functions. If all functions are monotone then  the system has a unique least solution which is obtained as the least-fixed point of the function $$F: L^{n} \rightarrow L^{n} $$ defined by:
 
