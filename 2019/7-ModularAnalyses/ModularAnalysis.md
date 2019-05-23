@@ -15,6 +15,32 @@ Technische Universität Darmstadt
 
 ---
 
+# Problem statement
+
+> The result of analyses can be improved by complementary information (e.g. information derived by other analysis)
+
+- Integrating different analyses is challenging
+   - it should be possible to reason about each analysis' correctness individually 
+   - it should be possible to determine the impact of individual analyses on the overall performance and precision 
+   - inter-analysis cyclic dependencies need to be identified and handled
+   - running all analyses always may
+
+
+---
+
+# Example of inter-analysis dependencies
+
+![inline](AnalysisDependencies.pdf)
+
+^ The image is taken from [^FPCF].
+
+---
+
+# Techniques and approaches to integrate individual analyses
+
+- Attribute grammars
+- (Declarative) (Datalog/Prolog) based approaches
+- OPAL's fixed point computations framework
 
 ^ <!----------------------------------------------------------------------------------------------->
 ^ <!---------------------------------------- REFERENCES ------------------------------------------->
@@ -22,10 +48,4 @@ Technische Universität Darmstadt
 
 ^ # References
 
-^ [^Judge]: Judge: Identifying, Understanding, and Evaluating Sources of Unsoundness in Call Graphs; Michael Reif, Florian Kübler, Michael Eichberg, Dominik Helm, Mira Mezini, ISSTA 2019, ACM (to appear)
-
-^ [^Soundiness]: Livshits, B., Sridharan, M., Smaragdakis, Y., Amaral, J. N., Møller, A., Lhoták, O., et al. (2015). In Defense of Soundiness: A Manifesto. Communications of the ACM, 58(2).
-
-^ [^LibCG]: M. Reif, M. Eichberg, B. Hermann, J. Lerch and M. Mezini; Call Graph Construction for Java Libraries; FSE 2016; ACM
-
-^ [^XTA]: F. Tip and J. Palsberg; Scalable Propagation-Based Call Graph Construction Algorithms; OOPSLA 2000, ACM
+^ [^FPCF]: Lattice Based Modularization of Static Analyses; M. Eichberg, F. Kübler, D. Helm, M. Reif, G. Salvaneschi and M. Mezini; SOAP 2018, ACM
