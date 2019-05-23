@@ -6,7 +6,8 @@ slidenumbers: true
 
 ## Fixed Point Computations
 
-**The FPCF Framework** (Subproject: `Static Analysis Infrastructure`)
+**The FPCF Framework**  
+(_OPAL - Static Analysis Infrastructure_)
 
 Software Technology Group  
 Department of Computer Science  
@@ -37,6 +38,23 @@ The framework inherently supports fixed point computations and transparently han
 
 ^ Properties are, e.g., the immutability of (all) instances of a specific class or the immutability of (all) instances of a specific type. In FPCF, it is a recurring pattern that a concrete analysis is implemented by two sub analysis: one analysis that derives a property related to a specific entity and a second analysis that basically just aggregates all results, e.g., over the type hierarchy.
 
+
+--- 
+# Entities and Properties - example
+
+An example how the mutability
+
+| Entity | Property Kind | Property |
+| --- | --- | --- |
+| `java.lang.String` | Immutability | Immutable |
+| `java.util.ArrayList` | Immutability | Mutable |
+| `scala.collection.immutable.HashSet` | Immutability | Container Immutable |
+| |
+| `Math.abs(...)` | Thrown Exceptions | None |
+| | 
+| `Math.abs(...)` | Purity | Compile-time pure |
+
+
 ---
 
 # Property Kinds
@@ -55,27 +73,41 @@ The property kind encodes (ex- or implicitly):
 
 # Analyses
 
-A static analysis is a function that - given an entity $$e$$ - derives a property $$p$$ of property kind $$pk$$ along with the set of dependees $$\mathcal{D}$$ which may still influence the property $$p$$. The set of dependees consists of the results of querying the property store for the current property extensions of other entity/property kind pairings.
+A static analysis is a function that - given an entity $$e$$ - derives a property $$p$$ of property kind $$pk$$ along with the set of dependees $$\mathcal{D}$$ which may still influence the property $$p$$. The set of dependees consists of the intermediate results of querying the property store for the current property extensions of other entity/property kind pairings.
 
 The programming model is to always complete the analysis of the current entity and to _just_ record the relevant dependencies to other entities.
 
 ^ Technically and conceptually a static analysis could derive for a given entity $e$ multiple properties $ps$ with different property kinds $pks$ where $|ps| = |pks|$, however, this can be thought of as being multiple analyses that are just executed concurrently.
 
-^ While computing the property $p$ for $e$ the analysis generally requires knowledge of properties of other entities. For that, it queries the \PropertyStore{} regarding the current extension of a property $p'$ of a specific kind $pk'$ for a specific entity $e'$.The result of that query will - w.r.t. the queried entity - either return a final result, which specifies the extension of the property of the respective kind, or an intermediate result. In the first case the result is just taken into consideration and the computation of $p$ for $e$ continues. In the latter case the property may change in the future and the analysis now has to decide if the current information is already sufficient or if it has to keep a dependency on the just queried entity $e'$. If the latter is the case, the analysis has to record the dependency and continue. As soon as the analysis has completed analyzing $e$'s enclosing context it commits it results to the property store along with the open (refineable) dependencies and a function (called `continuation` function next) that continues the computation of $p$ whenever a property $p'$ of a dependee $e'$ is updated.  Note that in many cases certain intermediate results are actually sufficient and final results can be commit earlier which is a major factor w.r.t. the overall scalability and performance. For example, if an analysis just needs to know whether a certain value escapes at all or not, complete information is not required. Whenever the continuation function is called it will take the new information (the new extension of the property of kind $pk'$ of entity $e'$ along with the information if that information is final) into consideration and either store another intermediate property in the store or a final value for $e$. 
+^ While computing the property $p$ for $e$ the analysis generally requires knowledge of properties of other entities. For that, it queries the `PropertyStore` regarding the current extension of a property $p'$ of a specific kind $pk'$ for a specific entity $e'$.The result of that query will - w.r.t. the queried entity - either return a final result, which specifies the extension of the property of the respective kind, or an intermediate result. In the first case the result is just taken into consideration and the computation of $p$ for $e$ continues. In the latter case the property may change in the future and the analysis now has to decide if the current information is already sufficient or if it has to keep a dependency on the just queried entity $e'$. If the latter is the case, the analysis has to record the dependency and continue. As soon as the analysis has completed analyzing $e$'s enclosing context it commits it results to the property store along with the open (refineable) dependencies and a function (called `continuation` function next) that continues the computation of $p$ whenever a property $p'$ of a dependee $e'$ is updated.  Note that in many cases certain intermediate results are actually sufficient and final results can be commit earlier which is a major factor w.r.t. the overall scalability and performance. For example, if an analysis just needs to know whether a certain value escapes at all or not, complete information is not required. Whenever the continuation function is called it will take the new information (the new extension of the property of kind $pk'$ of entity $e'$ along with the information if that information is final) into consideration and either store another intermediate property in the store or a final value for $e$. 
 
 ---
 
 # Basic Definitions
 
-^ Basic type definitions:
+^ Basic definitions:
 
 ```scala
 final type Entity = AnyRef
 
+object PropertyKey {
+    def create[E <: Entity, P <: Property](
+        name:                         String,
+        fallbackPropertyComputation:  FallbackPropertyComputation[E, P],
+        fastTrackPropertyComputation: (PropertyStore, E) ⇒ Option[P]
+    ): PropertyKey[P] }
+
+trait Property  {
+    def key: PropertyKey[Self]
+    override def equals(other: Any): Boolean }
+```
+
+^ Every object can be an `Entity`. A property key is created using the factory method provided by `PropertyKey`'s companion object. A `fastTrackPropertyComputation` is a function that handles extremely simple cases (e.g., empty methods) and by that reduces the workload on the property store.
+
+```scala
 trait EOptionP[+E <: Entity, +P <: Property] {
     val e: E
-    def pk: PropertyKey[P]
-    }
+    def pk: PropertyKey[P] }
 ```
 
 ^ `EOptionP` represents a pairing of an entity $$e$$ and an optional property of a well defined kind $$pk$$.    
@@ -106,6 +138,8 @@ final class EPK[+E <: Entity, +P <: Property](
         val pk: PropertyKey[P] ) extends EOptionP[E, P]
 ```    
 
+^ A property can be associated with an upper and/or a lower bound. The vast majority of analyses only use the upper bound which represents the most precise solution and refines that one. However, some analyses use both bounds to speed up analyses. E.g., imagine an analysis which determines a method's purity. This analysis may have determined that a specific method m is at least side-effect free but may also be pure. This knowledge may be sufficient for a client that _just_ wants to know if m is at least side effect free.
+
 ---    
 
 An analysis consists of two functions. An initial function which analyzes an entity and a second function (the continuation function) which is called whenever a dependee is updated.
@@ -131,6 +165,16 @@ final class InterimResult[P >: Null <: Property] private (
 ```
 
 --- 
+# Getting the PropertyStore
+
+The simplest way to create the property store is to use the `PropertyStoreKey`.
+
+```scala
+val project : SomeProject = ...
+val propertyStore = project.get(PropertyStoreKey)
+```
+
+--- 
 
 # Querying the PropertyStore
 
@@ -139,12 +183,20 @@ final class InterimResult[P >: Null <: Property] private (
 Querying the property store can be done using the property store's `apply` method:
 
 ```scala
-def apply[E <: Entity, P <: Property](e: E, pk: PropertyKey[P]): EOptionP[E, P]
- ```
+def apply[E <: Entity, P <: Property](
+   e: E,
+   pk: PropertyKey[P]
+): EOptionP[E, P]
+```
+ 
+^ Querying the property store will return the current extension of the property for the given entity. If the property is computed by a lazy analysis, the analysis will be started and an `EPK` object will be returned.
+
+^ The property store offers various further query methods which are all _only_ intended to be used after the analyses have been finished. (The property store has reached quiescence.)
 
 ---
 
 # Registering Static Analyses
+
 
 Scheduling an eager analysis:
 
@@ -166,7 +218,7 @@ def registerLazyPropertyComputation[E <: Entity, P <: Property](
 
 ---
 
-# Executing Static Analyses
+# Executing static analyses
 
 To execute a set of scheduled eager analysis:
 
@@ -174,14 +226,189 @@ To execute a set of scheduled eager analysis:
 def waitOnPhaseCompletion(): Unit
 ```
 
-Lazy analyses will be triggered when required.    
+^ Lazy analyses will only be triggered when required. It is, however, possible to force the computation of a specific property (and thereby triggering the computation of further properties) using `force`.
 
+
+---
+
+# Example - a very simple purity analysis
+
+
+```scala
+class PurityAnalysis ( final val project: SomeProject) extends FPCFAnalysis {
+
+    import project.nonVirtualCall
+    import project.resolveFieldReference
+
+    private[this] val declaredMethods: DeclaredMethods = project.get(DeclaredMethodsKey)
+
+    def determinePurity(definedMethod: DefinedMethod): ProperPropertyComputationResult = {
+        val method = definedMethod.definedMethod
+        if (method.body.isEmpty || method.isSynchronized)
+            return Result(definedMethod, ImpureByAnalysis);	    
+        determinePurityStep1(definedMethod.asDefinedMethod)
+    }
+    ...
+```
+
+^ The `determinePurity` method is the method, which performs the initial analysis of a method w.r.t. its purity.
+
+
+---
+
+ All parameters either have to be base types or have to be immutable:
+      
+```scala
+    def determinePurityStep1(definedMethod: DefinedMethod): ProperPropertyComputationResult = {
+        val method = definedMethod.definedMethod
+
+       var referenceTypedParameters = method.parameterTypes.iterator.collect[ObjectType] {
+            case t: ObjectType ⇒ t
+            case _: ArrayType  ⇒ return Result(definedMethod, ImpureByAnalysis);
+        }
+        var dependees: Set[EOptionP[Entity, Property]] = Set.empty
+        referenceTypedParameters foreach { e ⇒
+            propertyStore(e, TypeImmutability.key) match {
+                case FinalP(ImmutableType) ⇒ /*everything is Ok*/
+                case _: FinalEP[_, _] ⇒
+                    return Result(definedMethod, ImpureByAnalysis);
+                case InterimUBP(ub) if ub ne ImmutableType ⇒
+                    return Result(definedMethod, ImpureByAnalysis);
+                case epk ⇒ dependees += epk
+            }
+        }
+
+        doDeterminePurityOfBody(method, dependees)
+    }
+```
+
+---
+
+
+```scala
+    def doDeterminePurityOfBody(
+        method:           Method,
+        initialDependees: Set[EOptionP[Entity, Property]]
+    ): ProperPropertyComputationResult = {
+
+        var dependees = initialDependees
+	
+        val maxPC = instructions.length
+        var currentPC = 0
+        while (currentPC < maxPC) {
+            <analyze instructions and collect dependencies>
+            currentPC = body.pcOfNextInstruction(currentPC)
+        }
+
+        if (dependees.isEmpty) return Result(definedMethod, Pure);
+```
+
+---
+
+
+```scala
+        // This function computes the “purity for a method based on the properties of its dependees:
+        // other methods (Purity), types (immutability), fields (effectively final)
+        def c(eps: SomeEPS): ProperPropertyComputationResult = {
+            // Let's filter the entity.
+            dependees = dependees.filter(_.e ne eps.e)
+
+            (eps: @unchecked) match {
+                case _: InterimEP[_, _] ⇒
+                    dependees += eps
+                    InterimResult(definedMethod, ImpureByAnalysis, Pure, dependees, c)
+
+                case FinalP(_: FinalField | ImmutableType) ⇒
+                    if (dependees.isEmpty) {
+                        Result(definedMethod, Pure)
+                    } else {
+                        InterimResult(definedMethod, ImpureByAnalysis, Pure, dependees, c)
+                    }
+
+                case FinalP(ImmutableContainerType) ⇒
+                    Result(definedMethod, ImpureByAnalysis)
+
+                // The type is at most conditionally immutable.
+                case FinalP(_: TypeImmutability) ⇒ Result(definedMethod, ImpureByAnalysis)
+                case FinalP(_: NonFinalField)    ⇒ Result(definedMethod, ImpureByAnalysis)
+
+                case FinalP(CompileTimePure | Pure) ⇒
+                    if (dependees.isEmpty)
+                        Result(definedMethod, Pure)
+                    else {
+                        InterimResult(definedMethod, ImpureByAnalysis, Pure, dependees, c)
+                    }
+
+                case FinalP(_: Purity) ⇒
+                    // a called method is impure...
+                    Result(definedMethod, ImpureByAnalysis)
+            }
+        }
+
+        InterimResult(definedMethod, ImpureByAnalysis, Pure, dependees, c)
+    }
+
+    
+
+    /**
+     * Retrieves and commits the methods purity as calculated for its declaring class type for the
+     * current DefinedMethod that represents the non-overwritten method in a subtype.
+     */
+    def baseMethodPurity(dm: DefinedMethod): ProperPropertyComputationResult = {
+
+        def c(eps: SomeEOptionP): ProperPropertyComputationResult = eps match {
+            case FinalP(p)                ⇒ Result(dm, p)
+            case ep @ InterimLUBP(lb, ub) ⇒ InterimResult(dm, lb, ub, Seq(ep), c)
+
+            case epk ⇒
+                InterimResult(dm, ImpureByAnalysis, CompileTimePure, Seq(epk), c)
+        }
+
+        c(propertyStore(declaredMethods(dm.definedMethod), Purity.key))
+    }
+
+
+
+}
+
+```
+---
+
+# Example - specifying meta information
+
+```scala
+object EagerPurityAnalysis
+    extends FPCFAnalysisScheduler
+    with BasicFPCFEagerAnalysisScheduler {
+
+    final override def uses: Set[PropertyBounds] = {
+        Set(PropertyBounds.ub(TypeImmutability), PropertyBounds.ub(FieldMutability))
+    }
+
+    final def derivedProperty: PropertyBounds = PropertyBounds.lub(Purity)
+
+    override def derivesEagerly: Set[PropertyBounds] = Set(derivedProperty)
+
+    override def derivesCollaboratively: Set[PropertyBounds] = Set.empty
+
+    override def start(p: SomeProject, ps: PropertyStore, unused: Null): FPCFAnalysis = {
+        val analysis = new PurityAnalysis(p)
+        val dms = p.get(DeclaredMethodsKey).declaredMethods
+        val methodsWithBody = dms.toIterator.collect {
+            case dm if dm.hasSingleDefinedMethod && dm.definedMethod.body.isDefined ⇒
+                dm.asDefinedMethod
+        }
+        ps.scheduleEagerComputationsForEntities(methodsWithBody)(analysis.determinePurity)
+        analysis
+    }
+}
+```
 
 ---
 
 # Examples
 
-To get a deeper understanding how to instantiate the framework consider studying concrete implementations. In OPAL, we have implemented some analyses using the framework:
+To get a deeper understanding how to instantiate the framework consider studying concrete implementations. In OPAL, we have implemented multiple analyses using the framework:
 
  - [TypeImmutabilityAnalysis](https://bitbucket.org/delors/opal/src/develop/OPAL/br/src/main/scala/org/opalj/br/fpcf/analyses/TypeImmutabilityAnalysis.scala)
  - [ClassImmutabilityAnalysis](https://bitbucket.org/delors/opal/src/develop/OPAL/br/src/main/scala/org/opalj/br/fpcf/analyses/ClassImmutabilityAnalysis.scala)
