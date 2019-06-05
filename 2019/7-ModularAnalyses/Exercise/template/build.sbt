@@ -14,4 +14,4 @@ scalaVersion    in ThisBuild 	:= "2.12.8"
 
 resolvers in ThisBuild ++= Seq(Opts.resolver.sonatypeSnapshots)
 
-libraryDependencies += "de.opal-project" %% "opal-developer-tools" % "3.0.0-SNAPSHOT" withJavadoc() withSources()
+libraryDependencies += "de.opal-project" %% "framework" % "3.0.0-SNAPSHOT" withJavadoc() withSources()
