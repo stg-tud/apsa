@@ -11,7 +11,7 @@ import org.opalj.br.analyses.SomeProject
 import org.opalj.br.fpcf.BasicFPCFEagerAnalysisScheduler
 import org.opalj.br.fpcf.FPCFAnalysis
 import org.opalj.br.fpcf.FPCFAnalysesManagerKey
-import org.opalj.br.fpcf.cg.properties.Callees
+import org.opalj.br.fpcf.properties.cg.Callees
 import org.opalj.br.fpcf.properties.AllocationFreeMethod
 import org.opalj.br.fpcf.properties.AllocationFreeness
 import org.opalj.br.fpcf.properties.MethodWithAllocations
