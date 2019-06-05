@@ -1,0 +1,269 @@
+theme: APSA Lecture
+autoscale: true
+slidenumbers: true
+
+# Applied Static Analysis
+
+## Advanced Call Graph Algorithms
+
+Software Technology Group  
+Department of Computer Science  
+Technische Universität Darmstadt  
+[Dr. Michael Eichberg](mailto:m.eichberg@me.com)
+
+> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/8-AdvancedCallGraphAlgorithms/AdvancedCallGraphAlgorithms.md)
+
+Some of the images on the following slides are taken from the paper: Practical Virtual Method Call Resolution for Java [^DVTA] or are based on slides created by Eric Bodden.
+
+---
+
+#Conservative Call Graph
+
+^ Let's assume that we have computed a call graph that is a conservative approximation of the runtime call graph.
+
+![inline](PruningCallGraphs-1.pdf)
+
+^ - Blue box = method
+^ - Yellow dot = potentially polymorphic call site
+^ - Red triangle = static call site
+^ - edge with arrow = call edge (a call edge without a source is an entry point)
+
+---
+
+#Refining a Conservative Call Graph
+
+![inline](PruningCallGraphs-2.pdf)
+
+^ - Blue box = _(potentially) reachable_ method | white box with gray border = unreachable method
+^ - Yellow dot = potentially polymorphic call site | green star = polymorphic call site that is now monomorphic
+^ - Red triangle = static call site
+^ - edge with arrow = call edge (a call edge without a source is an entry point;  a dashed call edge is an edge that can be eliminated)
+
+---
+
+#Pruned Call Graph
+
+^ The goal of a call graph refinement is to ...
+^  - remove call edges
+^  - identify unreachable methods
+^  - determine monomorphic call edges
+
+![inline](PruningCallGraphs-3.pdf)
+
+
+---
+
+# Declared/Variable Type Analysis (D/VTA)
+
+*Goal*: Resolution of virtual methods and interface calls (in Java) using a technique that...
+ 
+ - scales linearly with the program size
+ - is more accurate than (CHA and) RTA
+ - simple to implement
+
+^ i.e., their goal was to identify monomorphic call sites to reduce costs of virtual method calls and to identify possibilities for method inlining.
+
+*Basic idea*: __take variable assignments into account__!
+
+^ In a sense these are also refinements of RTA. Here, we are concerned about the types of objects that reach each variable.
+
+---
+
+# Mono- vs. Polymorphic calls
+
+Here, a call site is considered to be monomorphic if the _number of call edges_  (not runtime types) is **one**.
+
+^ Consider the following example:
+
+```java
+class S { void m(); }
+class X extends S { void m(){} }
+class Y extends S { void m(){} }
+...
+void m(boolean b, X x, Y y) {
+	S o = b ? x : y; 
+	// The following call site is monomorphic!
+	// Independent of the concrete runtime type the method 
+	// <Object>.toString is called. 
+	s.toString(); 
+	
+	// The following call site is polymorphic!
+	s.m();
+}	
+```
+
+---
+
+# Basics of (D/V)TA
+
+ - both are built on top of a conservative call graph (e.g., one computed by CHA, RTA or even VTA itself) which is then pruned.
+ - The implementation is defined on top of a three-address code like representation where we have no aliasing between variables 
+ - both are flow-insensitive
+ 
+^ Both representations: SOOT's Jimple and OPAL's TACAI representations satisfy the requirements.
+
+^ The experiments have shown that using CHA as the foundation delivers nearly the same results as using RTA or even applying VTA on top of itself. Hence, the overall performance of building VTA on top of CHA is best.
+
+
+---
+# Basic observation
+
+^ Given a code representation such as SOOT's Jimple or OPAL'S TACAI:
+
+For a type `A` to reach a receiver `o` (`o.m()`) there must be some path through the program which starts with the creation of A (`new A()`) assigned to some variable `x` which is followed by some chain of assignments of the form `x1 = x`, ... , `o = xn`.
+
+
+---
+# Basic steps of VTA
+
+[.build-lists: true]
+
+ 1. Compute initial conservative call graph
+ 1. Build so-called type-propagation graph
+ 1. Collapse strongly-connected components
+ 1. Propagate types in one iteration (afterwards the call graph can be pruned)
+
+^ The original VTA algorithm is pessimistic; it builds on top of a conservative algorithm. An optimistic implementation would implement compute the call graph on the fly (iteratively starting from the entry points) and is potentially more precise.
+
+---
+# The Type Propagation Graph
+
+[.build-lists: true]
+
+ - The nodes represent variables in the program
+ - The edges b → a represent assignments of the form `a = b`
+
+Given a conservative call graph and a class C which is reachable.
+ 
+- A node is generated for every reference-typed (and accessed) field f (`C.f`)
+- For every reachable method (`C.m`):
+  - a node is generated for every reference-typed formal parameter pi (`C.m.pi`)
+  - a node is generated for every reference-typed local variable  li (`C.m.li`)  
+  - a node is generated for the implicit `this` parameter (in case of instance methods)
+  - a node is generated for the return value of `m` (`C.m.return`)
+  
+The initial reaching type information is generated by assignments of the form: `b = new A().`  
+
+---
+# Generating the type propagation graph – _normal_ assignments
+
+^ In the following `C.m.a` is the representative of the variable `a` defined in method `m` in class `C`. Note that it is a prerequisite of the algorithm that every variable is assigned only once/has a single definition site.
+
+^ `a` and `b` are locals or parameters.
+
+```java
+class C {
+	void m(...) {
+		a = b;
+		a = b[i];
+		a[i] = b;
+}	}
+```
+
+![inline](TypePropagationGraph-basics.pdf)
+
+^ In case of a normal assignment we create an edge between the representative of the right-hand side of the assignment and the representative for the left-hand side of the assignment.
+
+
+---
+# Generating the  type propagation graph – field assignments
+
+^ `a` could be a local or a parameter (including `this`)
+
+```java
+class C {
+	void m(...) {
+		a.f = b;
+
+	}
+}
+```
+
+![inline](TypePropagationGraph-fields.pdf)
+
+^ In this case the type propagation is done w.r.t. the declaring class of the field (`A`) and not the instance `a`; hence the analysis is field-based.
+
+---
+# Generating the type propagation graph – handling Arrays
+
+^ Arrays are considered as one large aggregate.
+
+^ Please recall that any array type inherits from `Object` and implements the interfaces `Cloneable` and `Serializable`.
+
+```java
+class C {
+	void m() {
+		// if either a or b has type:
+		// Object, Seriablizable, Cloneable or some array type:
+		a = b; 
+}	}
+```
+
+![inline 150%](TypePropagationGraph-aliases.pdf)
+
+^ Hence, if we have an assignment that is potentially related to an array, we propagate the type in both directions. This is required to handle potential aliasing.
+
+
+---
+# VTA Example
+
+```java
+A a1,a2,a3;
+B b1,b2,b3;
+C c;
+a1 = new A();
+a2 = new A();
+b1 = new B();
+b2 = new B();
+c = new C();
+
+a1 = a2;
+a3 = a1;
+a3 = b3;
+b3 = (B) a3;
+b1 = b2;
+b1 = c;
+```
+
+---
+# VTA Example - 1. build the graph
+
+
+![inline](VTA-Example.pdf)
+
+---
+# VTA Example - 2. assign initial types
+
+
+![inline](VTA-Example-with_initial_types.pdf)
+
+
+---
+# VTA Example - 3. strongly connected components
+
+
+![inline](VTA-Example-with_initial_types_and_scc.pdf)
+
+---
+# VTA Example - 4. _finished_
+
+
+![inline](VTA-Example-final.pdf)
+
+
+--- 
+# VTA Assessment
+
+ - (the originally proposed algorithm) requires an initial call graph
+ - more precise than RTA
+ - relatively fast
+ - imprecision remains (fields of different objects are modeled as single node. )
+
+
+^ <!----------------------------------------------------------------------------------------------->
+^ <!---------------------------------------- REFERENCES ------------------------------------------->
+^ ---
+
+^ # References
+
+^ [^DVTA]: Practical Virtual Method Call Resolution for Java; Vijay Sundaresan, Laurie Hendren, Chrislain Razafimahefa, Raja Valleé-Rai, Patrick Lam, Etienne Gagnon and Charles Godin; OOPSLA 2000, ACM

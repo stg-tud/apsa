@@ -1,0 +1,8 @@
+digraph G {
+        dir=forward;
+        rankdir=RL;
+       
+        Cmb -> Cma;
+        Cma [label="C.m.a"];
+        Cmb [label="C.m.b"];
+}

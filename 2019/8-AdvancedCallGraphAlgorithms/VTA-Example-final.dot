@@ -1,0 +1,26 @@
+digraph G {
+        dir=forward;
+       // edge [color=white];
+       
+       a2 -> a1;
+       a1 -> a3;
+
+       subgraph cluster {
+              a3 -> b3;
+              b3 -> a3;
+              color=blue;
+              fill=blue;
+              label="{A}";
+              labeljust=l
+       }
+       
+       b2 -> b1;
+       c -> b1;
+
+       a1 [label="a1\n{A}"];
+       a2 [label="a2\n{A}"];
+       b1 [label="b1\n{B,C}"];
+       b2 [label="b2\n{B}"];
+       c [label="c\n{C}"];
+
+}

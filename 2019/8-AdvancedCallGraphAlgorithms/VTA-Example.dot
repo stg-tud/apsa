@@ -1,0 +1,12 @@
+digraph G {
+        dir=forward;
+       // edge [color=white];
+       
+       a2 -> a1;
+       a1 -> a3;
+       a3 -> b3;
+       b3 -> a3;
+       b2 -> b1;
+       c -> b1;
+
+}
