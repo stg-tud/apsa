@@ -201,7 +201,7 @@ class C {
 
 ![inline 150%](TypePropagationGraph-aliases.pdf)
 
-^ Hence, if we have an assignment that is potentially related to an array, we propagate the type in both directions. This is required to handle potential aliasing.
+^ Hence, if we have an assignment that is potentially related to an array, we propagate the type in both directions. This is required to handle potential aliasing. Imagine a code snippet such as: `A[] a = new A[10]; Object o1 = a; A[] b = (A[]) o1` – in this case `a`, `o1` and `b` are all referring to the _same_ array. Hence, an assignment to `b[1]` is also an assignment to `a[1]`!
 
 
 ---
@@ -245,7 +245,7 @@ b1 = c;
 ![inline](VTA-Example-with_initial_types_and_scc.pdf)
 
 ---
-# VTA Example - 4. _finished_
+# VTA Example - 4.  final type propagation graph
 
 
 ![inline](VTA-Example-final.pdf)
@@ -256,8 +256,74 @@ b1 = c;
 
  - (the originally proposed algorithm) requires an initial call graph
  - more precise than RTA
- - relatively fast
+ - relatively fast 
  - imprecision remains (fields of different objects are modeled as single node. )
+
+--- 
+
+# Declared Type Analysis (DTA)
+
+Basically identical to VTA except that _we use the declared type of a variable as the representative_. Hence, we put all variables the same declared type into the same equivalence class. 
+
+^ Therefore, the type propagation graph will be much smaller and the propagation will be much faster when compared to VTA; however, the precision will suffer.
+
+---
+
+# DTA Example
+
+```java
+A a1,a2,a3;
+B b1,b2,b3;
+C c;
+a1 = new A();
+a2 = new A();
+b1 = new B();
+b2 = new B();
+c = new C();
+
+a1 = a2;
+a3 = a1;
+a3 = b3;
+b3 = (B) a3;
+b1 = b2;
+b1 = c;
+```
+
+---
+
+# DTA Example - 1. build the graph
+
+
+![inline](DTA-Example.pdf)
+
+---
+# DTA Example - 2. assign initial types
+
+
+![inline](DTA-Example-with_initial_types.pdf)
+
+
+---
+# DTA Example - 3. strongly connected components
+
+
+![inline](DTA-Example-with_initial_types_and_scc.pdf)
+
+---
+# DTA Example - 4.  final type propagation graph
+
+
+![inline](DTA-Example-final.pdf)
+
+
+
+--- 
+# DTA Assessment
+
+ - (the originally proposed algorithm) requires an initial call graph
+ - more precise than RTA; less precise then VTA
+ - relatively fast (~10 time less expensive than VTA)
+ - significantly less precise than VTA
 
 
 ^ <!----------------------------------------------------------------------------------------------->

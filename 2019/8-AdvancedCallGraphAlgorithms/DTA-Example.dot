@@ -1,0 +1,14 @@
+digraph G {
+       dir=forward;
+       // edge [color=white];
+       rankdir = RL;
+
+       subgraph c {
+       // { rank = same; A; B; C; }
+
+       A -> B;
+       B -> A;
+       C -> B;
+       }
+
+}

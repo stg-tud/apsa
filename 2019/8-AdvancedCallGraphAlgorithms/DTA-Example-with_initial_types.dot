@@ -1,0 +1,15 @@
+digraph G {
+       dir=forward;
+       // edge [color=white];
+       rankdir = RL;
+
+subgraph c {
+       A -> B;
+       B -> A;
+       C -> B;
+
+       A [label="A\n{A}"];
+       B [label="B\n{B}"];
+       C [label="C\n{C}"];
+}
+}

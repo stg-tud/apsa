@@ -1,0 +1,17 @@
+digraph G {
+       dir=forward;
+       // edge [color=white];
+       rankdir = RL;
+
+subgraph cluster {
+       A -> B;
+       B -> A;
+       color=blue;
+       label="{A,B,C}";
+       labeljust=l
+}
+       C -> B;
+       C [label="C\n{C}"];
+
+
+}
