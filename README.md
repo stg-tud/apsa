@@ -23,7 +23,10 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     - [Monotone Framework.pdf](2019/5-MonotoneFramework/MonotoneFramework.pdf)
  6. Week
     - [BasicCallGraphAlgorithms.pdf](2019/6-BasicCallGraphAlgorithms/BasicCallGraphAlgorithms.pdf) 
-    - [ModularAnalysis.pdf](2019/7-ModularAnalysis/ModularAnalysis.pdf)    
+    - [ModularAnalysis.pdf](2019/7-ModularAnalysis/ModularAnalysis.pdf)  
+ 7. Week
+    - [AdvancedCallGraphAlgorithms.pdf](2019/8-AdvancedCallGraphAlgorithms/AdvancedCallGraphAlgorithms.pdf)
+    - [IntroductionToPointsToAndAliasAnalysis.pdf](2019/IntroductionToPointsToAndAliasAnalysis/9-IntroductionToPointsToAndAliasAnalysis.pdf)     
     
 ### Complementary Material
 
