@@ -26,7 +26,7 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     - [ModularAnalysis.pdf](2019/7-ModularAnalysis/ModularAnalysis.pdf)  
  7. Week
     - [AdvancedCallGraphAlgorithms.pdf](2019/8-AdvancedCallGraphAlgorithms/AdvancedCallGraphAlgorithms.pdf)
-    - [IntroductionToPointsToAndAliasAnalysis.pdf](2019/IntroductionToPointsToAndAliasAnalysis/9-IntroductionToPointsToAndAliasAnalysis.pdf)     
+    - [IntroductionToPointsToAndAliasAnalysis.pdf](2019/9-IntroductionToPointsToAndAliasAnalysis/IntroductionToPointsToAndAliasAnalysis.pdf)     
     
 ### Complementary Material
 
