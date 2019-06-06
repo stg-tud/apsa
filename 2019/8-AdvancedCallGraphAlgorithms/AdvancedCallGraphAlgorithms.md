@@ -326,6 +326,26 @@ b1 = c;
  - significantly less precise than VTA
 
 
+---
+
+# Outlook - using generic type information 
+
+Take type parameters into consideration: 
+ 
+```scala 
+ class C[X](x : X){ def toString : String = {x.toString(); }}
+ class SubC(x : String) extends C[String](x)
+ ...
+ /* CS */ new SubC("Hello World").toString 
+```
+
+^ At the given call site `CS` the call of `<SubC>.toString` is effectively a call on `<X>.toString` which calls `<String>.toString`; however standard call graph algorithms don't consider generic type information and will resolve the call to `<Object>.toString`.
+
+
+
+^ Papers which discuss this topic in greater detail are: [^CGsForLanguagesWithParametericPolymorphism] and [^CallGraphsOfScalaPrograms]
+ 
+ 
 ^ <!----------------------------------------------------------------------------------------------->
 ^ <!---------------------------------------- REFERENCES ------------------------------------------->
 ^ ---
@@ -333,3 +353,7 @@ b1 = c;
 ^ # References
 
 ^ [^DVTA]: Practical Virtual Method Call Resolution for Java; Vijay Sundaresan, Laurie Hendren, Chrislain Razafimahefa, Raja Valleé-Rai, Patrick Lam, Etienne Gagnon and Charles Godin; OOPSLA 2000, ACM
+
+^ [^CallGraphsOfScalaPrograms]: Constructing Call Graphs of Scala Programs; Karim Ali, Marianna Rapport, Ondřej Lhoták, Julian Dolby and Frank Tip; ECOOP 2014, Springer
+
+^ [^CGsForLanguagesWithParametericPolymorphism]: Call Graphs for Languages with Parameteric Polymorphism; Dmitry Petrashko, Vlad Ureche, Ondřej Lhoták and Martin Odersky; OOPSLA 2016, ACM
