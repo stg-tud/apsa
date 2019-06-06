@@ -93,6 +93,14 @@ void m(boolean b, X x, Y y) {
 ```
 
 ---
+# Basic observation
+
+^ Given a code representation such as SOOT's Jimple or OPAL'S TACAI:
+
+For a type `A` to reach a receiver `o` (`o.m()`) there must be some path through the program which starts with the creation of A (`new A()`) assigned to some variable `x` which is followed by some chain of assignments of the form `x1 = x`, ... , `o = xn`.
+
+
+---
 
 # Basics of (D/V)TA
 
@@ -103,15 +111,6 @@ void m(boolean b, X x, Y y) {
 ^ Both representations: SOOT's Jimple and OPAL's TACAI representations satisfy the requirements.
 
 ^ The experiments have shown that using CHA as the foundation delivers nearly the same results as using RTA or even applying VTA on top of itself. Hence, the overall performance of building VTA on top of CHA is best.
-
-
----
-# Basic observation
-
-^ Given a code representation such as SOOT's Jimple or OPAL'S TACAI:
-
-For a type `A` to reach a receiver `o` (`o.m()`) there must be some path through the program which starts with the creation of A (`new A()`) assigned to some variable `x` which is followed by some chain of assignments of the form `x1 = x`, ... , `o = xn`.
-
 
 ---
 # Basic steps of VTA

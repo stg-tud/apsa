@@ -72,6 +72,136 @@ d = a;  // <= NEW
  
 ^ $$\text{must-alias}(c,d) = false$$ 
 
+^ Over the lifetime of an entire execution, two variables (practically) never always alias. Thus must-alias analysis typically needs to take control flow into account (they have to be flow-sensitive).
+
+---
+
+# Flow-sensitive must analysis
+
+
+```java
+     b = null;
+     d = null;
+s1:  a = new A();
+     if(..) {
+         b = a;
+     }
+s2:  c = new C();
+     b = c;
+s3:  d = a;
+```
+
+^ $$\text{must-alias}(variable\; v1, variable\; v2; \text{after execution of } s_x) \rightarrow \{true,false\} $$
+
+^ $$\text{must-alias}(a,d;s2) = false$$ 
+ 
+^ $$\text{must-alias}(a,d;s3) = true$$ 
+ 
+^ $$\text{must-alias}(b,c;s2) = false$$  
+ 
+^ $$\text{must-alias}(b,c;s3) = true$$ 
+
+
+
+
+---
+
+# Flow-insensitive must analysis
+
+^ In a flow-insensitive analysis the order in which the instructions will be evaluated is ignored.
+
+```java
+     b = null;
+     d = null;
+s1:  a = new A();
+     if(..) {
+         b = a;
+     }
+s2:  c = new C();
+     b = c;
+s3:  d = a;
+```
+
+^ $$\text{must-alias}(variable\; v1, variable\; v2) \rightarrow \{true,false\} $$
+
+^ $$\text{must-alias}(a,d) = false$$ 
+ 
+^ $$\text{must-alias}(a,d) = false$$ 
+ 
+^ $$\text{must-alias}(b,c) = false$$  
+ 
+^ $$\text{must-alias}(b,c) = false$$ 
+
+^ Here, we always have to chose the save default answer: $$false$$. However, this observation is generally true: most program properties don’t always hold and **therefore most must-analyses have to be flow sensitive**. 
+
+^ The above observation does not hold for may-analyses. They only determine whether a property may (if at all) hold somewhere in the program.
+
+
+---
+# Points-to and alias analysis
+
+Points-to analysis can answer alias-analysis queries:
+
+ $$\text{alias}(v1,v2) = (\text{points-to}(v1) ⋂ \text{points-to}(v2) \neq \emptyset)$$
+ 
+^ This leads us to the question: _Is points-to analysis always more expressive than alias analysis_?
+
+---
+# Points-to vs. alias analysis
+
+ - Points-to analysis requires a notion of allocation sites: $$\text{points-to}(v) = \{ a1, a2, … \}$$
+ - Alias analysis only talks about variables: $$\text{may-alias}(v1,v2) = true/false$$ or $$ \text{must-alias}(v1,v2) = true/false$$
+ 
+^ Important in real world: What if we have _incomplete knowledge about allocation sites_?
+
+---
+# Points-to and alias analysis for incomplete programs
+
+```java
+void readProp(String id, String default) {
+	String s = Properties.read(id);
+	if(s==null) s = default;
+	return s;
+}
+```
+
+Assume that `Properties.read` is a native method or that for some other reason we don’t know its definition.
+
+^ A may alias analysis will be able to derive: $$\text{may-alias}(s,default) = true$$.
+We cannot compute the information by using $$\text{points-to}$$ information: $$\text{may-alias}(s,default) = (\text{points-to}(s) ⋂ \text{points-to}(default) ≠ ∅)$$.
+
+^ The underlying issue is that $$\text{points-to(s)}$$ cannot be computed. Choosing either the empty set ($$\emptyset$$) or `any object` will both render the analysis practically unusable. Using the empty set is (potentially grossly) unsound and using `any object` is (grossly) imprecise.
+
+---
+# Problem of points-to analysis for incomplete programs
+
+*Summary*
+
+[.build-lists: true]
+
+ - Points-to analysis associates variables with allocation sites
+ - If allocation sites are unknown then this association is necessarily either unsound or imprecise, depending on the analysis design
+ - In comparison, alias analysis can recover precision by analyzing the relationship between variables without carrying which objects they point to
+ 
+---
+# A direct alias analysis
+
+^ (We are not using points-to information!)
+
+```java
+b = a
+c = b
+```
+
+^ $$\text{may-alias}(b,a) = true$$  
+ 
+^ $$\text{may-alias}(c,b) = true$$ 
+
+What happens if `a = null`? 
+
+^ In this case the variables do not alias. Hence, returning `true` is imprecise (but still sound).
+
+
 ^ <!----------------------------------------------------------------------------------------------->
 ^ <!---------------------------------------- REFERENCES ------------------------------------------->
 ^ ---
