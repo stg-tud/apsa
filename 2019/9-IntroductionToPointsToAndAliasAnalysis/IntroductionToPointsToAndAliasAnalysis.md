@@ -11,7 +11,7 @@ Department of Computer Science
 Technische Universität Darmstadt  
 [Dr. Michael Eichberg](mailto:m.eichberg@me.com)
 
-> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/8-IntroductionToPointsToAndAliasAnalysis/IntroductionToPointsToAndAliasAnalysis.md)
+> If you find any issues, please directly report them: [GitHub](https://github.com/stg-tud/apsa/blob/master/2019/9-IntroductionToPointsToAndAliasAnalysis/IntroductionToPointsToAndAliasAnalysis.md)
 
 Some of the images on the following slides are inspired by slides created by Eric Bodden.
 
@@ -199,7 +199,78 @@ c = b
 
 What happens if `a = null`? 
 
-^ In this case the variables do not alias. Hence, returning `true` is imprecise (but still sound).
+^ In this case (`a = null`) the variables do not alias. Hence, returning `true` is imprecise (but still sound).
+
+
+--- 
+# When to prefer points-to analyses?
+
+```java
+l = new LinkedList(); // Allocation site a1
+l.clear();
+```
+
+^ In the above case, points-to information ($$\text{points-to}(l) = \{a1\}$$) can be used to devirtualize the (`clear`) method call; it can only invoke `LinkedList.clear()`. Alias information ($$\text{type-of}(\text{points-to}(l)) = \{LinkedList\}$$) is (in general) of no use in this case. 
+
+---
+# Weak Updates
+
+So-called weak updates are generally required if *only may-alias information is available*. For aliases, information before the statement is retained, only new information is added.  
+_We cannot kill information; otherwise we would be unsound!_
+
+---
+# Weak Updates - example
+
+
+We only know:
+
+ - `x.f ↦ 0`, `y.f ↦ 0` (the fields `f` are initialized to `0`)
+ - $$\text{may-alias}(x,y)$$
+
+We see an update: 
+
+```java
+x.f = 3
+```
+
+Given that we only have may-alias information, we must retain the old value for field f of alias y:
+
+ - `x.f ↦ 3`, `y.f ↦ 3`, `y.f ↦ 0` 
+ - $$\text{may-alias}(x,y)$$
+
+^ A weak updated is necessary, because $$\text{may-alias}(x,y)$$ tells us that there is a path along which x and y do alias and there may be a path along which they don’t. But the value y.f must represent both possible truths at the same time; hence both `y.f↦3`,`y.f↦0` must be included!
+
+---
+# Strong Updates
+
+So-called strong updates require must-alias information and can _kill_ analysis information associated with an alias.
+
+
+---
+# Strong Updates - example
+
+We (only) know:
+
+ - `x.f ↦ 0`, `y.f ↦ 0` (the fields `f` are initialized to `0`)
+ - $$\text{must-alias}(x,y)$$
+ 
+We see an update: 
+
+ ```java
+ x.f = 3
+ ```
+
+Given that we have must-alias information, we can safely kill `y.f↦0`.
+
+ - `x.f ↦ 3`, `y.f ↦ 3`
+ - $$\text{must-alias}(x,y)$$
+ 
+^ Generally, we can never kill information on aliases without must-alias information.
+ 
+ 
+---
+# Representing aliases with access paths 
+
 
 
 ^ <!----------------------------------------------------------------------------------------------->
