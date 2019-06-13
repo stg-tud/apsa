@@ -26,7 +26,9 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     - [ModularAnalysis.pdf](2019/7-ModularAnalysis/ModularAnalysis.pdf)  
  7. Week
     - [AdvancedCallGraphAlgorithms.pdf](2019/8-AdvancedCallGraphAlgorithms/AdvancedCallGraphAlgorithms.pdf)
-    - [IntroductionToPointsToAndAliasAnalysis.pdf](2019/9-IntroductionToPointsToAndAliasAnalysis/IntroductionToPointsToAndAliasAnalysis.pdf)     
+ 8. Week
+     - [IntroductionToPointsToAndAliasAnalysis.pdf](2019/9-IntroductionToPointsToAndAliasAnalysis/IntroductionToPointsToAndAliasAnalysis.pdf)    
+     - [IFDS.pdf](2019/10-IFDS/IFDS.pdf)          
     
 ### Complementary Material
 
@@ -47,7 +49,13 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     - [OPAL - Data Flow Analysis.pdf](2019/OPAL/4-SimpleDataFlowAnalyses.pdf)   
     
  1. Week
-    - [OPAL - Fixed Point Computations Framework.pdf](2019/OPAL/5-FixedPointComputations.pdf)   
+    - [OPAL - Fixed Point Computations Framework.pdf](2019/OPAL/5-FixedPointComputations.pdf)  
+    
+ 1. Week
+    None.
+ 
+ 1. Week
+    - [VTAExtract.scala](2019/10-IFDS/Exercise/VTA-Extract.scala)    
 
 ## Exercise
 
@@ -58,3 +66,5 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
  1. Monotone Framework: [Task.pdf](2019/5-Monotone-Framework/Exercise/Task.pdf) (Updated: May 2nd)
 
  1. Fixed Point Computations Framework: [Task.pdf](2019/7-ModularAnalyses/Exercise/Task.pdf)
+ 
+ 1. Taint-flow analysis with IFDS: [Task.pdf](2019/10-IFDS/Exercise/Task.pdf)

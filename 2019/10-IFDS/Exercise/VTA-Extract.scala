@@ -80,6 +80,7 @@ class IFDSBasedVariableTypeAnalysis private (implicit val project: SomeProject)
      */
     override protected def normalFlow(statement: Statement, successor: Statement,
                                       in: Set[VTAFact]): Set[VTAFact] = statement.stmt.astID match {
+        // RECALL: TACAI is an SSA like representation; hence, there are no kills.
         case Assignment.ASTID ⇒
             in ++ newFacts(statement.method, statement.stmt.asAssignment.expr,
                 statement.index, in)

@@ -45,6 +45,118 @@ Some of the images on the following slides are inspired by slides created by Eri
  - _we say_: a fact f holds at stmt s ⇔ node (s,f) is reachable
  
 
+---
+# IFDS - flow functions
+
+Identity: every fact is reachable if and only if it was reachable before.
+
+![inline](FlowFunction-1.pdf)
+
+---
+# IFDS - flow functions
+
+Every fact is reachable if and only if it was previously reachable, and g is also reachable if f was reachable before.
+
+$$
+\begin{equation}
+  out(s) =
+  \begin{cases}
+    in(s) \cup Set(g) & \text{if}\; f \in in(s) \\
+    in(s) & \text{otherwise}
+  \end{cases}
+\end{equation}
+$$
+
+![inline](FlowFunction-2.pdf)
+
+
+
+---
+# IFDS - flow functions
+
+Every fact except g is reachable if and only if it was previously reachable; g is only reachable if f was reachable before.
+
+$$
+\begin{equation}
+  out(s) =
+  \begin{cases}
+    in(s) \cup Set(g) & \text{if}\; f \in in(s) \\
+    in(s) \backslash Set(g) & \text{otherwise}
+  \end{cases}
+\end{equation}
+$$
+
+![inline](FlowFunction-3.pdf)
+
+---
+# IFDS - flow functions
+
+Possible application: taint analysis.
+
+$$
+\begin{equation}
+  out(s) =
+  \begin{cases}
+    in(s) \cup Set(g) & \text{if}\; f \in in(s) \\
+    in(s) \backslash Set(g) & \text{otherwise}
+  \end{cases}
+\end{equation}
+$$
+
+Corresponding code:
+```java
+g = f;
+```
+
+![inline](FlowFunction-4.pdf)
+
+^ g is tainted(reachable) if and only if f was previously tainted.
+
+
+---
+# IFDS - flow functions (killing values)
+
+Even if g was reachable before, it now no longer.
+
+ $$out(s) = in(s) \backslash Set(g)$$
+
+![inline](FlowFunction-5.pdf)
+
+---
+# IFDS - flow functions (generating values)
+
+ $$0$$ is the tautological fact; it is always reachable; even if f was unreachable before, it now reachable.
+
+ $$out(s) = in(s) \cup Set(f)$$
+
+Corresponding code:
+```java
+f = secret();
+```
+
+![inline](FlowFunction-6.pdf)
+
+---
+# IFDS - _illegal_ flow functions 
+
+Not distributive (e.g., full constant propagation); cannot be represented by IFDS:
+
+$$
+\begin{equation}
+  out(s) =
+  \begin{cases}
+    in(s) \cup Set(h) & \text{if}\; Set(f,g) \subseteq in(s)	 \\
+    in(s) & \text{otherwise}
+  \end{cases}
+\end{equation}
+$$
+
+
+![inline](FlowFunction-7.pdf)
+
+
+
+
 
 ---
 # Exploded Supergraph
@@ -120,6 +232,25 @@ The red, dotted flow functions represent our summaries.
 The red, dashed flow functions were never computed.
 
 ![inline 95%](Supergraph.on-the-fly.final.pdf)
+
+---
+# Limitations
+
+The domain has to be (reasonably) finite.
+
+(Counter)Example: linear constant propagation
+
+```java
+r = v+1
+```
+
+![inline](LinearConstantPropagation.pdf)
+
+^ > ... in any context in which v is 0 before the call, it is true that r is 1 after the call.
+
+^ Though the set of int-typed values is finite, it is far too large to be practical!
+
+
 
 ^ <!----------------------------------------------------------------------------------------------->
 ^ <!---------------------------------------- REFERENCES ------------------------------------------->
