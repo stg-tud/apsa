@@ -179,9 +179,9 @@ We cannot compute the information by using $$\text{points-to}$$ information: $$\
 
 [.build-lists: true]
 
- - Points-to analysis associates variables with allocation sites
- - If allocation sites are unknown then this association is necessarily either unsound or imprecise, depending on the analysis design
- - In comparison, alias analysis can recover precision by analyzing the relationship between variables without carrying which objects they point to
+ - Points-to analysis associates variables with allocation sites.
+ - If allocation sites are unknown then this association is necessarily either unsound or imprecise, depending on the analysis design.
+ - In comparison, alias analysis can recover precision by analyzing the relationship between variables without caring which objects they point to.
  
 ---
 # A direct alias analysis
@@ -215,7 +215,7 @@ l.clear();
 ---
 # Weak Updates
 
-So-called weak updates are generally required if *only may-alias information is available*. For aliases, information before the statement is retained, only new information is added.  
+So-called weak updates are generally required if *only may-alias information is available*. **For aliases, information before the statement is retained, only new information is added**.  
 _We cannot kill information; otherwise we would be unsound!_
 
 ---
@@ -238,7 +238,7 @@ Given that we only have may-alias information, we must retain the old value for 
  - `x.f ↦ 3`, `y.f ↦ 3`, `y.f ↦ 0` 
  - $$\text{may-alias}(x,y)$$
 
-^ A weak updated is necessary, because $$\text{may-alias}(x,y)$$ tells us that there is a path along which x and y do alias and there may be a path along which they don’t. But the value y.f must represent both possible truths at the same time; hence both `y.f↦3`,`y.f↦0` must be included!
+^ A weak update is necessary, because $$\text{may-alias}(x,y)$$ tells us that there is a path along which x and y do alias and there may be a path along which they don’t. But the value `y.f` must represent both possible truths at the same time; hence both `y.f↦3`,`y.f↦0` must be included!
 
 ---
 # Strong Updates
@@ -267,10 +267,10 @@ Given that we have must-alias information, we can safely kill `y.f↦0`.
  
 ^ Generally, we can never kill information on aliases without must-alias information.
  
- 
+<!--
 ---
 # Representing aliases with access paths 
-
+-->
 
 
 ^ <!----------------------------------------------------------------------------------------------->
