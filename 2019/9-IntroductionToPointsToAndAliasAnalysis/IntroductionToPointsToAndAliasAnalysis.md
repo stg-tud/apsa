@@ -267,16 +267,4 @@ Given that we have must-alias information, we can safely kill `y.f↦0`.
  
 ^ Generally, we can never kill information on aliases without must-alias information.
  
-<!--
----
-# Representing aliases with access paths 
--->
 
-
-^ <!----------------------------------------------------------------------------------------------->
-^ <!---------------------------------------- REFERENCES ------------------------------------------->
-^ ---
-
-^ # References
-
-^ [^DVTA]: Practical Virtual Method Call Resolution for Java; Vijay Sundaresan, Laurie Hendren, Chrislain Razafimahefa, Raja Valleé-Rai, Patrick Lam, Etienne Gagnon and Charles Godin; OOPSLA 2000, ACM

@@ -35,18 +35,17 @@ The analysis should use all public methods of the project as entry points.
 
 > To run the analysis against the provided test case, use `run -cp=<Path>/test`.
 
-**Tasks**
+**Task**
 
- 1. Test your analysis using the provided tests. It should find violations in all methods named `noncompliant` (there are 7 of them). Don't worry if you additionally find a false positive in `CorrelatedCalls#compliant`.
- 1. (optional) Make sure you don't find a false positive in `CorrelatedCalls#compliant`. No solution will be provided.
+Test your analysis using the provided tests. It should find violations in all methods named `noncompliant` (there are 7 of them). 
+If you find an additional false positive in `CorrelatedCalls#compliant` be prepared to explain why.
 
 **Hints**
 
-Please try to solve the exercise before taking a look at the hints.
-
 1. In OPAL's IFDS implementation, the flow functions are always given a set of valid facts. Still, you have to ensure that every fact you derive depends on at most one fact in the given input. If you want to remove a fact, that decision may not depend on any other fact. Otherwise, your analysis is not distributive and may fail. Don't forget to include all unchanged facts in your results as well.
 
-1. Use case classes as subtypes of `Fact` to model different types of taints, including local variables, elements of arrays, static and instance fields. What information does each kind of value need?
+1. Use case classes as subtypes of `Fact` to model different types of taints, including local variables, elements of arrays, static and instance fields. What information does each kind of value need?  
+   (Start implementing your analysis by just considering local variables then extend the analysis; consider arrays as the last step!)
 
 1. You may report violations simply by printing information about the violation to the command line.
 
