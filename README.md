@@ -30,6 +30,9 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
      - [IntroductionToPointsToAndAliasAnalysis.pdf](2019/9-IntroductionToPointsToAndAliasAnalysis/IntroductionToPointsToAndAliasAnalysis.pdf)    
      - [IFDS.pdf](2019/10-IFDS/IFDS.pdf)          
     
+ 9. Week (external lecture)
+     - (Static Analysis For Continuous Quality Improvement - Sven Amann at CQSE)[2019/11-SvenAmann-CQSE-StaticAnalysisForContinuousQualityImprovement.pdf]
+      
 ### Complementary Material
 
  1. Week  
@@ -55,7 +58,8 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
     None.
  
  1. Week
-    - [VTAExtract.scala](2019/10-IFDS/Exercise/VTA-Extract.scala)    
+    - [VTAExtract.scala](2019/10-IFDS/Exercise/VTA-Extract.scala)  
+         
 
 ## Exercise
 
