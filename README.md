@@ -31,7 +31,10 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
      - [IFDS.pdf](2019/10-IFDS/IFDS.pdf)          
     
  9. Week (external lecture)
-     - [Static Analysis For Continuous Quality Improvement - Sven Amann at CQSE](2019/11-SvenAmann-CQSE-StaticAnalysisForContinuousQualityImprovement.pdf)
+     - [Static Analysis For Continuous Quality Improvement - Sven Amann at CQSE.pdf](2019/11-SvenAmann-CQSE-StaticAnalysisForContinuousQualityImprovement.pdf)
+     
+ 10. Week
+     - [Pointer Analysis.pdf](2019/12-PointerAnalysis/PointerAnalysis.pdf)    
       
 ### Complementary Material
 
