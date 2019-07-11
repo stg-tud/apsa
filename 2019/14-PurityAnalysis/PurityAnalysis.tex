@@ -30,7 +30,6 @@
 \makeatother
 
 \setul{}{1.5pt}
-\setstcolor{red}
 
 \newcommand{\lbimpure}{Impure}
 
@@ -51,10 +50,12 @@
 
 \newcommand{\lbp}{Pure}
 
+\newcommand{\lbctp}{Compile-time pure}
+
 \title
-{A Unified Lattice Model and \\ Framework for Purity Analyses}
+{Purity Analyses}
 \author[Helm, K\"ubler, Eichberg, Reif, Mezini] % (optional, for multiple authors)
-{Dominik~Helm \and Florian~K\"ubler \and Michael~Eichberg \and Michael~Reif \and Mira~Mezini}
+{Dominik~Helm}
 
 \date[ASE 2018] % (optional)
 {\includegraphics[scale=0.15,angle=270,origin=b]{TULogo}\raisebox{-7mm}[0pt][0pt]{\includegraphics[scale=0.45]{logo-stg}}}
@@ -67,81 +68,95 @@
 
 \setbeamertemplate{footline}{\hspace{125mm}\raisebox{2mm}[0pt][0pt]{\insertframenumber}}
 
-\begin{frame}[fragile]
-\begin{overlayarea}{\textwidth}{\textheight}
-\vspace{10mm}
-\begin{lstlisting}
-static double radius, area;
-
-void computeArea1(){
-	area = radius * radius * Math.PI;
-}
-
-double computeArea2(){
-	return radius * radius * Math.PI;
-}
-\end{lstlisting}
-\only<2>{
-\begin{itemize}
-	\item Program comprehension
-	\item Bug/code smell detection
-	\item Optimizations
-\end{itemize}
-}
-\end{overlayarea}
-\end{frame}
-
-\addtocounter{framenumber}{-1}
-
-\begin{frame}[fragile]
-\vspace{-2mm}
-\only<1>{\vspace{21mm}}
-\only<2>{
-\begin{itemize}
-	\item Program comprehension
-	\item Optimizations
-	\item Formal specification/verification
-\end{itemize}
-\vspace{0.35mm}
-}
-\begin{lstlisting}
-static double radius;
-
-double computeArea2(){
-	return radius * radius * Math.PI;
-}
-
-double computeArea3(double _radius){
-	return _radius * _radius * Math.PI;
-}
-\end{lstlisting}
-\end{frame}
-
 \begin{frame}
-Unifying definitions:\\
-
-\vspace{7mm}
+\frametitle{Definitions}
+\vspace{-2mm}
+Methods can be free of side-effects and/or deterministic\\
+\pause
+\vspace{5mm}
 \textbf{Side-effect freeness (SEF):}
 \begin{itemize}
 	\item execution can not be observed by other methods
 \end{itemize}
-\vspace{7mm}
+\vspace{2mm}
 \textbf{Purity:}
 \begin{itemize}
 	\item additionally deterministic
 	\item i.e. can not observe the execution of other methods
 \end{itemize}
-\vspace{7mm}
+\vspace{4mm}
 \pause
-Sufficient definitions, but valuable extensions exist
+Can use this distinction for:
+\begin{itemize}
+	\item Program comprehension (interference with rest of program)
+	\item Bug/code smell detection (e.g. unused return value)
+	\item Optimizations (e.g. code motion)
+	\item Formal specification/verification
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Examples}
+\vspace{-12.8mm}
+\begin{lstlisting}
+static double radius, area;
+
+void computeAreaImpure(){
+	area = radius * radius * Math.PI;
+}
+
+double computeAreaSEF(){
+	return radius * radius * Math.PI;
+}
+\end{lstlisting}
+\end{frame}
+
+\addtocounter{framenumber}{-1}
+
+\begin{frame}[fragile]
+\frametitle{Examples}
+\begin{lstlisting}
+static double radius, area;
+
+void computeAreaImpure(){
+	area = radius * radius * Math.PI;
+}
+
+double computeAreaSEF(){
+	return radius * radius * Math.PI;
+}
+
+double computeAreaPure(double _radius){
+	return _radius * radius * Math.PI;
+}
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}
-\vspace{7mm}
-\begin{overlayarea}{\textwidth}{0.65\textheight}
-\textbf{External purity}~\cite{MostlyFunctional}:
+\frametitle{Definitions (recap)}
+\vspace{2mm}
+\textbf{Side-effect freeness (SEF):}
 \begin{itemize}
-	\item only (observable) side-effect is modification of receiver object
+	\item execution can not be observed by other methods
+\end{itemize}
+\vspace{2mm}
+\textbf{Purity:}
+\begin{itemize}
+	\item additionally deterministic
+	\item i.e. can not observe the execution of other methods
+\end{itemize}
+\vspace{8mm}
+\pause
+While these may be sufficient for the uses cases mentioned,\\
+valuable extensions exist
+\end{frame}
+
+\begin{frame}
+\frametitle{External Purity~\cite{MostlyFunctional}}
+\vspace{4mm}
+\begin{overlayarea}{\textwidth}{0.65\textheight}
+Only (observable) side-effect is modification of receiver object
+\begin{itemize}
 	\item field setters, initialization methods, \dots
 	\item respects abstraction boundaries
 	\item allows finding confined side-effects
@@ -163,9 +178,9 @@ Generalization to \textbf{contextual purity}:
 \end{frame}
 
 \begin{frame}[fragile]
-\textbf{Domain-specific purity:}
+\frametitle{Domain-Specific Purity}
 \begin{itemize}
-	\item restricted forms of simpurity
+	\item restricted forms of impurity
 	\item relevant for some but not all domains
 	\item e.g. logging \cite{FineGrained}, exceptions
 \end{itemize}
@@ -173,7 +188,7 @@ Generalization to \textbf{contextual purity}:
 \begin{lstlisting}
 int divide(int a, int b) {
 	Log.log("Performing division");
-	return a/b;
+	return a/b; //Potential ArithmeticException
 }
 \end{lstlisting}
 \vspace{5mm}
@@ -182,10 +197,33 @@ int divide(int a, int b) {
 \end{thebibliography}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Compile-Time Purity}
+\vspace{-3mm}
+Even pure methods may not simply be elided at compile time:
+\pause
+\vspace{5mm}
+\begin{lstlisting}
+private final long startupTime = 
+	System.currentTimeMillis();
+
+//Pure, but different value in
+//different program executions
+long startupTime() {
+	return startupTime;
+}
+\end{lstlisting}
+\pause
+\vspace{5mm}
+Requires another level of purity: \textbf{Compile-time purity}
+\end{frame}
+
 \begin{frame}
+\frametitle{Purity Lattice}
 \begin{overprint}
 \begin{figure}[h]
-	\begin{tikzpicture}[remember picture,overlay,shift={(0.2,-4)},font=\small]
+	\begin{tikzpicture}[remember picture,overlay,shift={(0.2,-4.3)},font=\small]
+	
 	
 	\node[below] (p) at (0, 6.75) {\lbp};
 	
@@ -203,8 +241,9 @@ int divide(int a, int b) {
 	\only<4->{\node[below] (dscp) at (3.5, 2.5) {\lbdscp} edge[thick] (dsep) edge[thick] (cp);}
 	
 	\only<4->{\node[below] (dscsef) at (0, 1.25) {\lbdscsef} edge[thick] (dsesef) edge[thick] (csef) edge[thick] (dscp);}
+	\only<5->{\node[below] (ctp) at (0, 8) {\lbctp} edge[thick] (p)};
 	
-	\only<5->{\node[below] (impure) at (0, 0) {\lbimpure} edge[thick] (dscsef);}
+	\only<6->{\node[below] (impure) at (0, 0) {\lbimpure} edge[thick] (dscsef);}
 	
 	\end{tikzpicture}
 \end{figure}
@@ -212,9 +251,10 @@ int divide(int a, int b) {
 \end{frame}
 
 \begin{frame}
+\frametitle{OPAL}
 \begin{overlayarea}{\textwidth}{0.8\textheight}
-\vspace{4mm}
-Implemented a purity analysis in OPAL\footnote[frame]{http://www.opal-project.de} that
+\vspace{1mm}
+OPAL's purity analysis
 \begin{itemize}
 	\item analyses each method assuming \textbf{purity}
 	\item scans the intermediate representation,\\ enriched with abstract interpretation results\\ (refined types, def-use chains, \dots)
@@ -269,7 +309,7 @@ Implemented a purity analysis in OPAL\footnote[frame]{http://www.opal-project.de
 	\arrayrulecolor{black!30}\midrule\arrayrulecolor{black}
 	\emph{Execution time} & & 103s & & 140s \\
 	\midrule
-	\textbf{OPIUM} & & & & \\
+	\textbf{OPIUM} (our tool) & & & & \\
 	\emph{Analyzed methods} & & \numprint{15911} & & \numprint{10763} \\
 	\emph{At least Side-Effect Free} & \numprint{6780} & (42.61\%) & \numprint{4390} & (40.79\%) \\
 	\emph{Pure} & \numprint{4009} & (25.20\%) & \numprint{2492} & (23.15\%) \\
@@ -302,7 +342,7 @@ Implemented a purity analysis in OPAL\footnote[frame]{http://www.opal-project.de
 	\emph{At least Side-Effect Free} & \numprint{6780} & (42.61\%) & \numprint{4390} & (40.79\%) \\
 	\emph{Pure} & \numprint{4009} & (25.20\%) & \numprint{2492} & (23.15\%) \\
 	\emph{Ext./Context. Pure/SEF} & +987 & (6.20\%) & +748 & (6.95\%) \\  \arrayrulecolor{black!30}\midrule\arrayrulecolor{black}
-	\emph{Execution time} & \multicolumn{2}{g}{\textcolor{red}{103\,s} \st{197\,s}} & \multicolumn{2}{r}{\textcolor{red}{104\,s} \st{187\,s}} \\
+	\emph{Execution time} & \multicolumn{2}{g}{103\,s \st{197\,s}} & \multicolumn{2}{r}{104\,s \st{187\,s}} \\
 	\bottomrule
 \end{tabularx}
 \vspace{5mm}
@@ -312,7 +352,8 @@ Implemented a purity analysis in OPAL\footnote[frame]{http://www.opal-project.de
 \end{frame}
 
 \begin{frame}
-Recap:
+\frametitle{Recap}
+\vspace{-3mm}
 \begin{itemize}
 	\item Definitions for side-effect freeness and purity
 	\item External and contextual purity
@@ -320,12 +361,13 @@ Recap:
 	\item Unified lattice model
 	\item Fast and precise analysis
 \end{itemize}
-\vspace{5mm}
+\vspace{8mm}
 Try it yourself: http://www.opal-project.de/OPIUM.html
 \end{frame}
 
 \begin{frame}
-Current and future work:
+\frametitle{Current and Future Work}
+\vspace{-8mm}
 \begin{itemize}
 	\item Modularize and improve more analyses\\ 
 	\begin{itemize}
