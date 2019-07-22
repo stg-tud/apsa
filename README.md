@@ -6,6 +6,10 @@ If you find issues in the lecture notes, exercises or tutorial, don't hesitate t
 
 # 2019
 
+## Post Exam Review
+
+The post exam review will be on Wednesday, July 24th, at 3pm in my office (A206).
+
 ## Lecture
 
 ### Slides
